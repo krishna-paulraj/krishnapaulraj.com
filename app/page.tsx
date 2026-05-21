@@ -1,15 +1,22 @@
 import NowPlaying from "@/components/NowPlaying";
+import WorkExperienceComponent from "@/components/work/index";
+import BlogSection from "@/components/blog";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <h1>Suresh-Krishna Paulraj</h1>
-        <p>Developer</p>
-        <p>Making the web slightly more interesting</p>
-
+    <div className="mx-auto w-full max-w-2xl flex-1 px-6 py-16 font-sans">
+      <h1 className="text-2xl font-semibold tracking-tight">
+        Suresh-Krishna Paulraj
+      </h1>
+      <p className="mt-1 text-muted-foreground">Developer</p>
+      <p className="text-muted-foreground">
+        Making the web slightly more interesting
+      </p>
+      <div className="mt-6">
         <NowPlaying />
-      </main>
+      </div>
+      <WorkExperienceComponent />
+      <BlogSection />
     </div>
   );
 }
