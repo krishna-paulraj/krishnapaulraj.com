@@ -5,10 +5,13 @@ import VisitorCount from "@/components/VisitorCount";
 
 const navLinks = [
   { href: "/", label: "Home" },
-  { href: "/work", label: "Work" },
-  { href: "/blog", label: "Blog" },
+  { href: "/about", label: "About" },
   { href: "/projects", label: "Projects" },
-  { href: "/contact", label: "Contact" },
+  { href: "/blog", label: "Blog" },
+  { href: "/resume", label: "Resume" },
+  { href: "/terminal", label: "Terminal" },
+  { href: "/gears", label: "Gears" },
+  { href: "/rss.xml", label: "RSS", external: true },
 ];
 
 const socialLinks = [
@@ -42,16 +45,29 @@ export default function Footer() {
               Navigate
             </p>
             <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
-              {navLinks.map(({ href, label }) => (
-                <li key={href}>
-                  <Link
-                    href={href}
-                    className="transition-colors hover:text-foreground"
-                  >
-                    {label}
-                  </Link>
-                </li>
-              ))}
+              {navLinks.map(({ href, label, external }) =>
+                external ? (
+                  <li key={href}>
+                    <a
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="transition-colors hover:text-foreground"
+                    >
+                      {label}
+                    </a>
+                  </li>
+                ) : (
+                  <li key={href}>
+                    <Link
+                      href={href}
+                      className="transition-colors hover:text-foreground"
+                    >
+                      {label}
+                    </Link>
+                  </li>
+                ),
+              )}
             </ul>
           </div>
 

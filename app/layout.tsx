@@ -4,6 +4,10 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ThemeProvider } from "@/components/theme/theme-provider";
+import { MotionProvider } from "@/components/motion/motion-provider";
+import { SearchProvider } from "@/components/search/search";
+import { getSearchItems } from "@/lib/search";
+import { buildSiteGraph, jsonLdString } from "@/lib/structured-data";
 
 const outfit = Outfit({
   variable: "--font-sans",
@@ -17,61 +21,60 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Suresh Krishna Paulraj",
-    template: "%s | Suresh Krishna Paulraj",
+    default: "Suresh-Krishna Paulraj",
+    template: "%s | Suresh-Krishna Paulraj",
   },
 
   description:
-    "Full Stack Developer focused on Next.js, Web3, AI-powered applications, and modern web experiences.",
+    "Software engineer at Blocsys building scalable web applications with TypeScript, React, and Next.js — plus notes on AI tooling and engineering craft.",
 
   keywords: [
-    "Suresh Krishna Paulraj",
-    "Full Stack Developer",
+    "Suresh-Krishna Paulraj",
+    "Software Engineer",
     "Next.js Developer",
     "React Developer",
-    "Web3 Developer",
-    "Blockchain",
-    "AI Applications",
     "TypeScript",
+    "Full Stack Developer",
+    "AI Applications",
+    "RAG",
+    "Blocsys",
     "Portfolio",
   ],
 
-  authors: [{ name: "Suresh Krishna Paulraj" }],
+  authors: [{ name: "Suresh-Krishna Paulraj" }],
 
-  creator: "Suresh Krishna Paulraj",
+  creator: "Suresh-Krishna Paulraj",
 
   metadataBase: new URL("https://krishnapaulraj.com"),
 
   openGraph: {
-    title: "Suresh Krishna Paulraj",
+    title: "Suresh-Krishna Paulraj",
     description:
-      "Full Stack Developer building modern web, AI, and blockchain applications.",
+      "Software engineer building scalable web apps with TypeScript, React, and Next.js. Writing about engineering and AI.",
     url: "https://krishnapaulraj.com",
-    siteName: "Suresh Krishna Paulraj Portfolio",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Suresh Krishna Paulraj Portfolio",
-      },
-    ],
+    siteName: "Suresh-Krishna Paulraj",
     locale: "en_US",
     type: "website",
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "Suresh Krishna Paulraj",
+    title: "Suresh-Krishna Paulraj",
     description:
-      "Full Stack Developer building modern web, AI, and blockchain applications.",
-    images: ["/og-image.png"],
+      "Software engineer building scalable web apps with TypeScript, React, and Next.js. Writing about engineering and AI.",
     creator: "@thedevkrish",
   },
 
   robots: {
     index: true,
     follow: true,
+  },
+
+  alternates: {
+    canonical: "/",
+    types: {
+      "application/rss+xml": "/rss.xml",
+    },
   },
 
   icons: {
@@ -91,10 +94,18 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLdString(buildSiteGraph()) }}
+        />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <Navbar />
-          {children}
-          <Footer />
+          <MotionProvider>
+            <SearchProvider items={getSearchItems()}>
+              <Navbar />
+              <main className="flex flex-1 flex-col">{children}</main>
+              <Footer />
+            </SearchProvider>
+          </MotionProvider>
         </ThemeProvider>
       </body>
     </html>
