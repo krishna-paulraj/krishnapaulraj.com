@@ -45,9 +45,13 @@ const WORK_EXPERIENCE: ExperienceItemType[] = [
   },
 ];
 
-const WorkExperienceComponent = () => {
+const WorkExperienceComponent = ({
+  standalone = false,
+}: {
+  standalone?: boolean;
+}) => {
   return (
-    <div className="mt-5 w-full border-t pt-5">
+    <div className={standalone ? "w-full" : "mt-5 w-full border-t pt-5"}>
       <h1 className="text-3xl font-bold tracking-tight">Work Experience</h1>
       <HighlightedHeading className="my-4">
         Where I&apos;ve been working
