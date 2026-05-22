@@ -76,10 +76,6 @@ export const metadata: Metadata = {
       "application/rss+xml": "/rss.xml",
     },
   },
-
-  icons: {
-    icon: "/favicon.ico",
-  },
 };
 
 export default function RootLayout({
