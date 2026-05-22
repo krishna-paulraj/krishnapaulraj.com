@@ -1,0 +1,70 @@
+---
+title: "What Nobody Tells You About Building a RAG Pipeline in Production"
+description: "Most RAG tutorials stop at 'use a vector DB and retrieve top-k chunks.' Here's what actually breaks when real users start typing — and the cheap fixes that move the needle."
+new: false
+createdAt: 2026-05-01
+updatedAt: 2026-05-01
+tags: [ai, rag]
+---
+
+Every RAG tutorial follows the same recipe: load documents, chunk them, embed them, push to a vector database, retrieve top-k by cosine similarity, stuff into a prompt, done.
+
+That recipe works. For demos.
+
+The moment you put real users in front of it, three things break — and none of them are the vector database.
+
+## Your chunks are wrong (and not in the way you think)
+
+Most tutorials default to "split by 1000 characters with 200 overlap." It's a fine starting point and a terrible ending point.
+
+Real documents have structure. A long support article has a question at the top, a one-line answer, and three paragraphs of context. A PDF has headers, captions, footnotes. If you chunk by character count, you end up with chunks that start mid-sentence, contain half a code block, and lose the heading that gave them meaning.
+
+Two things that helped me more than swapping vector databases ever did:
+
+- **Chunk by structure first.** Split on headings, then on paragraphs, only fall back to character count for runaway sections.
+- **Prepend the heading hierarchy to each chunk.** A chunk that reads `Billing > Refunds > "We process refunds within 5 business days..."` retrieves dramatically better than the bare quote.
+
+The embedding model didn't get smarter. The unit you embedded did.
+
+## Top-k is a lie
+
+Cosine similarity ranks chunks by _embedding_ similarity, not _answer_ relevance. They're correlated. They're not the same thing.
+
+A user asking "how do I cancel my subscription?" might match three chunks about the cancellation policy and a fourth chunk about subscription pricing — because the word "subscription" appears 12 times in it. Cosine has no way to know which is more useful for actually answering the question.
+
+Two cheap fixes:
+
+- **Rerank with a cross-encoder.** Retrieve top-20 by cosine, then rerank with a model that reads the query _and_ the chunk together. Cohere ships a hosted one. Or run `bge-reranker-base` locally for almost nothing.
+- **Use Maximal Marginal Relevance (MMR).** Penalize redundancy. If two top chunks are near-duplicates, you want one of them plus a diverse second pick, not both.
+
+Adding a reranker is the single highest-leverage change you can make to an existing RAG system. The vector database stops being your bottleneck almost immediately.
+
+## The model will hallucinate, with full confidence
+
+When the retrieved chunks don't actually contain the answer, the model will not say "I don't know." It will write a polite, confident, plausible-sounding paragraph that is wrong.
+
+You can't fix this with retrieval. You fix it at the generation step:
+
+- **Explicit refusal in the system prompt.** Spell out what to do when the context is insufficient: "If the answer is not in the provided sources, say _'I don't have that information in the available sources'_ and stop." Put it first. Models follow this surprisingly well when it's the opening instruction.
+- **Force citations.** Make the model quote the chunk it's using. If it can't quote, it can't claim.
+- **A confidence check.** Ask the model to rate, 1-5, how well the context supports its answer. Filter 1s and 2s before showing them to the user.
+
+These don't fix retrieval. They fix the failure mode where retrieval returns nothing useful and the model fills the gap with fiction.
+
+## The shape of a real pipeline
+
+The toy version is `retrieve → answer`. The version that holds up looks more like:
+
+```
+parse → chunk by structure → embed
+                                ↓
+                          vector store
+                                ↓
+query → retrieve top-20 → rerank to top-5 → answer with citations
+                                                       ↓
+                                              confidence check
+```
+
+Every extra arrow is somewhere things can go wrong. It's also somewhere you can measure and improve. A pure top-k pipeline gives you nothing to instrument; a multi-stage one gives you a knob for every failure mode.
+
+That's the part demos skip. RAG isn't a one-liner. It's a system. The vector database is, honestly, the least interesting part of it.

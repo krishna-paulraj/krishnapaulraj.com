@@ -1,0 +1,82 @@
+---
+title: "The App Router Lessons I Wish I'd Known on Day One"
+description: "Six months in Next.js's App Router and a handful of things I'd do differently. Real patterns, real mistakes, and what I'd tell my past self before the first commit."
+new: true
+createdAt: 2026-05-20
+updatedAt: 2026-05-20
+tags: [nextjs, react]
+---
+
+I migrated this site to Next.js's App Router a few months ago. Most things were a quiet upgrade. A few were not, and a couple I'd genuinely do differently.
+
+If you're starting a new app today, here's what I'd tell my past self.
+
+## Server Components by default — but draw the line carefully
+
+Server Components aren't an optimization. They're the default. Every file in `app/` is a Server Component until you write `"use client"` at the top.
+
+That sounds obvious. The catch is React doesn't draw a hard error if you cross the boundary the wrong way. It draws soft warnings that are easy to miss in dev and quietly degrade performance in production.
+
+The mental model that worked for me:
+
+- **Server Components** can read files, hit databases, render Markdown. They can't have state, effects, or browser APIs.
+- **Client Components** can have state, effects, event handlers. They can't `async/await` at the component level.
+- **They compose like LEGO.** A server page can render a client island. A client component can take server-rendered children as a prop.
+
+The mistake I made early on was slapping `"use client"` at the top of a layout that wrapped most of the app. Suddenly half the tree was a client component — even parts that didn't need to be. Push `"use client"` as deep as it'll go. The closer to a button or input, the better.
+
+For an explanation of why this matters, the [React docs on Server Components](https://react.dev/reference/rsc/server-components) are worth the time.
+
+## Don't fight the cache. Work with it.
+
+Next 14 had a default-on cache that surprised a lot of people. Next 16 changed the defaults again, but the principle is the same: route handlers and pages are cached unless they touch a request-time API.
+
+Two patterns that worked for me:
+
+- If a page should never cache, set `export const dynamic = "force-dynamic"` and stop thinking about it.
+- If a page should regenerate periodically, use `revalidate` instead of fighting the default.
+
+I lost an afternoon to a bug where my blog detail page wasn't picking up new posts in production. The culprit: the page was statically generated at build time, and the new `.mdx` file existed only at runtime, so it wasn't in `generateStaticParams`. Setting `dynamicParams = false` and listing every slug from `generateStaticParams` made the whole thing predictable. Predictable is what you want.
+
+## `params` and `searchParams` are promises now
+
+This one bit me on the Next 15 upgrade.
+
+```tsx
+// Old
+export default function Page({ params }: { params: { slug: string } }) {
+  const { slug } = params;
+}
+
+// New
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+}
+```
+
+TypeScript catches this if you migrate carefully. If you copy a code sample from an older blog post (including, possibly, this one in two years), it won't. Worth a quick grep for `params.` and `searchParams.` after upgrading.
+
+## Layouts are stickier than you think
+
+A layout in App Router persists across navigation between sibling routes. State inside a layout's client components survives a route change.
+
+That's great for things that should persist — a global music player, a sidebar selection. It's a foot-gun for things that shouldn't. I had a search input in a layout that I expected to clear when the user navigated away. It didn't, because the layout didn't re-mount.
+
+Rule of thumb: keep things that should reset on navigation in `page.tsx`. Keep persistent shell in `layout.tsx`. Decide consciously, not by where the code happened to land.
+
+## What I'd actually keep
+
+For all the rough edges, App Router gets a lot right:
+
+- File-based routing that you don't have to think about
+- Loading and error boundaries via `loading.tsx` and `error.tsx`
+- Server-rendered data with no separate API layer
+- A metadata API that, after a year, I still reach for
+
+If you're coming from Pages Router, the migration costs a weekend. I wouldn't go back.
+
+> If you're rethinking your effect usage too, I wrote a [shorter post on when to skip useEffect](/blog/useeffect-alternatives) that pairs well with this one.

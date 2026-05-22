@@ -1,0 +1,91 @@
+---
+title: "Why I Stopped Reaching for useEffect (And You Probably Should Too)"
+description: "Most useEffect calls in modern React are mistakes. Here's the mental model I use now — when to skip it, what to replace it with, and the one question that catches half of them."
+new: false
+createdAt: 2026-04-10
+updatedAt: 2026-04-10
+tags: [react]
+---
+
+For a long time, my React muscle memory was simple: see something happen on the screen, add a `useEffect`. Page mounts? `useEffect`. Props change? `useEffect`. Need to compute something? You guessed it.
+
+Then I sat down and read the React team's [You Might Not Need an Effect](https://react.dev/learn/you-might-not-need-an-effect) guide, slowly, and realized about half my effects were doing nothing useful. Some were actively making the app slower or buggier.
+
+Here's the mental model I use now.
+
+## The three things useEffect is usually wrong for
+
+### Derived state
+
+Any time your "effect" is just computing one piece of state from another, you don't need an effect at all.
+
+```tsx
+// Bad
+const [fullName, setFullName] = useState("");
+useEffect(() => {
+  setFullName(`${firstName} ${lastName}`);
+}, [firstName, lastName]);
+
+// Good
+const fullName = `${firstName} ${lastName}`;
+```
+
+The effect version triggers an extra render. The plain version doesn't. Same output, half the work.
+
+### Transforming props
+
+If you're using an effect to keep local state in sync with a prop, the prop already _is_ the state. Just use it.
+
+```tsx
+// Bad
+const [items, setItems] = useState([]);
+useEffect(() => {
+  setItems(props.items.filter((i) => i.active));
+}, [props.items]);
+
+// Good
+const items = useMemo(() => props.items.filter((i) => i.active), [props.items]);
+```
+
+You only need `useMemo` if the computation is genuinely expensive. For most filters and maps, the inline version is fine.
+
+### Resetting state when something changes
+
+The classic: a profile page that takes a `userId` prop, and you want to clear local form state when the user changes.
+
+```tsx
+// Tempting but wrong
+useEffect(() => {
+  setDraft("");
+}, [userId]);
+
+// Better — let React remount the component
+<ProfileEditor key={userId} userId={userId} />;
+```
+
+Re-mounting via `key` gets you a fresh state slot for free. No effect, no manual cleanup, no race conditions.
+
+## When useEffect is actually right
+
+Effects are for synchronizing with systems React doesn't own. That's it.
+
+- Subscribing to a WebSocket or an event listener
+- Sending analytics on route changes
+- Reading from `localStorage` once on mount
+- Focusing a DOM element imperatively after render
+
+If your effect's body doesn't touch the outside world, you're probably doing something React can already do for you during render.
+
+## The one-question filter
+
+Every time I'm about to write a `useEffect`, I now ask:
+
+> What would happen if I deleted this and computed it during render instead?
+
+If the answer is "nothing breaks," I delete it.
+
+If the answer is "I'd lose a subscription, a DOM call, or some persistent thing," I keep it.
+
+That single check has caught maybe 40% of the effects I would've written a year ago. The result is fewer renders, fewer subtle bugs, and code that's easier to follow when I come back to it three months later.
+
+If you've been writing React for a while and never read the effects guide end to end, do yourself a favor and spend twenty minutes with it. It's the single highest-leverage piece of React documentation that exists, and most of us learned the library before it was written.
