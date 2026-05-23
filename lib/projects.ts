@@ -1,3 +1,4 @@
+import type { StaticImageData } from "next/image";
 import {
   SiDocker,
   SiGnubash,
@@ -11,6 +12,9 @@ import {
   SiTailwindcss,
   SiTypescript,
 } from "react-icons/si";
+
+import krishnapaulrajLight from "@/assets/project/krishnapaulraj-light.webp";
+import krishnapaulrajDark from "@/assets/project/krishnapaulraj-dark.webp";
 
 export type ProjectTech = {
   icon: React.ElementType;
@@ -47,7 +51,8 @@ export type Project = {
   name: string;
   description: string;
   longDescription?: string;
-  image?: string;
+  image?: string | StaticImageData;
+  imageDark?: string | StaticImageData;
   tech: TechKey[];
   links?: ProjectLink[];
   year?: string;
@@ -63,6 +68,8 @@ export const PROJECTS: Project[] = [
     name: "krishnapaulraj.com",
     description:
       "My personal portfolio, writing, and notes — built with Next.js 16 App Router.",
+    image: krishnapaulrajLight,
+    imageDark: krishnapaulrajDark,
     longDescription: `
 The site you're reading now. A personal portfolio that doubles as a writing surface and a public scratchpad for things I'm building or thinking about.
 
@@ -85,7 +92,7 @@ The whole thing is content-driven enough that adding a blog post is just droppin
       { label: "Live", href: "https://krishnapaulraj.com", type: "live" },
       {
         label: "Source",
-        href: "https://github.com/krishnapaulraj/krishnapaulraj.com",
+        href: "https://github.com/krishna-paulraj/krishnapaulraj.com",
         type: "source",
       },
     ],
@@ -132,7 +139,7 @@ Themes are powered by the [tweakcn](https://tweakcn.com) registry — 40+ themes
     links: [
       {
         label: "Source",
-        href: "https://github.com/krishnapaulraj/writora",
+        href: "https://github.com/krishna-paulraj/writora",
         type: "source",
       },
     ],

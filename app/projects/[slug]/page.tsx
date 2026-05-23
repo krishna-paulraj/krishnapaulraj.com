@@ -13,6 +13,8 @@ import { FaGithub } from "react-icons/fa6";
 import { Reveal } from "@/components/motion/reveal";
 import ShareButtons from "@/components/blog/share-buttons";
 import TechStack from "@/components/projects/tech-stack";
+import { GitHubStars } from "@/components/github-stars";
+import { extractGitHubRepo, getGitHubStars } from "@/lib/github";
 import { SITE_URL } from "@/lib/constants";
 import { renderMarkdown } from "@/lib/markdown";
 import {
@@ -118,21 +120,44 @@ export default async function ProjectPage({
   const next = idx > 0 ? PROJECTS[idx - 1] : null;
   const prev = idx >= 0 && idx < PROJECTS.length - 1 ? PROJECTS[idx + 1] : null;
 
+  const sourceLink = project.links?.find((l) => l.type === "source");
+  const githubRepo = sourceLink ? extractGitHubRepo(sourceLink.href) : null;
+  const stars = githubRepo ? await getGitHubStars(githubRepo) : null;
+  const titleLink =
+    project.links?.find((l) => l.type === "live") ?? sourceLink ?? null;
+
   return (
     <article className="mx-auto w-full max-w-2xl flex-1 px-6 py-6 font-sans">
       <Reveal>
-        <Link
-          href="/projects"
-          className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
-        >
-          <ChevronLeft className="size-4" />
-          Back to projects
-        </Link>
+        <div className="flex items-center justify-between gap-3">
+          <Link
+            href="/projects"
+            className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <ChevronLeft className="size-4" />
+            Back to projects
+          </Link>
+          <ShareButtons
+            title={project.name}
+            url={`${SITE_URL}/projects/${project.slug}`}
+          />
+        </div>
       </Reveal>
 
       <Reveal as="header" delay={0.08} className="mt-6">
         <h1 className="text-3xl font-bold tracking-tight text-pretty md:text-balance">
-          {project.name}
+          {titleLink ? (
+            <a
+              href={titleLink.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 hover:underline underline-offset-4"
+            >
+              {project.name}
+            </a>
+          ) : (
+            project.name
+          )}
         </h1>
         {project.description && (
           <p className="mt-3 leading-relaxed text-muted-foreground">
@@ -151,6 +176,12 @@ export default async function ProjectPage({
               />
               {STATUS_LABEL[project.status]}
             </span>
+          )}
+          {githubRepo && stars !== null && (
+            <>
+              <span aria-hidden="true">·</span>
+              <GitHubStars repo={githubRepo} stargazersCount={stars} />
+            </>
           )}
         </div>
 
@@ -171,8 +202,17 @@ export default async function ProjectPage({
             alt={project.name}
             width={1280}
             height={720}
-            className="h-auto w-full object-cover"
+            className={`h-auto w-full object-cover ${project.imageDark ? "dark:hidden" : ""}`}
           />
+          {project.imageDark && (
+            <Image
+              src={project.imageDark}
+              alt={project.name}
+              width={1280}
+              height={720}
+              className="hidden h-auto w-full object-cover dark:block"
+            />
+          )}
         </Reveal>
       )}
 
@@ -226,17 +266,10 @@ export default async function ProjectPage({
         </Reveal>
       )}
 
-      <Reveal delay={0.34} className="mt-12 border-t border-border pt-6">
-        <ShareButtons
-          title={project.name}
-          url={`${SITE_URL}/projects/${project.slug}`}
-        />
-      </Reveal>
-
       {(prev || next) && (
         <Reveal
           as="section"
-          delay={0.38}
+          delay={0.34}
           className="mt-12 border-t border-border pt-8"
           aria-label="Project navigation"
         >

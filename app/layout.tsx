@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { MotionProvider } from "@/components/motion/motion-provider";
 import { SearchProvider } from "@/components/search/search";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { getSearchItems } from "@/lib/search";
 import { buildSiteGraph, jsonLdString } from "@/lib/structured-data";
 
@@ -21,15 +22,15 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Suresh-Krishna Paulraj",
-    template: "%s | Suresh-Krishna Paulraj",
+    default: "Suresh Krishna Paulraj",
+    template: "%s | Suresh Krishna Paulraj",
   },
 
   description:
     "Software engineer at Blocsys building scalable web applications with TypeScript, React, and Next.js — plus notes on AI tooling and engineering craft.",
 
   keywords: [
-    "Suresh-Krishna Paulraj",
+    "Suresh Krishna Paulraj",
     "Software Engineer",
     "Next.js Developer",
     "React Developer",
@@ -41,25 +42,25 @@ export const metadata: Metadata = {
     "Portfolio",
   ],
 
-  authors: [{ name: "Suresh-Krishna Paulraj" }],
+  authors: [{ name: "Suresh Krishna Paulraj" }],
 
-  creator: "Suresh-Krishna Paulraj",
+  creator: "Suresh Krishna Paulraj",
 
   metadataBase: new URL("https://krishnapaulraj.com"),
 
   openGraph: {
-    title: "Suresh-Krishna Paulraj",
+    title: "Suresh Krishna Paulraj",
     description:
       "Software engineer building scalable web apps with TypeScript, React, and Next.js. Writing about engineering and AI.",
     url: "https://krishnapaulraj.com",
-    siteName: "Suresh-Krishna Paulraj",
+    siteName: "Suresh Krishna Paulraj",
     locale: "en_US",
     type: "website",
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "Suresh-Krishna Paulraj",
+    title: "Suresh Krishna Paulraj",
     description:
       "Software engineer building scalable web apps with TypeScript, React, and Next.js. Writing about engineering and AI.",
     creator: "@thedevkrish",
@@ -96,11 +97,13 @@ export default function RootLayout({
         />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <MotionProvider>
-            <SearchProvider items={getSearchItems()}>
-              <Navbar />
-              <main className="flex flex-1 flex-col">{children}</main>
-              <Footer />
-            </SearchProvider>
+            <TooltipProvider>
+              <SearchProvider items={getSearchItems()}>
+                <Navbar />
+                <main className="flex flex-1 flex-col">{children}</main>
+                <Footer />
+              </SearchProvider>
+            </TooltipProvider>
           </MotionProvider>
         </ThemeProvider>
       </body>

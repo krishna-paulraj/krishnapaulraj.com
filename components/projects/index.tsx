@@ -19,13 +19,24 @@ function ProjectCard({ project }: { project: Project }) {
       >
         <div className="aspect-video overflow-hidden rounded-lg border border-border bg-muted">
           {project.image ? (
-            <Image
-              src={project.image}
-              alt={project.name}
-              width={600}
-              height={338}
-              className="h-full w-full object-cover object-top transition-transform duration-300 group-hover:scale-[1.02]"
-            />
+            <>
+              <Image
+                src={project.image}
+                alt={project.name}
+                width={600}
+                height={338}
+                className={`h-full w-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-110 ${project.imageDark ? "dark:hidden" : ""}`}
+              />
+              {project.imageDark && (
+                <Image
+                  src={project.imageDark}
+                  alt={project.name}
+                  width={600}
+                  height={338}
+                  className="hidden h-full w-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-110 dark:block"
+                />
+              )}
+            </>
           ) : (
             <div className="h-full w-full bg-muted" />
           )}
