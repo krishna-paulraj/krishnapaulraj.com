@@ -3,6 +3,10 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
+function extractText(el: HTMLElement) {
+  return (el.textContent ?? "").replace(/#\s*$/, "").trim() || null;
+}
+
 const RING_SIZE = 28;
 const RING_STROKE = 2.5;
 const RING_RADIUS = (RING_SIZE - RING_STROKE) / 2;
@@ -64,14 +68,14 @@ export default function ReadingProgress({
               (h) => h.getBoundingClientRect().top < window.innerHeight * 0.25,
             );
             const last = above[above.length - 1];
-            setHeading(last?.textContent?.trim() ?? null);
+            setHeading(last ? extractText(last) : null);
             return;
           }
           const sorted = Array.from(active).sort(
             (a, b) =>
               a.getBoundingClientRect().top - b.getBoundingClientRect().top,
           );
-          setHeading(sorted[0].textContent?.trim() ?? null);
+          setHeading(extractText(sorted[0]));
         },
         { rootMargin: "-15% 0px -70% 0px" },
       );
@@ -101,9 +105,18 @@ export default function ReadingProgress({
         >
           <div className="flex h-11 w-[320px] items-center gap-3 rounded-full border border-border bg-card/90 px-4 shadow-lg shadow-black/10 backdrop-blur-md">
             <span className="size-2 shrink-0 rounded-full bg-foreground" />
-            <span className="flex-1 truncate text-sm text-foreground">
-              {heading ?? "Reading"}
-            </span>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={heading}
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                className="flex-1 truncate text-sm text-foreground"
+              >
+                {heading ?? "Reading"}
+              </motion.span>
+            </AnimatePresence>
             <svg
               width={RING_SIZE}
               height={RING_SIZE}

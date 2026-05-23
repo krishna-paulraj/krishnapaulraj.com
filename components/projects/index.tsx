@@ -1,19 +1,11 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 
 import HighlightedHeading from "@/components/highlighted-heading";
-import { PROJECTS, type Project, type ProjectTech } from "@/lib/projects";
-
-function TechBadge({ icon: Icon, label, color }: ProjectTech) {
-  return (
-    <span
-      title={label}
-      className="flex size-6 items-center justify-center rounded-full border border-border bg-muted"
-    >
-      <Icon className="size-4" style={{ color }} />
-    </span>
-  );
-}
+import TechStack from "@/components/projects/tech-stack";
+import { PROJECTS, type Project } from "@/lib/projects";
 
 function ProjectCard({ project }: { project: Project }) {
   const detailHref = `/projects/${project.slug}`;
@@ -51,13 +43,7 @@ function ProjectCard({ project }: { project: Project }) {
         </p>
       </div>
 
-      {project.tech.length > 0 && (
-        <div className="flex flex-wrap gap-1">
-          {project.tech.map((t) => (
-            <TechBadge key={t.label} {...t} />
-          ))}
-        </div>
-      )}
+      {project.tech.length > 0 && <TechStack tech={project.tech} />}
     </div>
   );
 }

@@ -20,7 +20,7 @@ const skills = {
 
 export default function ResumePage() {
   return (
-    <div className="mx-auto w-full max-w-2xl flex-1 px-6 py-16 font-sans">
+    <div className="mx-auto w-full max-w-2xl flex-1 px-6 py-6 font-sans">
       <Reveal className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Resume</h1>

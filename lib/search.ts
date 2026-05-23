@@ -1,5 +1,5 @@
 import { getBlogPosts } from "@/lib/blog";
-import { PROJECTS } from "@/lib/projects";
+import { PROJECTS, TECH } from "@/lib/projects";
 
 export type SearchKind = "page" | "post" | "project";
 
@@ -83,7 +83,7 @@ export function getSearchItems(): SearchItem[] {
     description: p.description,
     href: `/projects/${p.slug}`,
     kind: "project",
-    keywords: p.tech.map((t) => t.label.toLowerCase()),
+    keywords: p.tech.map((key) => TECH[key].label.toLowerCase()),
   }));
 
   return [...PAGE_ITEMS, ...posts, ...projects];

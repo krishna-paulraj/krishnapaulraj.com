@@ -23,7 +23,7 @@ export default function Navbar() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-black/80">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-sm">
       <nav
         aria-label="Primary"
         className="mx-auto flex max-w-3xl items-center justify-between px-16 py-4"
@@ -39,8 +39,8 @@ export default function Navbar() {
                   className={cn(
                     "text-sm transition-colors",
                     active
-                      ? "font-medium text-zinc-900 dark:text-white"
-                      : "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white",
+                      ? "font-medium text-foreground"
+                      : "text-muted-foreground hover:text-foreground",
                   )}
                 >
                   {label}

@@ -7,7 +7,7 @@ import { Reveal } from "@/components/motion/reveal";
 
 export default function Home() {
   return (
-    <div className="mx-auto w-full max-w-2xl flex-1 px-6 py-16 font-sans">
+    <div className="mx-auto w-full max-w-2xl flex-1 px-6 py-6 font-sans">
       <Reveal>
         <h1 className="text-2xl font-semibold tracking-tight">
           Suresh-Krishna Paulraj

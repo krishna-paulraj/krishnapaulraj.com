@@ -12,6 +12,7 @@ import { FaGithub } from "react-icons/fa6";
 
 import { Reveal } from "@/components/motion/reveal";
 import ShareButtons from "@/components/blog/share-buttons";
+import TechStack from "@/components/projects/tech-stack";
 import { SITE_URL } from "@/lib/constants";
 import { renderMarkdown } from "@/lib/markdown";
 import {
@@ -118,7 +119,7 @@ export default async function ProjectPage({
   const prev = idx >= 0 && idx < PROJECTS.length - 1 ? PROJECTS[idx + 1] : null;
 
   return (
-    <article className="mx-auto w-full max-w-2xl flex-1 px-6 py-16 font-sans">
+    <article className="mx-auto w-full max-w-2xl flex-1 px-6 py-6 font-sans">
       <Reveal>
         <Link
           href="/projects"
@@ -154,17 +155,9 @@ export default async function ProjectPage({
         </div>
 
         {project.tech.length > 0 && (
-          <ul className="mt-4 flex flex-wrap gap-2">
-            {project.tech.map((t) => (
-              <li
-                key={t.label}
-                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/40 px-2.5 py-0.5 text-xs text-muted-foreground"
-              >
-                <t.icon className="size-3.5" style={{ color: t.color }} />
-                {t.label}
-              </li>
-            ))}
-          </ul>
+          <div className="mt-4">
+            <TechStack tech={project.tech} />
+          </div>
         )}
       </Reveal>
 
