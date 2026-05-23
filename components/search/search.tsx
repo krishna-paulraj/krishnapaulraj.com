@@ -1,8 +1,8 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRightIcon,
+  CommandIcon,
   CompassIcon,
   FileTextIcon,
   FolderIcon,
@@ -18,8 +18,12 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { createPortal } from "react-dom";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import type { SearchItem, SearchKind } from "@/lib/search";
 
@@ -85,14 +89,18 @@ export function SearchTrigger() {
     <button
       type="button"
       onClick={() => setOpen(true)}
-      aria-label="Open search"
-      className="inline-flex items-center gap-2 rounded-md border border-border bg-background px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+      aria-label="Open search (⌘K)"
+      className="inline-flex items-center gap-1 rounded-full border border-border bg-background py-1 pl-3 pr-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
     >
       <SearchIcon className="size-3.5" />
-      <span className="hidden sm:inline">Search</span>
-      <kbd className="hidden rounded border border-border bg-muted px-1 py-px font-mono text-[10px] sm:inline">
-        ⌘K
-      </kbd>
+      <span className="inline-flex items-center gap-0.5">
+        <kbd className="inline-flex size-5 items-center justify-center rounded-md bg-muted text-foreground">
+          <CommandIcon className="size-3" />
+        </kbd>
+        <kbd className="inline-flex size-5 items-center justify-center rounded-md bg-muted font-mono text-[11px] text-foreground">
+          K
+        </kbd>
+      </span>
     </button>
   );
 }
@@ -105,16 +113,7 @@ function SearchDialog({ items }: { items: SearchItem[] }) {
   const [activeIdx, setActiveIdx] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
-  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    // Portal target only exists in the browser; flipping mounted prevents
-    // the createPortal call from running during SSR/hydration.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
-  }, []);
-
-  // Close on path change
   const lastPath = useRef(pathname);
   useEffect(() => {
     if (lastPath.current !== pathname) {
@@ -123,20 +122,14 @@ function SearchDialog({ items }: { items: SearchItem[] }) {
     }
   }, [pathname, setOpen]);
 
-  // Reset state when closed; focus input + lock scroll when opened
   useEffect(() => {
     if (open) {
-      const prev = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
       const timer = window.setTimeout(() => inputRef.current?.focus(), 50);
-      return () => {
-        document.body.style.overflow = prev;
-        window.clearTimeout(timer);
-      };
+      return () => window.clearTimeout(timer);
     }
-    // Reset on close so reopening starts fresh.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setQuery("");
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setActiveIdx(0);
   }, [open]);
 
@@ -169,7 +162,6 @@ function SearchDialog({ items }: { items: SearchItem[] }) {
     }));
   }, [results]);
 
-  // Map from flat index to item to support keyboard nav across groups
   const flat = useMemo(() => groups.flatMap((g) => g.items), [groups]);
 
   useEffect(() => {
@@ -196,132 +188,107 @@ function SearchDialog({ items }: { items: SearchItem[] }) {
       e.preventDefault();
       const item = flat[activeIdx];
       if (item) go(item);
-    } else if (e.key === "Escape") {
-      e.preventDefault();
-      setOpen(false);
     }
   };
 
-  if (!mounted) return null;
-
-  return createPortal(
-    <AnimatePresence>
-      {open && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label="Search"
-          className="fixed inset-0 z-[100]"
-        >
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.15 }}
-            onClick={() => setOpen(false)}
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent
+        showCloseButton={false}
+        className="top-[15%] left-1/2 w-[92vw] max-w-xl -translate-x-1/2 -translate-y-0 gap-0 overflow-hidden p-0 sm:max-w-xl"
+      >
+        <DialogTitle className="sr-only">Search</DialogTitle>
+        <div className="flex items-center gap-3 border-b border-border px-4 py-3">
+          <SearchIcon className="size-4 shrink-0 text-muted-foreground" />
+          <input
+            ref={inputRef}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={onKeyDown}
+            placeholder="Search pages, writing, projects…"
+            spellCheck={false}
+            autoComplete="off"
+            aria-label="Search query"
+            className="flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
           />
-          <motion.div
-            initial={{ opacity: 0, y: -8, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -8, scale: 0.98 }}
-            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute left-1/2 top-[15%] w-[92vw] max-w-xl -translate-x-1/2 overflow-hidden rounded-xl border border-border bg-popover text-popover-foreground shadow-2xl shadow-black/30"
-          >
-            <div className="flex items-center gap-3 border-b border-border px-4 py-3">
-              <SearchIcon className="size-4 shrink-0 text-muted-foreground" />
-              <input
-                ref={inputRef}
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onKeyDown={onKeyDown}
-                placeholder="Search pages, writing, projects…"
-                spellCheck={false}
-                autoComplete="off"
-                aria-label="Search query"
-                className="flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
-              />
-              <kbd className="hidden rounded border border-border bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground sm:inline">
-                ESC
-              </kbd>
-            </div>
-
-            <div ref={listRef} className="max-h-[60vh] overflow-y-auto p-2">
-              {flat.length === 0 ? (
-                <p className="px-3 py-8 text-center text-sm text-muted-foreground">
-                  No results for &ldquo;{query}&rdquo;
-                </p>
-              ) : (
-                groups.map((g) => (
-                  <div key={g.kind} className="mb-3 last:mb-0">
-                    <p className="px-3 py-1.5 text-xs font-medium uppercase tracking-widest text-muted-foreground/70">
-                      {KIND_LABEL[g.kind]}
-                    </p>
-                    <ul>
-                      {g.items.map((item) => {
-                        const idx = flat.indexOf(item);
-                        const Icon = KIND_ICON[item.kind];
-                        const isActive = idx === activeIdx;
-                        return (
-                          <li key={item.id}>
-                            <button
-                              type="button"
-                              data-idx={idx}
-                              onClick={() => go(item)}
-                              onMouseEnter={() => setActiveIdx(idx)}
-                              className={cn(
-                                "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors",
-                                isActive ? "bg-muted" : "hover:bg-muted/60",
-                              )}
-                            >
-                              <Icon className="size-4 shrink-0 text-muted-foreground" />
-                              <div className="min-w-0 flex-1">
-                                <p className="truncate text-sm font-medium text-foreground">
-                                  {item.title}
-                                </p>
-                                {item.description && (
-                                  <p className="mt-0.5 truncate text-xs text-muted-foreground">
-                                    {item.description}
-                                  </p>
-                                )}
-                              </div>
-                              {isActive && (
-                                <ArrowRightIcon className="size-4 shrink-0 text-muted-foreground" />
-                              )}
-                            </button>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                ))
-              )}
-            </div>
-
-            <div className="hidden items-center gap-4 border-t border-border px-4 py-2 text-[11px] text-muted-foreground sm:flex">
-              <span className="inline-flex items-center gap-1">
-                <kbd className="rounded border border-border bg-muted px-1 py-px font-mono">
-                  ↑↓
-                </kbd>
-                navigate
-              </span>
-              <span className="inline-flex items-center gap-1">
-                <kbd className="rounded border border-border bg-muted px-1 py-px font-mono">
-                  ↵
-                </kbd>
-                open
-              </span>
-              <span className="inline-flex items-center gap-1">
-                <kbd className="rounded border border-border bg-muted px-1 py-px font-mono">
-                  esc
-                </kbd>
-                close
-              </span>
-            </div>
-          </motion.div>
+          <kbd className="hidden rounded border border-border bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground sm:inline">
+            ESC
+          </kbd>
         </div>
-      )}
-    </AnimatePresence>,
-    document.body,
+
+        <div ref={listRef} className="max-h-[60vh] overflow-y-auto p-2">
+          {flat.length === 0 ? (
+            <p className="px-3 py-8 text-center text-sm text-muted-foreground">
+              No results for &ldquo;{query}&rdquo;
+            </p>
+          ) : (
+            groups.map((g) => (
+              <div key={g.kind} className="mb-3 last:mb-0">
+                <p className="px-3 py-1.5 text-xs font-medium uppercase tracking-widest text-muted-foreground/70">
+                  {KIND_LABEL[g.kind]}
+                </p>
+                <ul>
+                  {g.items.map((item) => {
+                    const idx = flat.indexOf(item);
+                    const Icon = KIND_ICON[item.kind];
+                    const isActive = idx === activeIdx;
+                    return (
+                      <li key={item.id}>
+                        <button
+                          type="button"
+                          data-idx={idx}
+                          onClick={() => go(item)}
+                          onMouseEnter={() => setActiveIdx(idx)}
+                          className={cn(
+                            "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors",
+                            isActive ? "bg-muted" : "hover:bg-muted/60",
+                          )}
+                        >
+                          <Icon className="size-4 shrink-0 text-muted-foreground" />
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-sm font-medium text-foreground">
+                              {item.title}
+                            </p>
+                            {item.description && (
+                              <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                                {item.description}
+                              </p>
+                            )}
+                          </div>
+                          {isActive && (
+                            <ArrowRightIcon className="size-4 shrink-0 text-muted-foreground" />
+                          )}
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ))
+          )}
+        </div>
+
+        <div className="hidden items-center gap-4 border-t border-border px-4 py-2 text-[11px] text-muted-foreground sm:flex">
+          <span className="inline-flex items-center gap-1">
+            <kbd className="rounded border border-border bg-muted px-1 py-px font-mono">
+              ↑↓
+            </kbd>
+            navigate
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <kbd className="rounded border border-border bg-muted px-1 py-px font-mono">
+              ↵
+            </kbd>
+            open
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <kbd className="rounded border border-border bg-muted px-1 py-px font-mono">
+              esc
+            </kbd>
+            close
+          </span>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
