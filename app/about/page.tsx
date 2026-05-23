@@ -5,6 +5,7 @@ import { FaGithub, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
 
 import HighlightedHeading from "@/components/highlighted-heading";
 import { Reveal } from "@/components/motion/reveal";
+import { FaInstagram } from "react-icons/fa6";
 
 export const metadata: Metadata = {
   title: "About",
@@ -15,16 +16,25 @@ export const metadata: Metadata = {
 const socials = [
   { href: "https://x.com/thedevkrish", label: "X / Twitter", icon: FaXTwitter },
   {
-    href: "https://github.com/krishnapaulraj",
+    href: "https://github.com/krishna-paulraj",
     label: "GitHub",
     icon: FaGithub,
+  },
+  {
+    href: "https://instagram.com/krishnapaulraj",
+    label: "Instagram",
+    icon: FaInstagram,
   },
   {
     href: "https://linkedin.com/in/krishnapaulraj",
     label: "LinkedIn",
     icon: FaLinkedinIn,
   },
-  { href: "mailto:blocsysdevs@gmail.com", label: "Email", icon: MailIcon },
+  {
+    href: "mailto:krishnapaulraj2004@gmail.com",
+    label: "Email",
+    icon: MailIcon,
+  },
 ];
 
 export default function AboutPage() {
@@ -51,21 +61,21 @@ export default function AboutPage() {
           >
             Blocsys
           </a>
-          . I build web applications end to end, working across the frontend
-          and backend, and I also like getting my hands dirty with web3
-          projects on the side.
+          . I build web applications end to end, working across the frontend and
+          backend, and I also like getting my hands dirty with web3 projects on
+          the side.
         </p>
         <p>
-          What I enjoy most is the little stuff that makes a product feel
-          right — the way a page comes to life, how interactions flow, the
-          quiet logic behind a clean API. I&apos;d rather ship something
-          simple that actually works than something clever that breaks.
+          What I enjoy most is the little stuff that makes a product feel right
+          — the way a page comes to life, how interactions flow, the quiet logic
+          behind a clean API. I&apos;d rather ship something simple that
+          actually works than something clever that breaks.
         </p>
         <p>
-          When I&apos;m not at my desk, you&apos;ll probably find me
-          exploring a new place, putting in a workout, or cooking up
-          something I&apos;ve been craving. I also jot down what I&apos;m
-          picking up along the way over on{" "}
+          When I&apos;m not at my desk, you&apos;ll probably find me exploring a
+          new place, putting in a workout, or cooking up something I&apos;ve
+          been craving. I also jot down what I&apos;m picking up along the way
+          over on{" "}
           <Link
             href="/blog"
             className="font-medium text-foreground hover:underline underline-offset-4"
@@ -86,12 +96,12 @@ export default function AboutPage() {
             full-stack web applications at Blocsys.
           </li>
           <li>
-            <span className="text-foreground">After hours:</span> tinkering
-            with web3 ideas and building small things I find useful.
+            <span className="text-foreground">After hours:</span> tinkering with
+            web3 ideas and building small things I find useful.
           </li>
           <li>
-            <span className="text-foreground">When I unplug:</span> chasing
-            new places, lifting at the gym, or trying a new recipe.
+            <span className="text-foreground">When I unplug:</span> chasing new
+            places, lifting at the gym, or trying a new recipe.
           </li>
         </ul>
       </Reveal>

@@ -1,6 +1,12 @@
 import Link from "next/link";
 import { MailIcon } from "lucide-react";
-import { FaGithub, FaLinkedinIn, FaXTwitter, FaYoutube } from "react-icons/fa6";
+import {
+  FaGithub,
+  FaInstagram,
+  FaLinkedinIn,
+  FaXTwitter,
+  FaYoutube,
+} from "react-icons/fa6";
 import VisitorCount from "@/components/VisitorCount";
 
 const navLinks = [
@@ -17,21 +23,25 @@ const navLinks = [
 const socialLinks = [
   { href: "https://x.com/thedevkrish", label: "X / Twitter", icon: FaXTwitter },
   {
-    href: "https://github.com/krishnapaulraj",
+    href: "https://github.com/krishna-paulraj",
     label: "GitHub",
     icon: FaGithub,
   },
   {
-    href: "https://linkedin.com/in/krishnapaulraj",
+    href: "https://linkedin.com/in/suresh-krishna-paulraj",
     label: "LinkedIn",
     icon: FaLinkedinIn,
   },
   {
-    href: "https://youtube.com/@thedevkrish",
-    label: "YouTube",
-    icon: FaYoutube,
+    href: "https://instagram.com/krishnapaulraj",
+    label: "Instagram",
+    icon: FaInstagram,
   },
-  { href: "mailto:blocsysdevs@gmail.com", label: "Email", icon: MailIcon },
+  {
+    href: "mailto:krishnapaulraj2004@gmail.com",
+    label: "Email",
+    icon: MailIcon,
+  },
 ];
 
 export default function Footer() {

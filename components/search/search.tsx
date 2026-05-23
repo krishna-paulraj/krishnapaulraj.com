@@ -90,10 +90,10 @@ export function SearchTrigger() {
       type="button"
       onClick={() => setOpen(true)}
       aria-label="Open search (⌘K)"
-      className="inline-flex items-center gap-1 rounded-full border border-border bg-background py-1 pl-3 pr-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+      className="inline-flex items-center gap-1 rounded-full border border-border bg-background p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:py-1 sm:pl-3 sm:pr-1"
     >
       <SearchIcon className="size-3.5" />
-      <span className="inline-flex items-center gap-0.5">
+      <span className="hidden items-center gap-0.5 sm:inline-flex">
         <kbd className="inline-flex size-5 items-center justify-center rounded-md bg-muted text-foreground">
           <CommandIcon className="size-3" />
         </kbd>

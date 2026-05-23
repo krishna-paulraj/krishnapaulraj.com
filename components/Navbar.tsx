@@ -8,11 +8,11 @@ import { ThemeToggleButton } from "@/components/theme/theme";
 import { cn } from "@/lib/utils";
 
 const links = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/projects", label: "Projects" },
-  { href: "/blog", label: "Blog" },
-  { href: "/resume", label: "Resume" },
+  { href: "/", label: "Home", mobile: true },
+  { href: "/about", label: "About", mobile: false },
+  { href: "/projects", label: "Projects", mobile: false },
+  { href: "/blog", label: "Blog", mobile: true },
+  { href: "/resume", label: "Resume", mobile: true },
 ];
 
 function isActive(pathname: string, href: string) {
@@ -27,13 +27,13 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-sm">
       <nav
         aria-label="Primary"
-        className="mx-auto flex max-w-3xl items-center justify-between px-16 py-4"
+        className="mx-auto flex max-w-3xl items-center justify-between px-4 py-4 sm:px-16"
       >
-        <ul className="flex items-center gap-6">
-          {links.map(({ href, label }) => {
+        <ul className="flex items-center gap-4 sm:gap-6">
+          {links.map(({ href, label, mobile }) => {
             const active = isActive(pathname, href);
             return (
-              <li key={href}>
+              <li key={href} className={mobile ? undefined : "hidden sm:block"}>
                 <Link
                   href={href}
                   aria-current={active ? "page" : undefined}
@@ -50,7 +50,7 @@ export default function Navbar() {
             );
           })}
         </ul>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <SearchTrigger />
           <ThemeToggleButton variant="circle" start="top-right" blur={true} />
         </div>

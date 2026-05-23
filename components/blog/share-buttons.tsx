@@ -97,7 +97,7 @@ export default function ShareButtons({
 
   return (
     <div ref={rootRef} className="inline-flex items-center gap-2">
-      <div className="relative inline-flex items-stretch">
+      <div className="relative hidden items-stretch sm:inline-flex">
         <CopyButton
           text={url}
           variant="outline"

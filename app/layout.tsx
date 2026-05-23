@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Outfit, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
@@ -77,6 +77,13 @@ export const metadata: Metadata = {
       "application/rss+xml": "/rss.xml",
     },
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f7f4ec" },
+    { media: "(prefers-color-scheme: dark)", color: "#1f1c19" },
+  ],
 };
 
 export default function RootLayout({
