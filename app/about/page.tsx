@@ -42,7 +42,7 @@ export default function AboutPage() {
         className="mt-6 space-y-4 text-sm leading-relaxed text-muted-foreground"
       >
         <p>
-          I&apos;m Suresh-Krishna Paulraj — a software engineer at{" "}
+          Hey, I&apos;m Suresh Krishna Paulraj — a software engineer at{" "}
           <a
             href="https://blocsys.com"
             target="_blank"
@@ -51,19 +51,21 @@ export default function AboutPage() {
           >
             Blocsys
           </a>
-          , focused on building scalable, user-friendly web applications. Most
-          of my day is spent in TypeScript, React, and Next.js, shipping
-          features for web and mobile.
+          . I build web applications end to end, working across the frontend
+          and backend, and I also like getting my hands dirty with web3
+          projects on the side.
         </p>
         <p>
-          I care a lot about the small details — how a page feels on first load,
-          the rhythm of interactions, the shape of an API. I lean toward clean,
-          simple solutions that survive contact with real users.
+          What I enjoy most is the little stuff that makes a product feel
+          right — the way a page comes to life, how interactions flow, the
+          quiet logic behind a clean API. I&apos;d rather ship something
+          simple that actually works than something clever that breaks.
         </p>
         <p>
-          Outside of work, I&apos;m usually experimenting with something new —
-          recently AI tooling, RAG systems, and infrastructure for autonomous
-          agents. I write about what I&apos;m learning on this site under{" "}
+          When I&apos;m not at my desk, you&apos;ll probably find me
+          exploring a new place, putting in a workout, or cooking up
+          something I&apos;ve been craving. I also jot down what I&apos;m
+          picking up along the way over on{" "}
           <Link
             href="/blog"
             className="font-medium text-foreground hover:underline underline-offset-4"
@@ -80,16 +82,16 @@ export default function AboutPage() {
         </h2>
         <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
           <li>
-            <span className="text-foreground">Day job:</span> building frontend
-            and infra at Blocsys.
+            <span className="text-foreground">My day job:</span> shipping
+            full-stack web applications at Blocsys.
           </li>
           <li>
-            <span className="text-foreground">Side projects:</span> tinkering
-            with AI agents and developer tools.
+            <span className="text-foreground">After hours:</span> tinkering
+            with web3 ideas and building small things I find useful.
           </li>
           <li>
-            <span className="text-foreground">Learning:</span> systems design,
-            distributed databases, retrieval pipelines.
+            <span className="text-foreground">When I unplug:</span> chasing
+            new places, lifting at the gym, or trying a new recipe.
           </li>
         </ul>
       </Reveal>
