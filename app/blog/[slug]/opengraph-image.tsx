@@ -36,6 +36,8 @@ export default async function Image({
   const title = post?.title ?? "Writing";
   const description = post?.description ?? "";
   const date = formatDate(post?.createdAt);
+  const tags = post?.tags ?? [];
+  const readingTime = post?.readingTimeMinutes;
 
   return new ImageResponse(
     <div
@@ -105,13 +107,28 @@ export default async function Image({
         style={{
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center",
+          alignItems: "flex-end",
           fontSize: "22px",
           color: "#71717a",
         }}
       >
-        <span>Suresh-Krishna Paulraj</span>
-        <span>{new URL(SITE_URL).host}</span>
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          <span>Suresh Krishna Paulraj</span>
+          {readingTime && (
+            <span style={{ fontSize: "18px" }}>
+              {readingTime} min read
+            </span>
+          )}
+        </div>
+        {tags.length > 0 ? (
+          <div style={{ display: "flex", gap: "14px", color: "#a1a1aa" }}>
+            {tags.slice(0, 3).map((tag) => (
+              <span key={tag}>#{tag}</span>
+            ))}
+          </div>
+        ) : (
+          <span>{new URL(SITE_URL).host}</span>
+        )}
       </div>
     </div>,
     { ...size },

@@ -9,7 +9,12 @@ import ReadingProgress from "@/components/blog/reading-progress";
 import ArticleCopyButtons from "@/components/blog/article-copy-buttons";
 import PostViews from "@/components/blog/post-views";
 import ShareButtons from "@/components/blog/share-buttons";
-import { getBlogPost, getBlogPosts, getBlogSlugs } from "@/lib/blog";
+import {
+  getBlogPost,
+  getBlogPosts,
+  getBlogSlugs,
+  getRelatedPosts,
+} from "@/lib/blog";
 import { SITE_URL } from "@/lib/constants";
 import { buildBlogPostingSchema, jsonLdString } from "@/lib/structured-data";
 
@@ -70,6 +75,7 @@ export default async function BlogPostPage({
     currentIdx >= 0 && currentIdx < allPosts.length - 1
       ? allPosts[currentIdx + 1]
       : null;
+  const relatedPosts = getRelatedPosts(slug, 3);
 
   const ldJson = jsonLdString(
     buildBlogPostingSchema({
@@ -84,7 +90,7 @@ export default async function BlogPostPage({
   );
 
   return (
-    <article className="mx-auto w-full max-w-2xl flex-1 px-6 py-16 font-sans">
+    <article className="mx-auto w-full max-w-2xl flex-1 px-6 py-6 font-sans">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: ldJson }}
@@ -92,13 +98,19 @@ export default async function BlogPostPage({
       <ReadingProgress />
       <ArticleCopyButtons key={slug} />
       <Reveal>
-        <Link
-          href="/blog"
-          className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
-        >
-          <ChevronLeft className="size-4" />
-          Back to writing
-        </Link>
+        <div className="flex items-center justify-between gap-3">
+          <Link
+            href="/blog"
+            className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <ChevronLeft className="size-4" />
+            Back to writing
+          </Link>
+          <ShareButtons
+            title={post.title}
+            url={`${SITE_URL}/blog/${post.slug}`}
+          />
+        </div>
       </Reveal>
 
       <Reveal as="header" delay={0.08} className="mt-6">
@@ -162,18 +174,61 @@ export default async function BlogPostPage({
         <div dangerouslySetInnerHTML={{ __html: post.html }} />
       </Reveal>
 
-      <Reveal delay={0.28} className="mt-12 border-t border-border pt-6">
-        <ShareButtons
-          title={post.title}
-          url={`${SITE_URL}/blog/${post.slug}`}
-        />
-      </Reveal>
+      {relatedPosts.length > 0 && (
+        <Reveal
+          as="section"
+          delay={0.3}
+          className="mt-16 border-t border-border pt-8"
+          aria-label="Related posts"
+        >
+          <h2 className="text-lg font-semibold tracking-tight">
+            Related posts
+          </h2>
+          <ul className="mt-4 space-y-3">
+            {relatedPosts.map((p) => (
+              <li key={p.slug}>
+                <Link
+                  href={`/blog/${p.slug}`}
+                  className="group flex flex-col gap-1 rounded-lg border border-border bg-card/40 p-4 transition-colors hover:bg-muted/40"
+                >
+                  <h3 className="text-sm font-medium text-foreground group-hover:underline">
+                    {p.title}
+                  </h3>
+                  {p.description && (
+                    <p className="line-clamp-2 text-xs text-muted-foreground">
+                      {p.description}
+                    </p>
+                  )}
+                  <div className="mt-1 flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
+                    {p.createdAt && (
+                      <time dateTime={p.createdAt}>
+                        {formatDate(p.createdAt)}
+                      </time>
+                    )}
+                    {p.tags.length > 0 && (
+                      <>
+                        <span aria-hidden="true">·</span>
+                        <span className="font-mono">
+                          {p.tags
+                            .slice(0, 3)
+                            .map((t) => `#${t}`)
+                            .join(" ")}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </Reveal>
+      )}
 
       {(older || newer) && (
         <Reveal
           as="section"
-          delay={0.32}
-          className="mt-16 border-t border-border pt-8"
+          delay={0.36}
+          className="mt-12 border-t border-border pt-8"
           aria-label="Post navigation"
         >
           <div className="grid gap-3 sm:grid-cols-2">

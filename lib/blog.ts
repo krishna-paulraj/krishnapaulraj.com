@@ -88,3 +88,25 @@ export async function getBlogPost(
 export function getBlogSlugs(): string[] {
   return listPostFiles().map((f) => f.replace(/\.mdx?$/, ""));
 }
+
+export function getRelatedPosts(slug: string, limit = 3): BlogPost[] {
+  const all = getBlogPosts();
+  const current = all.find((p) => p.slug === slug);
+  if (!current || current.tags.length === 0) return [];
+
+  const currentTags = new Set(current.tags);
+
+  return all
+    .filter((p) => p.slug !== slug)
+    .map((p) => ({
+      post: p,
+      score: p.tags.reduce((n, t) => n + (currentTags.has(t) ? 1 : 0), 0),
+    }))
+    .filter((x) => x.score > 0)
+    .sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return a.post.createdAt < b.post.createdAt ? 1 : -1;
+    })
+    .slice(0, limit)
+    .map((x) => x.post);
+}
