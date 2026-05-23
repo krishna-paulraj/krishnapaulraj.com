@@ -41,7 +41,7 @@ export default function Footer() {
         <div className="flex flex-col gap-10 sm:flex-row sm:justify-between">
           {/* Navigate */}
           <div>
-            <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
+            <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">
               Navigate
             </p>
             <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
@@ -73,7 +73,7 @@ export default function Footer() {
 
           {/* Connect */}
           <div>
-            <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
+            <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">
               Connect
             </p>
             <ul className="flex flex-wrap gap-2">
@@ -96,7 +96,7 @@ export default function Footer() {
 
         <div className="mt-10 flex flex-col gap-1 border-t border-border pt-6 text-xs sm:flex-row sm:justify-between">
           <p>
-            © {new Date().getFullYear()} Suresh-Krishna Paulraj. All rights
+            © {new Date().getFullYear()} Suresh Krishna Paulraj. All rights
             reserved.
           </p>
           <VisitorCount />

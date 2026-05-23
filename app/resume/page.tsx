@@ -8,7 +8,7 @@ import { Reveal } from "@/components/motion/reveal";
 export const metadata: Metadata = {
   title: "Resume",
   description:
-    "Suresh-Krishna Paulraj — software engineer specializing in TypeScript, React, Next.js, and AI applications.",
+    "Suresh Krishna Paulraj — software engineer specializing in TypeScript, React, Next.js, and AI applications.",
 };
 
 const skills = {
@@ -25,7 +25,7 @@ export default function ResumePage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Resume</h1>
           <HighlightedHeading className="my-4">
-            Suresh-Krishna Paulraj · Software Engineer
+            Suresh Krishna Paulraj · Software Engineer
           </HighlightedHeading>
         </div>
         <a
