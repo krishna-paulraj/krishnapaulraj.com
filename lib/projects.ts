@@ -11,6 +11,10 @@ import {
   SiRedis,
   SiTailwindcss,
   SiTypescript,
+  SiVite,
+  SiWebrtc,
+  SiRelay,
+  SiIterm2,
 } from "react-icons/si";
 
 import krishnapaulrajLight from "@/assets/project/krishnapaulraj-light.webp";
@@ -34,6 +38,10 @@ export const TECH = {
   redis: { icon: SiRedis, label: "Redis", color: "#DC382D" },
   rabbitmq: { icon: SiRabbitmq, label: "RabbitMQ", color: "#FF6600" },
   docker: { icon: SiDocker, label: "Docker", color: "#2496ED" },
+  vite: { icon: SiVite, label: "Vite", color: "#646CFF" },
+  webrtc: { icon: SiWebrtc, label: "WebRTC", color: "#" },
+  relay: { icon: SiRelay, label: "Relay", color: "#" },
+  cli: { icon: SiIterm2, label: "Cli", color: "#17A64E" },
 } satisfies Record<string, ProjectTech>;
 
 export type TechKey = keyof typeof TECH;
@@ -135,7 +143,17 @@ Reader-side has a real SEO surface — sitemap, robots, RSS auto-discovery, JSON
 
 Themes are powered by the [tweakcn](https://tweakcn.com) registry — 40+ themes, swappable per blog, no rebuild required. Ships with Dockerfiles for all three apps (slim multi-stage builds, ~180–220MB each) and a \`docker compose up\` spins the full stack.
 `,
-    tech: ["next", "typescript", "nestjs", "postgres", "prisma", "redis", "rabbitmq", "tailwind", "docker"],
+    tech: [
+      "next",
+      "typescript",
+      "nestjs",
+      "postgres",
+      "prisma",
+      "redis",
+      "rabbitmq",
+      "tailwind",
+      "docker",
+    ],
     links: [
       {
         label: "Source",
@@ -152,6 +170,35 @@ Themes are powered by the [tweakcn](https://tweakcn.com) registry — 40+ themes
       "Tiptap editor with autosave, drag-and-drop image upload, and sharp-based WebP processing.",
       "Per-author public site with 40+ tweakcn themes, RSS feed, JSON-LD, and dynamic OG images.",
       "Redis-backed read-through cache with explicit invalidation, plus per-IP throttling on sensitive endpoints.",
+    ],
+    featured: true,
+  },
+  {
+    slug: "p2p-messenger",
+    name: "p2p-messenger",
+    description:
+      "A serverless, end-to-end encrypted peer-to-peer messenger that combines WebRTC for low-latency P2P data transport with Nostr relays for decentralized signaling, peer discovery, and store-and-forward offline delivery.",
+    // image: "p2pMessengerLight",
+    // imageDark: "p2pMessengerDark",
+    longDescription:
+      "A serverless, end-to-end encrypted peer-to-peer messenger that combines `WebRTC` for low-latency P2P data transport with `Nostr` relays for decentralized signaling, peer discovery, and store-and-forward offline delivery. It has zero vendor-controlled infrastructure -- users run their own relay or use public Nostr relays. The project ships with both a `CLI` (basic readline and a full-screen TUI built with React/ink) and a `browser web client` (Vite + React + Tailwind + Zustand). Both the CLI and web client are fully interoperable, sharing the same wire format and encryption protocols.\n\n## Stack\n\n- **Language**: TypeScript (strict mode, ES2022) across all packages\n- **Monorepo tooling**: pnpm workspaces\n- **Web framework**: React 19, React DOM 19\n- **Web bundler**: Vite 6 with @vitejs/plugin-react\n- **CSS**: Tailwind CSS 3.4 (dark-mode, custom peer accent colors)\n- **State management (web)**: Zustand 5\n- **CLI UI**: ink 7 (React for terminal)\n- **Crypto**: @noble/ciphers (XChaCha20-Poly1305), @noble/curves (X25519, secp256k1), @noble/hashes (SHA-256, BLAKE3, HKDF-SHA256)\n- **Nostr protocol**: nostr-tools v2.23 (NIP-44, NIP-59 gift wrap, relay pool)\n- **WebRTC**: @roamhq/wrtc (Node WebRTC), browser native RTCPeerConnection\n- **WebSocket**: ws (both client and server)\n- **Database (CLI)**: better-sqlite3 (message history persistence)\n- **Database (web)**: idb-keyval (IndexedDB wrapper for identity, contacts, ratchet states, history)\n\n## Notable bits\n\nThe messenger implements Signal-grade cryptography including Double Ratchet for 1:1 offline messages, Sender Keys for group chats, and NIP-59 gift wrap for sender anonymity. It features hybrid P2P routing: WebRTC data channels when peers are online and connected, falling back to Nostr relays for offline delivery or when P2P is unavailable. File transfer uses chunked transfer with BLAKE3 Merkle root verification. The architecture is Nostr-native with multi-relay fan-out + subscription, NIP-05 identity resolution, presence events, and vector clock causal ordering. Two UI implementations are provided: a CLI TUI (React + ink) with split-pane scrollback, detached input, tab completion, and multi-window support; and a browser client (Vite + React + Tailwind + Zustand) with identity in IndexedDB, contact management, 1:1 chat, relay management, and settings panel.",
+    tech: ["vite", "tailwind", "typescript", "relay", "webrtc", "cli"],
+    links: [
+      {
+        label: "Source",
+        href: "https://github.com/krishna-paulraj/p2p-messenger",
+        type: "source",
+      },
+    ],
+    year: "2026",
+    status: "live",
+    highlights: [
+      "End-to-end encrypted with Signal-grade Double Ratchet and Sender Keys.",
+      "Hybrid P2P routing: WebRTC data channels + Nostr relays for offline delivery.",
+      "File transfer with chunked transfer and BLAKE3 Merkle root verification.",
+      "Nostr-native architecture with multi-relay fan-out and NIP-05 identity resolution.",
+      "Dual UI: CLI TUI (React/ink) and browser client (Vite+React+Tailwind+Zustand).",
+      "Offline-first with store-and-forward delivery via Nostr relays.",
     ],
     featured: true,
   },
