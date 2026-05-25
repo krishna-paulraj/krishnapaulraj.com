@@ -14,6 +14,7 @@ import { Reveal } from "@/components/motion/reveal";
 import ShareButtons from "@/components/blog/share-buttons";
 import TechStack from "@/components/projects/tech-stack";
 import { GitHubStars } from "@/components/github-stars";
+import Views from "@/components/views";
 import { extractGitHubRepo, getGitHubStars } from "@/lib/github";
 import { SITE_URL } from "@/lib/constants";
 import { renderMarkdown } from "@/lib/markdown";
@@ -183,6 +184,7 @@ export default async function ProjectPage({
               <GitHubStars repo={githubRepo} stargazersCount={stars} />
             </>
           )}
+          <Views endpoint={`/api/projects/${project.slug}/views`} />
         </div>
 
         {project.tech.length > 0 && (

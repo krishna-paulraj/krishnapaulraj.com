@@ -1,16 +1,9 @@
 import { getBlogPosts } from "@/lib/blog";
 import { PROJECTS, TECH } from "@/lib/projects";
+import type { SearchItem } from "@/lib/search-score";
 
-export type SearchKind = "page" | "post" | "project";
-
-export type SearchItem = {
-  id: string;
-  title: string;
-  description?: string;
-  href: string;
-  kind: SearchKind;
-  keywords?: string[];
-};
+export type { SearchItem, SearchKind } from "@/lib/search-score";
+export { scoreItem } from "@/lib/search-score";
 
 const PAGE_ITEMS: SearchItem[] = [
   {

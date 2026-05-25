@@ -12,12 +12,12 @@ export type BlogPost = {
   updatedAt?: string;
   image?: string;
   tags: string[];
+  readingTimeMinutes: number;
+  wordCount: number;
 };
 
 export type BlogPostDetail = BlogPost & {
   html: string;
-  readingTimeMinutes: number;
-  wordCount: number;
 };
 
 const BLOG_DIR = path.join(process.cwd(), "blog");
@@ -27,6 +27,11 @@ function readPostFile(file: string) {
   const slug = file.replace(/\.mdx?$/, "");
   const raw = fs.readFileSync(path.join(BLOG_DIR, file), "utf-8");
   const { data, content } = matter(raw);
+  const wordCount = countWords(content);
+  const readingTimeMinutes = Math.max(
+    1,
+    Math.ceil(wordCount / WORDS_PER_MINUTE),
+  );
   const post: BlogPost = {
     slug,
     title: data.title ?? slug,
@@ -39,6 +44,8 @@ function readPostFile(file: string) {
           .map((t: unknown) => String(t).toLowerCase().trim())
           .filter(Boolean)
       : [],
+    readingTimeMinutes,
+    wordCount,
   };
   return { post, content };
 }
@@ -76,13 +83,7 @@ export async function getBlogPost(
 
   const { post, content } = readPostFile(file);
   const html = await renderMarkdown(content);
-  const wordCount = countWords(content);
-  const readingTimeMinutes = Math.max(
-    1,
-    Math.ceil(wordCount / WORDS_PER_MINUTE),
-  );
-
-  return { ...post, html, readingTimeMinutes, wordCount };
+  return { ...post, html };
 }
 
 export function getBlogSlugs(): string[] {

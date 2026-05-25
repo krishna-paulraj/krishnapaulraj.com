@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 
 import ProjectsSection from "@/components/projects/index";
 import { Reveal } from "@/components/motion/reveal";
+import { PROJECTS } from "@/lib/projects";
+import { getViews } from "@/lib/redis";
 
 export const metadata: Metadata = {
   title: "Projects",
@@ -9,11 +11,16 @@ export const metadata: Metadata = {
     "A selection of things I've built — personal experiments and production work.",
 };
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  const viewCounts = await getViews(
+    "project",
+    PROJECTS.map((p) => p.slug),
+  );
+
   return (
     <div className="mx-auto w-full max-w-2xl flex-1 px-6 py-6 font-sans">
       <Reveal>
-        <ProjectsSection standalone />
+        <ProjectsSection standalone viewCounts={viewCounts} />
       </Reveal>
     </div>
   );

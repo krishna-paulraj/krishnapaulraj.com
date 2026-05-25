@@ -7,7 +7,13 @@ import HighlightedHeading from "@/components/highlighted-heading";
 import TechStack from "@/components/projects/tech-stack";
 import { PROJECTS, type Project } from "@/lib/projects";
 
-function ProjectCard({ project }: { project: Project }) {
+function ProjectCard({
+  project,
+  views,
+}: {
+  project: Project;
+  views?: number;
+}) {
   const detailHref = `/projects/${project.slug}`;
 
   return (
@@ -52,6 +58,11 @@ function ProjectCard({ project }: { project: Project }) {
         <p className="mt-0.5 line-clamp-2 text-sm text-muted-foreground">
           {project.description}
         </p>
+        {views !== undefined && views > 0 && (
+          <p className="mt-1 text-xs text-muted-foreground">
+            {views.toLocaleString()} {views === 1 ? "view" : "views"}
+          </p>
+        )}
       </div>
 
       {project.tech.length > 0 && <TechStack tech={project.tech} />}
@@ -61,8 +72,10 @@ function ProjectCard({ project }: { project: Project }) {
 
 export default function ProjectsSection({
   standalone = false,
+  viewCounts,
 }: {
   standalone?: boolean;
+  viewCounts?: Record<string, number>;
 }) {
   if (PROJECTS.length === 0) return null;
 
@@ -75,7 +88,11 @@ export default function ProjectsSection({
 
       <div className="mt-6 grid grid-cols-1 gap-8 sm:grid-cols-2">
         {PROJECTS.map((project) => (
-          <ProjectCard key={project.slug} project={project} />
+          <ProjectCard
+            key={project.slug}
+            project={project}
+            views={viewCounts?.[project.slug]}
+          />
         ))}
       </div>
     </div>

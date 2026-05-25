@@ -25,7 +25,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import type { SearchItem, SearchKind } from "@/lib/search";
+import {
+  scoreItem,
+  type SearchItem,
+  type SearchKind,
+} from "@/lib/search-score";
 
 type SearchContextValue = {
   open: boolean;
@@ -64,10 +68,32 @@ export function SearchProvider({
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
+    const isTypingTarget = (el: EventTarget | null) => {
+      if (!(el instanceof HTMLElement)) return false;
+      const tag = el.tagName.toLowerCase();
+      return (
+        tag === "input" ||
+        tag === "textarea" ||
+        tag === "select" ||
+        el.isContentEditable
+      );
+    };
+
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         setOpen((o) => !o);
+        return;
+      }
+      if (
+        e.key === "/" &&
+        !e.metaKey &&
+        !e.ctrlKey &&
+        !e.altKey &&
+        !isTypingTarget(e.target)
+      ) {
+        e.preventDefault();
+        setOpen(true);
       }
     };
     window.addEventListener("keydown", onKey);
@@ -134,14 +160,13 @@ function SearchDialog({ items }: { items: SearchItem[] }) {
   }, [open]);
 
   const results = useMemo(() => {
-    const q = query.toLowerCase().trim();
+    const q = query.trim();
     if (!q) return items;
-    return items.filter((item) => {
-      const hay = [item.title, item.description ?? "", ...(item.keywords ?? [])]
-        .join(" ")
-        .toLowerCase();
-      return hay.includes(q);
-    });
+    return items
+      .map((item) => ({ item, score: scoreItem(item, q) }))
+      .filter(({ score }) => score > 0)
+      .sort((a, b) => b.score - a.score)
+      .map(({ item }) => item);
   }, [items, query]);
 
   useEffect(() => {

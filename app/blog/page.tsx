@@ -4,7 +4,16 @@ import Link from "next/link";
 import HighlightedHeading from "@/components/highlighted-heading";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { getAllTags, getBlogPosts } from "@/lib/blog";
+import { getViews } from "@/lib/redis";
 import { cn } from "@/lib/utils";
+
+function formatShortDate(value: string) {
+  return new Date(value).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
 
 export const metadata: Metadata = {
   title: "Writing",
@@ -25,6 +34,10 @@ export default async function BlogPage({
     ? allPosts.filter((p) => p.tags.includes(activeTag))
     : allPosts;
   const tags = getAllTags();
+  const views = await getViews(
+    "post",
+    posts.map((p) => p.slug),
+  );
 
   return (
     <div className="mx-auto w-full max-w-2xl flex-1 px-6 py-6 font-sans">
@@ -98,37 +111,56 @@ export default async function BlogPage({
         </Reveal>
       ) : (
         <RevealGroup as="ul" className="mt-6 divide-y divide-border">
-          {posts.map((post) => (
-            <RevealItem as="li" key={post.slug}>
-              <Link
-                href={`/blog/${post.slug}`}
-                className="group flex flex-col gap-1 py-4 sm:flex-row sm:items-start sm:justify-between sm:gap-8"
-              >
-                <div className="flex-1">
-                  <p className="font-semibold text-foreground group-hover:underline">
-                    {post.title}
-                  </p>
-                  {post.description && (
-                    <p className="mt-0.5 line-clamp-2 text-sm text-muted-foreground">
-                      {post.description}
+          {posts.map((post) => {
+            const viewCount = views[post.slug] ?? 0;
+            const hasUpdate =
+              post.updatedAt && post.updatedAt !== post.createdAt;
+            return (
+              <RevealItem as="li" key={post.slug}>
+                <Link
+                  href={`/blog/${post.slug}`}
+                  className="group flex flex-col gap-1 py-4 sm:flex-row sm:items-start sm:justify-between sm:gap-8"
+                >
+                  <div className="flex-1">
+                    <p className="font-semibold text-foreground group-hover:underline">
+                      {post.title}
                     </p>
+                    {post.description && (
+                      <p className="mt-0.5 line-clamp-2 text-sm text-muted-foreground">
+                        {post.description}
+                      </p>
+                    )}
+                    <div className="mt-1 flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
+                      <span>{post.readingTimeMinutes} min read</span>
+                      {viewCount > 0 && (
+                        <>
+                          <span aria-hidden="true">·</span>
+                          <span>
+                            {viewCount.toLocaleString()}{" "}
+                            {viewCount === 1 ? "view" : "views"}
+                          </span>
+                        </>
+                      )}
+                      {hasUpdate && (
+                        <>
+                          <span aria-hidden="true">·</span>
+                          <span>Updated {formatShortDate(post.updatedAt!)}</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  {post.createdAt && (
+                    <time
+                      dateTime={post.createdAt}
+                      className="shrink-0 text-sm text-muted-foreground"
+                    >
+                      {formatShortDate(post.createdAt)}
+                    </time>
                   )}
-                </div>
-                {post.createdAt && (
-                  <time
-                    dateTime={post.createdAt}
-                    className="shrink-0 text-sm text-muted-foreground"
-                  >
-                    {new Date(post.createdAt).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
-                  </time>
-                )}
-              </Link>
-            </RevealItem>
-          ))}
+                </Link>
+              </RevealItem>
+            );
+          })}
         </RevealGroup>
       )}
     </div>

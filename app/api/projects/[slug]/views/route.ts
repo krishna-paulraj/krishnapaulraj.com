@@ -1,8 +1,8 @@
-import { getBlogSlugs } from "@/lib/blog";
+import { getProjectSlugs } from "@/lib/projects";
 import { markUniqueVisit, redis } from "@/lib/redis";
 
 function viewsKey(slug: string) {
-  return `post:${slug}:views`;
+  return `project:${slug}:views`;
 }
 
 export async function GET(
@@ -10,7 +10,7 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await params;
-  if (!getBlogSlugs().includes(slug)) {
+  if (!getProjectSlugs().includes(slug)) {
     return new Response("Not found", { status: 404 });
   }
   const count = (await redis.get<number>(viewsKey(slug))) ?? 0;
@@ -22,11 +22,11 @@ export async function POST(
   { params }: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await params;
-  if (!getBlogSlugs().includes(slug)) {
+  if (!getProjectSlugs().includes(slug)) {
     return new Response("Not found", { status: 404 });
   }
 
-  const isNew = await markUniqueVisit(`post:${slug}:viewer`);
+  const isNew = await markUniqueVisit(`project:${slug}:viewer`);
   const count = isNew
     ? await redis.incr(viewsKey(slug))
     : ((await redis.get<number>(viewsKey(slug))) ?? 0);

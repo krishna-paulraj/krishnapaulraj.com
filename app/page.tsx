@@ -1,8 +1,12 @@
+import Link from "next/link";
+import { TerminalIcon, WrenchIcon } from "lucide-react";
+
 import NowPlaying from "@/components/NowPlaying";
 import WorkExperienceComponent from "@/components/work/index";
 import ProjectsSection from "@/components/projects/index";
 import BlogSection from "@/components/blog";
 import { CopyButton } from "@/components/copy-button";
+import HighlightedHeading from "@/components/highlighted-heading";
 import { Reveal } from "@/components/motion/reveal";
 
 export default function Home() {
@@ -65,6 +69,45 @@ export default function Home() {
       </Reveal>
       <Reveal delay={0.4}>
         <BlogSection />
+      </Reveal>
+      <Reveal delay={0.48}>
+        <div className="mt-5 w-full border-t pt-5">
+          <h1 className="text-3xl font-bold tracking-tight">Explore</h1>
+          <HighlightedHeading className="my-4">
+            A peek into my setup
+          </HighlightedHeading>
+
+          <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <Link
+              href="/terminal"
+              className="group flex items-start gap-3 rounded-lg border border-border bg-card/40 p-4 transition-colors hover:bg-muted/40"
+            >
+              <TerminalIcon className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
+              <div>
+                <p className="text-sm font-semibold text-foreground group-hover:underline">
+                  Terminal
+                </p>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  My zsh, starship, and fastfetch setup
+                </p>
+              </div>
+            </Link>
+            <Link
+              href="/gears"
+              className="group flex items-start gap-3 rounded-lg border border-border bg-card/40 p-4 transition-colors hover:bg-muted/40"
+            >
+              <WrenchIcon className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
+              <div>
+                <p className="text-sm font-semibold text-foreground group-hover:underline">
+                  Gears
+                </p>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  Devices, software, and tools I use daily
+                </p>
+              </div>
+            </Link>
+          </div>
+        </div>
       </Reveal>
     </div>
   );

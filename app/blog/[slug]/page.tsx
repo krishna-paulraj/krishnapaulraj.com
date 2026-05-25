@@ -7,8 +7,8 @@ import { notFound } from "next/navigation";
 import { Reveal } from "@/components/motion/reveal";
 import ReadingProgress from "@/components/blog/reading-progress";
 import ArticleCopyButtons from "@/components/blog/article-copy-buttons";
-import PostViews from "@/components/blog/post-views";
 import ShareButtons from "@/components/blog/share-buttons";
+import Views from "@/components/views";
 import {
   getBlogPost,
   getBlogPosts,
@@ -128,7 +128,7 @@ export default async function BlogPostPage({
           )}
           {post.createdAt && <span aria-hidden="true">·</span>}
           <span>{post.readingTimeMinutes} min read</span>
-          <PostViews slug={post.slug} />
+          <Views endpoint={`/api/posts/${post.slug}/views`} />
           {post.updatedAt && post.updatedAt !== post.createdAt && (
             <>
               <span aria-hidden="true">·</span>
