@@ -19,11 +19,7 @@ import {
   type ReactNode,
 } from "react";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import {
   scoreItem,
@@ -155,7 +151,6 @@ function SearchDialog({ items }: { items: SearchItem[] }) {
     }
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setQuery("");
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setActiveIdx(0);
   }, [open]);
 

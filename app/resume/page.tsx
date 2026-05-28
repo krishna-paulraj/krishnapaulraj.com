@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DownloadIcon, ExternalLinkIcon, MailIcon } from "lucide-react";
+import { DownloadIcon, ExternalLinkIcon } from "lucide-react";
 
 import HighlightedHeading from "@/components/highlighted-heading";
 import WorkExperienceComponent from "@/components/work/index";

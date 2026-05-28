@@ -58,9 +58,10 @@ export default function ReadingProgress({
       const denom = Math.max(1, articleEnd - articleTop);
       const pct = (window.scrollY - articleTop) / denom;
       setProgress(Math.min(1, Math.max(0, pct)));
-      setVisible(
-        window.scrollY > articleTop + 120 && window.scrollY < articleEnd + 200,
-      );
+      const nextVisible =
+        window.scrollY > articleTop + 120 && window.scrollY < articleEnd + 200;
+      setVisible(nextVisible);
+      if (!nextVisible) setOpen(false);
     };
 
     const onScroll = () => {
@@ -138,11 +139,6 @@ export default function ReadingProgress({
       document.removeEventListener("keydown", onKey);
     };
   }, [open]);
-
-  // Close panel if pill goes out of view (scrolled past the article)
-  useEffect(() => {
-    if (!visible && open) setOpen(false);
-  }, [visible, open]);
 
   const offset = RING_CIRC * (1 - progress);
 
