@@ -115,9 +115,7 @@ export default async function Image({
         <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
           <span>Suresh Krishna Paulraj</span>
           {readingTime && (
-            <span style={{ fontSize: "18px" }}>
-              {readingTime} min read
-            </span>
+            <span style={{ fontSize: "18px" }}>{readingTime} min read</span>
           )}
         </div>
         {tags.length > 0 ? (

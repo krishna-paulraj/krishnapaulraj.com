@@ -144,7 +144,9 @@ export default async function BlogPage({
                       {hasUpdate && (
                         <>
                           <span aria-hidden="true">·</span>
-                          <span>Updated {formatShortDate(post.updatedAt!)}</span>
+                          <span>
+                            Updated {formatShortDate(post.updatedAt!)}
+                          </span>
                         </>
                       )}
                     </div>

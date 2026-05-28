@@ -35,7 +35,5 @@ export async function getViews(
   if (slugs.length === 0) return {};
   const keys = slugs.map((s) => `${scope}:${s}:views`);
   const values = await redis.mget<(number | null)[]>(...keys);
-  return Object.fromEntries(
-    slugs.map((s, i) => [s, values[i] ?? 0]),
-  );
+  return Object.fromEntries(slugs.map((s, i) => [s, values[i] ?? 0]));
 }

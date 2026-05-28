@@ -7,13 +7,7 @@ import HighlightedHeading from "@/components/highlighted-heading";
 import TechStack from "@/components/projects/tech-stack";
 import { PROJECTS, type Project } from "@/lib/projects";
 
-function ProjectCard({
-  project,
-  views,
-}: {
-  project: Project;
-  views?: number;
-}) {
+function ProjectCard({ project, views }: { project: Project; views?: number }) {
   const detailHref = `/projects/${project.slug}`;
 
   return (
