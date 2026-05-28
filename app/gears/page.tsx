@@ -14,72 +14,44 @@ const amazon = (query: string) =>
 
 const DEVICES: { label: string; href: string }[] = [
   {
-    label: 'Apple MacBook Pro 16" M4 48GB 512GB',
-    href: "https://www.apple.com/shop/buy-mac/macbook-pro",
-  },
-  { label: "Samsung S23 (256 GB)", href: amazon("Samsung Galaxy S23 256GB") },
-  {
-    label: "LG Ultragear Monitor 27GS65F (27 inch, 68.5 cm)",
-    href: amazon("LG 27GS65F"),
+    label: "Apple MacBook M2 8GB 256GB",
+    href: amazon("Apple MacBook M2"),
   },
   {
-    label: "LG Curved Ultra Wide Monitor 34WR50QK (34 inch, 86.36 cm)",
-    href: amazon("LG 34WR50QK"),
+    label: "Apple iphone 13 (128 GB)",
+    href: amazon("Apple iphone 13 (128 GB)"),
   },
   {
-    label: "Monitor Stand with Laptop",
-    href: amazon("monitor stand with laptop shelf"),
+    label: "Apple Airpods Pro",
+    href: amazon("Apple Airpods Pro"),
   },
   {
-    label: "Magic Keyboard",
-    href: "https://www.apple.com/shop/buy-mac/mac-accessories/keyboards",
+    label: "LG Ultrawide Ergo - 34Wn780 (34 Inch 86.72 Cm)",
+    href: amazon("LG 34Wn780"),
   },
   {
-    label: "Logitech MX Master 3S Mouse",
-    href: "https://www.logitech.com/en-us/shop/p/mx-master-3s",
-  },
-  { label: "Mouse Pad", href: amazon("large desk mouse pad") },
-  { label: "FIFINE K688 Podcast Microphone", href: amazon("FIFINE K688") },
-  {
-    label: "Crossbeats Roar 2.0 (Special Edition)",
-    href: amazon("Crossbeats Roar 2.0"),
+    label: "Keychron K3 Pro Keyboard (Gateron Brown Switch)",
+    href: "https://keychron.in/product/keychron-k3-pro-qmk-via-wireless-custom-mechanical-keyboard/",
   },
   {
-    label: "Smart LED Light Strip (Tapo L900-5)",
-    href: "https://www.tp-link.com/us/home-networking/smart-bulb/tapo-l900-5/",
+    label: "Logitech Pebble Mouse",
+    href: "https://www.logitech.com/en-in/shop/p/m350-pebble-wireless-mouse.910-006665",
   },
-  {
-    label: "DIGITEK Lite (DCL-150WBC Combo)",
-    href: amazon("DIGITEK DCL-150WBC"),
-  },
-  { label: "Godox Softbox SB-GUE80", href: amazon("Godox SB-GUE80") },
-  { label: "Boom Arm Holder for Light", href: amazon("boom arm light stand") },
-  {
-    label: "Samsung T7 2TB SSD",
-    href: "https://www.samsung.com/us/computing/memory-storage/portable-solid-state-drives/portable-ssd-t7-usb-3-2-2tb-titan-gray-mu-pc2t0t-am/",
-  },
-];
-
-const EXTENSIONS: { label: string; href: string }[] = [
-  { label: "Unhook", href: "https://unhook.app/" },
-  { label: "uBlock Origin", href: "https://ublockorigin.com/" },
-  {
-    label: "React Developer Tools",
-    href: "https://chromewebstore.google.com/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi",
-  },
-  { label: "daily.dev", href: "https://daily.dev/" },
-  { label: "Grammarly", href: "https://www.grammarly.com/" },
-  { label: "Wappalyzer", href: "https://www.wappalyzer.com/" },
-  { label: "ColorZilla", href: "https://www.colorzilla.com/" },
 ];
 
 const SOFTWARE: { label: string; href: string }[] = [
-  { label: "Dia", href: "https://www.diabrowser.com/" },
+  { label: "Zen", href: "https://zen-browser.app/" },
   { label: "Notion", href: "https://www.notion.so/" },
-  { label: "TickTick", href: "https://ticktick.com/" },
-  { label: "OBS Studio", href: "https://obsproject.com/" },
-  { label: "VLC", href: "https://www.videolan.org/vlc/" },
-  { label: "Ghostty", href: "https://ghostty.org/" },
+  { label: "Karabiner Elements", href: "https://karabiner-elements.pqrs.org/" },
+  { label: "Cap So", href: "https://cap.so/" },
+];
+
+const Development: { label: string; href: string }[] = [
+  { label: "Neovim", href: "https://neovim.io/" },
+  { label: "iTerm2", href: "https://iterm2.com/" },
+  { label: "Claude Code", href: "https://claude.ai/" },
+  { label: "Zed", href: "https://zed.dev/" },
+  { label: "Pencil", href: "https://www.pencil.dev/" },
 ];
 
 function SectionTitle({
@@ -156,19 +128,6 @@ export default function GearsPage() {
 
       <Reveal
         as="section"
-        delay={0.2}
-        className="mt-10 border-t border-border pt-8"
-      >
-        <SectionTitle icon={<PuzzleIcon />} title="Web Extensions" />
-        <ul className="mt-5 space-y-2">
-          {EXTENSIONS.map((ext) => (
-            <LinkItem key={ext.label} label={ext.label} href={ext.href} />
-          ))}
-        </ul>
-      </Reveal>
-
-      <Reveal
-        as="section"
         delay={0.3}
         className="mt-10 border-t border-border pt-8"
       >
@@ -176,6 +135,19 @@ export default function GearsPage() {
         <ul className="mt-5 space-y-2">
           {SOFTWARE.map((s) => (
             <LinkItem key={s.label} label={s.label} href={s.href} />
+          ))}
+        </ul>
+      </Reveal>
+
+      <Reveal
+        as="section"
+        delay={0.2}
+        className="mt-10 border-t border-border pt-8"
+      >
+        <SectionTitle icon={<PuzzleIcon />} title="Development" />
+        <ul className="mt-5 space-y-2">
+          {Development.map((dev) => (
+            <LinkItem key={dev.label} label={dev.label} href={dev.href} />
           ))}
         </ul>
       </Reveal>
