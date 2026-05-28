@@ -1,0 +1,20 @@
+import type { Metadata } from "next";
+
+import { Reveal } from "@/components/motion/reveal";
+import ComponentsSection from "@/components/components-page/components-section";
+
+export const metadata: Metadata = {
+  title: "Components",
+  description:
+    "Open-source UI components I built for this site, distributed via the shadcn registry.",
+};
+
+export default function ComponentsPage() {
+  return (
+    <div className="mx-auto w-full max-w-2xl flex-1 px-6 py-6 font-sans">
+      <Reveal>
+        <ComponentsSection standalone />
+      </Reveal>
+    </div>
+  );
+}

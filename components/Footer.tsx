@@ -5,7 +5,6 @@ import {
   FaInstagram,
   FaLinkedinIn,
   FaXTwitter,
-  FaYoutube,
 } from "react-icons/fa6";
 import VisitorCount from "@/components/VisitorCount";
 
@@ -13,6 +12,7 @@ const navLinks = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
   { href: "/projects", label: "Projects" },
+  { href: "/components", label: "Components" },
   { href: "/blog", label: "Blog" },
   { href: "/resume", label: "Resume" },
   { href: "/terminal", label: "Terminal" },

@@ -5,6 +5,7 @@ import NowPlaying from "@/components/NowPlaying";
 import WorkExperienceComponent from "@/components/work/index";
 import ProjectsSection from "@/components/projects/index";
 import BlogSection from "@/components/blog";
+import ComponentsSection from "@/components/components-page/components-section";
 import { CopyButton } from "@/components/copy-button";
 import HighlightedHeading from "@/components/highlighted-heading";
 import { Reveal } from "@/components/motion/reveal";
@@ -69,6 +70,9 @@ export default function Home() {
       </Reveal>
       <Reveal delay={0.4}>
         <BlogSection />
+      </Reveal>
+      <Reveal delay={0.44}>
+        <ComponentsSection />
       </Reveal>
       <Reveal delay={0.48}>
         <div className="mt-5 w-full border-t pt-5">
