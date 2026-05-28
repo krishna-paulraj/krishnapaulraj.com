@@ -32,7 +32,7 @@ export default function CodeBlock({
         type="button"
         onClick={onCopy}
         aria-label={copied ? "Copied" : "Copy code"}
-        className="absolute bottom-2 right-2 inline-flex items-center gap-1 rounded-md bg-background/40 px-2 py-1 text-xs text-muted-foreground backdrop-blur-sm transition-colors hover:bg-muted hover:text-foreground"
+        className="absolute bottom-2 right-2 inline-flex items-center gap-1 rounded-md bg-white/10 px-2 py-1 text-xs text-white/70 backdrop-blur-sm transition-colors hover:bg-white/20 hover:text-white"
       >
         {copied ? (
           <CheckIcon className="size-3.5" />
