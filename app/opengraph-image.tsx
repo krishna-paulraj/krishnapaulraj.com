@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from "path";
 import { ImageResponse } from "next/og";
 
 import { SITE_URL } from "@/lib/constants";
@@ -7,6 +9,11 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default async function Image() {
+  const pfpData = fs.readFileSync(
+    path.join(process.cwd(), "assets/pfp.jpeg"),
+  );
+  const pfpSrc = `data:image/jpeg;base64,${pfpData.toString("base64")}`;
+
   return new ImageResponse(
     <div
       style={{
@@ -42,29 +49,39 @@ export default async function Image() {
         </span>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            fontSize: "88px",
-            fontWeight: 700,
-            lineHeight: 1.05,
-            letterSpacing: "-0.03em",
-            color: "#fafafa",
-          }}
-        >
-          <span>Suresh Krishna</span>
-          <span>Paulraj</span>
-        </div>
-        <div
-          style={{
-            fontSize: "32px",
-            color: "#a1a1aa",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          Software Engineer · TypeScript, React, AI
+      <div style={{ display: "flex", alignItems: "center", gap: "48px" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={pfpSrc}
+          alt=""
+          width={160}
+          height={160}
+          style={{ borderRadius: "9999px", objectFit: "cover" }}
+        />
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              fontSize: "80px",
+              fontWeight: 700,
+              lineHeight: 1.05,
+              letterSpacing: "-0.03em",
+              color: "#fafafa",
+            }}
+          >
+            <span>Suresh Krishna</span>
+            <span>Paulraj</span>
+          </div>
+          <div
+            style={{
+              fontSize: "32px",
+              color: "#a1a1aa",
+              letterSpacing: "-0.01em",
+            }}
+          >
+            Software Engineer · TypeScript, React, AI
+          </div>
         </div>
       </div>
 
