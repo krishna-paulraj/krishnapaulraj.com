@@ -17,7 +17,7 @@ function TechPill({
     <motion.div
       animate={{ width: isHovered ? "auto" : 28 }}
       transition={SPRING}
-      className="flex h-7 cursor-default items-center overflow-hidden rounded-full border border-border bg-muted"
+      className="flex h-7 cursor-default items-center justify-center overflow-hidden rounded-full border border-border bg-muted"
     >
       <span className="flex size-7 shrink-0 items-center justify-center">
         <Icon className="size-3.5" style={{ color }} />
