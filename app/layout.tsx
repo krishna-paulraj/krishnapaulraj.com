@@ -30,6 +30,7 @@ export const metadata: Metadata = {
     "Software engineer at Blocsys building scalable web applications with TypeScript, React, and Next.js — plus notes on AI tooling and engineering craft.",
 
   keywords: [
+    "Krishna Paulraj",
     "Suresh Krishna Paulraj",
     "Software Engineer",
     "Next.js Developer",
