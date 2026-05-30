@@ -1,3 +1,5 @@
+import { revalidateTag } from "next/cache";
+
 import { markUniqueVisit, redis } from "@/lib/redis";
 
 export async function POST() {
@@ -14,6 +16,7 @@ export async function POST() {
 
   if (isNew) {
     await redis.incr(`visitors:daily:${today}`);
+    revalidateTag("site-insights", { expire: 0 });
   }
 
   return Response.json({ count });

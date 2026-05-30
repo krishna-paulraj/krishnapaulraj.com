@@ -52,5 +52,5 @@ export const getCachedInsights = unstable_cache(
     };
   },
   ["site-insights"],
-  { revalidate: 3600 },
+  { revalidate: 3600, tags: ["site-insights"] },
 );
