@@ -18,11 +18,9 @@ import {
   GitHubContributionsFallback,
 } from "@/components/github-contributions";
 import { getCachedContributions } from "@/lib/get-cached-contributions";
-import { getCachedInsights } from "@/lib/get-cached-insights";
 
 export default async function Home() {
   const contributions = getCachedContributions("suresh-krishna-paulraj-1032");
-  const insights = await getCachedInsights();
 
   return (
     <>
@@ -149,7 +147,7 @@ export default async function Home() {
           </div>
         </Reveal>
       </div>
-      <Metrics01 data={insights} />
+      <Metrics01 />
     </>
   );
 }
