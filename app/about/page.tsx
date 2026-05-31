@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: "About",
   description:
     "A bit about me — what I work on, where I've been, and how to reach me.",
+  alternates: { canonical: "/about" },
 };
 
 const socials = [

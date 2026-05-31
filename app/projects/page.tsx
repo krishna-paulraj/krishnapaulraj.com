@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Projects",
   description:
     "A selection of things I've built — personal experiments and production work.",
+  alternates: { canonical: "/projects" },
 };
 
 export default async function ProjectsPage() {

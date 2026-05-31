@@ -9,6 +9,8 @@ import registry from "@/public/r/tech-stack.json";
 export const metadata: Metadata = {
   title: registry.title,
   description: registry.description,
+  alternates: { canonical: "/components/tech-stack" },
+  robots: { index: false, follow: true },
 };
 
 const USAGE = `import TechStack from "@/components/tech-stack";

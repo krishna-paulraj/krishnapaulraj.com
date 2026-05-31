@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -18,6 +19,15 @@ import {
   GitHubContributionsFallback,
 } from "@/components/github-contributions";
 import { getCachedContributions } from "@/lib/get-cached-contributions";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "/",
+    types: {
+      "application/rss+xml": "/rss.xml",
+    },
+  },
+};
 
 export default async function Home() {
   const contributions = getCachedContributions("suresh-krishna-paulraj-1032");

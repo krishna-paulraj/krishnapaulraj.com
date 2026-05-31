@@ -7,6 +7,7 @@ import { Reveal } from "@/components/motion/reveal";
 export const metadata: Metadata = {
   title: "Gears",
   description: "My gears and tools I use to get my work done.",
+  alternates: { canonical: "/gears" },
 };
 
 const amazon = (query: string) =>

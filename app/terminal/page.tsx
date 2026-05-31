@@ -21,6 +21,7 @@ export const metadata: Metadata = {
   title: "Terminal Setup",
   description:
     "My terminal configuration — Zsh, Starship, Fastfetch, and the dotfiles I actually use day to day.",
+  alternates: { canonical: "/terminal" },
 };
 
 const LINUX_INSTALL = `# Debian / Ubuntu

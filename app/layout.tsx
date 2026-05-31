@@ -71,13 +71,6 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
-
-  alternates: {
-    canonical: "/",
-    types: {
-      "application/rss+xml": "/rss.xml",
-    },
-  },
 };
 
 export const viewport: Viewport = {

@@ -19,6 +19,12 @@ export const metadata: Metadata = {
   title: "Writing",
   description:
     "Notes and explorations on engineering, AI, and building for the web.",
+  alternates: {
+    canonical: "/blog",
+    types: {
+      "application/rss+xml": "/rss.xml",
+    },
+  },
 };
 
 export default async function BlogPage({

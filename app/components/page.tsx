@@ -7,6 +7,8 @@ export const metadata: Metadata = {
   title: "Components",
   description:
     "Open-source UI components I built for this site, distributed via the shadcn registry.",
+  alternates: { canonical: "/components" },
+  robots: { index: false, follow: true },
 };
 
 export default function ComponentsPage() {

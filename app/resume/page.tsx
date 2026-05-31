@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Resume",
   description:
     "Suresh Krishna Paulraj — software engineer specializing in TypeScript, React, Next.js, and AI applications.",
+  alternates: { canonical: "/resume" },
 };
 
 const RESUME_FILE = "/resume.pdf";

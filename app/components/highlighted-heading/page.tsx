@@ -9,6 +9,8 @@ import registry from "@/public/r/highlighted-heading.json";
 export const metadata: Metadata = {
   title: registry.title,
   description: registry.description,
+  alternates: { canonical: "/components/highlighted-heading" },
+  robots: { index: false, follow: true },
 };
 
 const USAGE = `import HighlightedHeading from "@/components/highlighted-heading";
