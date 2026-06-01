@@ -23,7 +23,7 @@ const skills = {
 
 export default function ResumePage() {
   return (
-    <div className="mx-auto w-full max-w-3xl flex-1 px-6 py-6 font-sans">
+    <div className="mx-auto w-full max-w-2xl flex-1 px-6 py-6 font-sans">
       <Reveal className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Resume</h1>
@@ -65,7 +65,7 @@ export default function ResumePage() {
           data={`${RESUME_FILE}#view=FitH&toolbar=1`}
           type="application/pdf"
           aria-label="Resume PDF"
-          className="min-h-[1000px] w-full overflow-hidden rounded-lg border border-border bg-muted/40"
+          className="min-h-100 md:min-h-200 w-full overflow-hidden rounded-lg border border-border bg-muted/40"
         >
           <div className="flex h-full w-full flex-col items-center justify-center gap-3 p-8 text-center">
             <p className="text-sm text-muted-foreground">
