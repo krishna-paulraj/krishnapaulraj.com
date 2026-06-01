@@ -86,7 +86,7 @@ The site you're reading now. A personal portfolio that doubles as a writing surf
 - **Next.js 16** App Router with React 19, fully type-checked TypeScript.
 - **Tailwind v4** + the typography plugin for prose, shadcn primitives where useful.
 - **unified** + **remark-gfm** + **rehype-pretty-code** for the markdown pipeline. Syntax highlighting via **Shiki** (\`github-dark-default\`).
-- **framer-motion** for entrance animations and the reading-progress pill.
+- **framer-motion** for entrance animations and the table-of-contents minimap.
 - **Upstash Redis** for the sitewide visitor counter and per-post view counts.
 
 ## Notable bits

@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { notFound } from "next/navigation";
 
 import { Reveal } from "@/components/motion/reveal";
-import ReadingProgress from "@/components/blog/reading-progress";
+import BlogToc from "@/components/blog/blog-toc";
 import ArticleCopyButtons from "@/components/blog/article-copy-buttons";
 import ShareButtons from "@/components/blog/share-buttons";
 import Views from "@/components/views";
@@ -96,7 +96,7 @@ export default async function BlogPostPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: ldJson }}
       />
-      <ReadingProgress />
+      <BlogToc items={post.toc} />
       <ArticleCopyButtons key={slug} />
       <Reveal>
         <div className="flex items-center justify-between gap-3">

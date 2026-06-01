@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 
-import { countWords, renderMarkdown } from "@/lib/markdown";
+import { countWords, renderMarkdownWithToc, type TocItem } from "@/lib/markdown";
 
 export type BlogPost = {
   slug: string;
@@ -18,6 +18,7 @@ export type BlogPost = {
 
 export type BlogPostDetail = BlogPost & {
   html: string;
+  toc: TocItem[];
 };
 
 const BLOG_DIR = path.join(process.cwd(), "blog");
@@ -82,8 +83,8 @@ export async function getBlogPost(
   if (!file) return null;
 
   const { post, content } = readPostFile(file);
-  const html = await renderMarkdown(content);
-  return { ...post, html };
+  const { html, toc } = await renderMarkdownWithToc(content);
+  return { ...post, html, toc };
 }
 
 export function getBlogSlugs(): string[] {

@@ -24,6 +24,7 @@
   "registries": {
     "@ncdai": "https://chanhdai.com/r/{name}.json",
     "@krish": "https://krishnapaulraj.com/r/{name}.json",
-    "@bklit": "https://ui.bklit.com/r/{name}.json"
+    "@bklit": "https://ui.bklit.com/r/{name}.json",
+    "@soundcn": "https://soundcn.xyz/r/{name}.json"
   }
 }
