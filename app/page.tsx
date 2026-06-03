@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import pfp from "@/assets/pfp.jpeg";
+import pfpDark from "@/assets/pfp_dark.png";
+import pfpLight from "@/assets/pfp_light.png";
 import { TerminalIcon, WrenchIcon } from "lucide-react";
 import { Metrics01 } from "@/components/metrics-01";
 
@@ -47,11 +48,19 @@ export default async function Home() {
         <Reveal>
           <div className="flex items-center gap-4 mt-3">
             <Image
-              src={pfp}
+              src={pfpLight}
               alt="Suresh Krishna Paulraj"
               width={110}
               height={110}
-              className="rounded-full object-cover shrink-0"
+              className="rounded-full object-cover shrink-0 dark:hidden"
+              priority
+            />
+            <Image
+              src={pfpDark}
+              alt="Suresh Krishna Paulraj"
+              width={110}
+              height={110}
+              className="rounded-full object-cover shrink-0 hidden dark:block"
               priority
             />
             <div>
