@@ -144,7 +144,7 @@ export default async function Home() {
                     Terminal
                   </p>
                   <p className="mt-0.5 text-xs text-muted-foreground">
-                    My zsh, starship, and fastfetch setup
+                    My Zsh, Powerlevel10k, and tmux setup
                   </p>
                 </div>
               </Link>

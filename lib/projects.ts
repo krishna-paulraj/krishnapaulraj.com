@@ -206,24 +206,24 @@ Themes are powered by the [tweakcn](https://tweakcn.com) registry — 40+ themes
     slug: "dotfiles",
     name: "dotfiles",
     description:
-      "My Zsh + Starship + Fastfetch configuration — the terminal setup I actually run every day.",
+      "My Zsh + Powerlevel10k + tmux configuration — the terminal setup I actually run every day.",
     longDescription: `
-The configuration I run on every machine. Zsh as the shell, Starship for the prompt, eza/fzf/zoxide for nicer navigation, and Fastfetch for the system info banner on shell start.
+The configuration I run on every machine. Zsh as the shell, Powerlevel10k for the prompt, tmux for window and pane management, Neovim as the editor, and eza/fzf/zoxide/bat for nicer navigation.
 
 The full walkthrough — install, configure, apply — lives on the [Terminal Setup](/terminal) page on this site.
 
 ## Why these tools
 
-- **Starship** — fast, sensible defaults, no Oh My Zsh framework overhead.
+- **Powerlevel10k** — fast, instant-prompt Zsh theme with a guided configurator.
+- **tmux** — persistent sessions, vim-style panes, and a \`prefix + g\` lazygit popup.
 - **eza** — \`ls\` with file-type icons and git integration.
 - **fzf + zoxide** — fuzzy finding everywhere, jump to recent directories.
-- **Fastfetch** — quicker than neofetch and uses jsonc config.
 `,
     tech: ["shell"],
     links: [
       {
         label: "Source",
-        href: "https://github.com/krishnapaulraj/dotfiles",
+        href: "https://github.com/krishna-paulraj/dotfiles",
         type: "source",
       },
       { label: "Walkthrough", href: "/terminal", type: "external" },
@@ -231,8 +231,8 @@ The full walkthrough — install, configure, apply — lives on the [Terminal Se
     status: "live",
     highlights: [
       "One-liner Homebrew install for the full toolchain.",
-      "Starship prompt config + Zsh history settings.",
-      "Fastfetch jsonc with custom module order.",
+      "Powerlevel10k prompt + Zsh history and fzf/fd integration.",
+      "Modular tmux config with a lazygit popup binding.",
     ],
   },
 ];

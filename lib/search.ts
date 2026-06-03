@@ -45,10 +45,10 @@ const PAGE_ITEMS: SearchItem[] = [
   {
     id: "page-terminal",
     title: "Terminal Setup",
-    description: "My Zsh / Starship / Fastfetch configuration.",
+    description: "My Zsh + Powerlevel10k + tmux configuration.",
     href: "/terminal",
     kind: "page",
-    keywords: ["zsh", "starship", "dotfiles", "shell"],
+    keywords: ["zsh", "powerlevel10k", "tmux", "neovim", "dotfiles", "shell"],
   },
   {
     id: "page-gears",
