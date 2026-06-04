@@ -1,7 +1,8 @@
 "use client";
 
 import { CheckIcon, CopyIcon } from "lucide-react";
-import { useState } from "react";
+
+import { CopyButton } from "@/components/copy-button";
 
 export default function CodeBlock({
   code,
@@ -10,37 +11,23 @@ export default function CodeBlock({
   code: string;
   html: string;
 }) {
-  const [copied, setCopied] = useState(false);
-
-  const onCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(code);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch {
-      // ignore
-    }
-  };
-
   return (
     <div className="group relative overflow-hidden rounded-lg border border-border">
       <div
         className="terminal-code-block overflow-x-auto"
         dangerouslySetInnerHTML={{ __html: html }}
       />
-      <button
-        type="button"
-        onClick={onCopy}
-        aria-label={copied ? "Copied" : "Copy code"}
-        className="absolute bottom-2 right-2 inline-flex items-center gap-1 rounded-md bg-white/10 px-2 py-1 text-xs text-white/70 backdrop-blur-sm transition-colors hover:bg-white/20 hover:text-white"
+      <CopyButton
+        text={code}
+        variant="ghost"
+        size="sm"
+        aria-label="Copy code"
+        className="absolute right-2 bottom-2 bg-white/10 text-white/70 backdrop-blur-sm hover:bg-white/20 hover:text-white dark:hover:bg-white/20"
+        idleIcon={<CopyIcon className="size-3.5" />}
+        doneIcon={<CheckIcon className="size-3.5" />}
       >
-        {copied ? (
-          <CheckIcon className="size-3.5" />
-        ) : (
-          <CopyIcon className="size-3.5" />
-        )}
-        {copied ? "Copied" : "Copy"}
-      </button>
+        Copy
+      </CopyButton>
     </div>
   );
 }

@@ -306,31 +306,6 @@ figure[data-rehype-pretty-code-figure] pre::-webkit-scrollbar-thumb:hover {
   border-top-left-radius: 0;
 }
 
-/* Blog code block copy button (portaled into figure by ArticleCopyButtons) */
-.code-copy-button {
-  position: absolute;
-  bottom: 0.5rem;
-  right: 0.5rem;
-  z-index: 10;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.375rem;
-  font-size: 0.75rem;
-  color: var(--muted-foreground);
-  background-color: oklch(0 0 0 / 0.4);
-  backdrop-filter: blur(4px);
-  cursor: pointer;
-  transition:
-    color 150ms ease,
-    background-color 150ms ease;
-}
-.code-copy-button:hover {
-  background-color: var(--muted);
-  color: var(--foreground);
-}
-
 /* Terminal page code blocks (shiki direct output) */
 .terminal-code-block {
   background-color: oklch(0.18 0 0);

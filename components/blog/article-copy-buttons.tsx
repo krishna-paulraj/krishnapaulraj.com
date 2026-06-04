@@ -4,6 +4,8 @@ import { CheckIcon, CopyIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
+import { CopyButton } from "@/components/copy-button";
+
 type Target = { el: HTMLElement; code: string };
 
 const SELECTOR = "article figure[data-rehype-pretty-code-figure]";
@@ -34,38 +36,22 @@ export default function ArticleCopyButtons() {
   return (
     <>
       {targets.map((t, i) =>
-        createPortal(<CopyButton code={t.code} />, t.el, `code-copy-${i}`),
+        createPortal(
+          <CopyButton
+            text={t.code}
+            variant="ghost"
+            size="sm"
+            aria-label="Copy code"
+            className="absolute right-2 bottom-2 z-10 bg-black/40 text-muted-foreground backdrop-blur-sm hover:text-foreground"
+            idleIcon={<CopyIcon className="size-3.5" />}
+            doneIcon={<CheckIcon className="size-3.5" />}
+          >
+            Copy
+          </CopyButton>,
+          t.el,
+          `code-copy-${i}`,
+        ),
       )}
     </>
-  );
-}
-
-function CopyButton({ code }: { code: string }) {
-  const [copied, setCopied] = useState(false);
-
-  const onCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(code);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch {
-      // ignore
-    }
-  };
-
-  return (
-    <button
-      type="button"
-      onClick={onCopy}
-      aria-label={copied ? "Copied" : "Copy code"}
-      className="code-copy-button"
-    >
-      {copied ? (
-        <CheckIcon className="size-3.5" />
-      ) : (
-        <CopyIcon className="size-3.5" />
-      )}
-      <span>{copied ? "Copied" : "Copy"}</span>
-    </button>
   );
 }

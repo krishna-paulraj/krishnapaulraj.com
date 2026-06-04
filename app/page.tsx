@@ -12,7 +12,7 @@ import WorkExperienceComponent from "@/components/work/index";
 import ProjectsSection from "@/components/projects/index";
 import BlogSection from "@/components/blog";
 import ComponentsSection from "@/components/components-page/components-section";
-import { CopyButton } from "@/components/copy-button";
+import { CopyEmail } from "@/components/copy-email";
 import HighlightedHeading from "@/components/highlighted-heading";
 import { Reveal } from "@/components/motion/reveal";
 import {
@@ -79,18 +79,7 @@ export default async function Home() {
                 </a>
               </p>
               <p className="flex items-center text-sm text-muted-foreground">
-                <a
-                  href="mailto:krishnapaulraj2004@gmail.com"
-                  className="text-foreground hover:underline underline-offset-4"
-                >
-                  krishnapaulraj2004@gmail.com
-                </a>
-                <CopyButton
-                  text="krishnapaulraj2004@gmail.com"
-                  variant="ghost"
-                  size="icon-xs"
-                  aria-label="Copy email"
-                />
+                <CopyEmail email="krishnapaulraj2004@gmail.com" />
               </p>
             </div>
           </div>
