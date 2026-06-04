@@ -10,9 +10,9 @@ export const contentType = "image/png";
 
 export default async function Image() {
   const pfpData = fs.readFileSync(
-    path.join(process.cwd(), "assets/pfp.jpeg"),
+    path.join(process.cwd(), "assets/pfp_light.png"),
   );
-  const pfpSrc = `data:image/jpeg;base64,${pfpData.toString("base64")}`;
+  const pfpSrc = `data:image/png;base64,${pfpData.toString("base64")}`;
 
   return new ImageResponse(
     <div
