@@ -8,6 +8,8 @@ import Grid from "@/components/charts/grid";
 import LineChart, { Line } from "@/components/charts/line-chart";
 import { ChartTooltip } from "@/components/charts/tooltip";
 import HighlightedHeading from "./highlighted-heading";
+import { Reveal } from "./motion/reveal";
+import { ContactChat } from "./contact-chat";
 
 export function Metrics01() {
   const [data, setData] = useState<InsightsData | null>(null);
@@ -55,7 +57,10 @@ export function Metrics01() {
 
             <dl className="mt-4 grid grid-cols-2 gap-3">
               {[
-                { label: "Unique Visitors", value: data.summary.unique_visitors },
+                {
+                  label: "Unique Visitors",
+                  value: data.summary.unique_visitors,
+                },
                 { label: "Sessions", value: data.summary.total_sessions },
               ].map(({ label, value }) => (
                 <div
@@ -114,6 +119,15 @@ export function Metrics01() {
           </>
         )}
       </div>
+      <Reveal delay={0.48}>
+        <div className="mt-5 w-full border-t pt-5">
+          <h1 className="text-3xl font-bold tracking-tight">Say hi</h1>
+          <HighlightedHeading className="my-4">
+            Let&apos;s connect and build something
+          </HighlightedHeading>
+          <ContactChat />
+        </div>
+      </Reveal>
     </div>
   );
 }

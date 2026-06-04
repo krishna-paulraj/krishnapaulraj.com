@@ -115,7 +115,7 @@ export default async function Home() {
         <Reveal delay={0.44}>
           <ComponentsSection />
         </Reveal>
-        <Reveal delay={0.48}>
+        <Reveal delay={0.52}>
           <div className="mt-5 w-full border-t pt-5">
             <h1 className="text-3xl font-bold tracking-tight">Explore</h1>
             <HighlightedHeading className="my-4">
