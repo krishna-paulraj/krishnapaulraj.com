@@ -1,217 +1,188 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useInView } from "framer-motion";
+import { FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
 
 import { cn } from "@/lib/utils";
 import { CopyButton } from "@/components/copy-button";
 
 const EMAIL = "krishnapaulraj2004@gmail.com";
+const X_URL = "https://x.com/thedevkrish";
+const LINKEDIN_URL = "https://linkedin.com/in/suresh-krishna-paulraj";
+// "visitor" = the person browsing (right, blue). "owner" = me/Krishna (left, gray).
+type Side = "visitor" | "owner";
+
+type Action = { label: string; href: string; icon: React.ReactNode };
 
 type Message =
-  | { from: "me" | "them"; text: string }
-  | { from: "them"; email: string };
+  | { from: Side; kind: "text"; text: string }
+  | { from: "owner"; kind: "email"; email: string }
+  | { from: "owner"; kind: "form" }
+  | { from: "owner"; kind: "actions"; actions: Action[] };
 
 const messages: Message[] = [
-  { from: "me", text: "ngl your site goes hard 🔥" },
-  { from: "me", text: "how do i actually reach you?" },
-  { from: "them", text: "haha appreciate it 🙏" },
+  { from: "visitor", kind: "text", text: "Hey, can I reach out?" },
+  { from: "owner", kind: "text", text: "Of course." },
+  { from: "visitor", kind: "text", text: "Even if it's just to say hi?" },
+  { from: "owner", kind: "text", text: "Especially if it's just to say hi." },
+  { from: "visitor", kind: "text", text: "Nice. What's the best way?" },
+  { from: "owner", kind: "text", text: "Email is usually the easiest." },
+  { from: "owner", kind: "email", email: EMAIL },
+  { from: "visitor", kind: "text", text: "What should I write?" },
   {
-    from: "them",
-    text: "fastest way is to just email me. keep it short tho — don't write me an essay",
+    from: "owner",
+    kind: "text",
+    text: "Whatever's on your mind, a project, an idea, a question, or just a quick introduction.",
   },
-  { from: "them", email: EMAIL },
-  { from: "me", text: "bet 🫡" },
+  {
+    from: "visitor",
+    kind: "text",
+    text: "And if I don't feel like writing an email?",
+  },
+  {
+    from: "owner",
+    kind: "text",
+    text: "That's completely fine. The contact form below goes to the same place.",
+  },
+  { from: "owner", kind: "form" },
+  { from: "visitor", kind: "text", text: "Where else can I find you?" },
+  {
+    from: "owner",
+    kind: "text",
+    text: "I spend most of my time building things, but I occasionally share updates and thoughts online.",
+  },
+  {
+    from: "owner",
+    kind: "actions",
+    actions: [
+      {
+        label: "X (Twitter)",
+        href: X_URL,
+        icon: <FaXTwitter className="size-3.5" />,
+      },
+      {
+        label: "LinkedIn",
+        href: LINKEDIN_URL,
+        icon: <FaLinkedinIn className="size-3.5" />,
+      },
+    ],
+  },
+  { from: "visitor", kind: "text", text: "Sounds good." },
+  {
+    from: "owner",
+    kind: "text",
+    text: "Looking forward to hearing from you. Whether it's a big idea or a simple hello, my inbox is always open.",
+  },
+  {
+    from: "owner",
+    kind: "text",
+    text: "peace ;)",
+  },
 ];
-
-// How long the typing indicator lingers before a "them" message lands.
-function typingDuration(message: Message) {
-  if ("email" in message) return 900;
-  return Math.min(1600, 500 + message.text.length * 16);
-}
-
-// Apple-style soft spring — sent bubbles get a touch more bounce.
-function bubbleSpring(mine: boolean) {
-  return {
-    type: "spring" as const,
-    visualDuration: mine ? 0.45 : 0.5,
-    bounce: mine ? 0.28 : 0.18,
-    opacity: { duration: 0.22 },
-  };
-}
 
 function rowClass(mine: boolean) {
   return cn("flex", mine ? "justify-end" : "justify-start");
 }
 
-function MessageBubble({ message }: { message: Message }) {
-  const mine = message.from === "me";
+function bubbleClass(mine: boolean, extra?: string) {
+  return cn(
+    "max-w-[80%] rounded-2xl px-3.5 py-2 text-sm leading-snug",
+    mine
+      ? "rounded-br-md bg-blue-500 text-white"
+      : "rounded-bl-md bg-muted text-foreground",
+    extra,
+  );
+}
+
+function TextBubble({ mine, text }: { mine: boolean; text: string }) {
+  return <div className={bubbleClass(mine)}>{text}</div>;
+}
+
+function EmailBubble({ email }: { email: string }) {
   return (
-    <div
-      className={cn(
-        "max-w-[80%] rounded-2xl px-3.5 py-2 text-sm leading-snug",
-        mine
-          ? "rounded-br-md bg-blue-500 text-white"
-          : "rounded-bl-md bg-muted text-foreground",
-      )}
-    >
-      {"email" in message ? (
-        <div className="flex flex-col gap-2">
-          <span className="font-medium">{message.email}</span>
-          <CopyButton
-            text={message.email}
-            variant="ghost"
-            size="sm"
-            aria-label="Copy email"
-            className="w-full justify-center rounded-xl bg-foreground/5 text-muted-foreground hover:bg-foreground/10 hover:text-foreground dark:hover:bg-foreground/10"
-          >
-            Copy
-          </CopyButton>
-        </div>
-      ) : (
-        message.text
-      )}
+    <div className={bubbleClass(false, "flex flex-col gap-2")}>
+      <span className="font-medium">{email}</span>
+      <CopyButton
+        text={email}
+        variant="ghost"
+        size="sm"
+        aria-label="Copy email"
+        className="w-full justify-center rounded-xl bg-foreground/5 text-muted-foreground hover:bg-foreground/10 hover:text-foreground dark:hover:bg-foreground/10"
+      >
+        Copy
+      </CopyButton>
     </div>
   );
 }
 
-function TypingDots() {
+function ContactForm() {
+  const field =
+    "w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none placeholder:text-muted-foreground focus:border-foreground/30";
   return (
-    <div className="flex items-center gap-1">
-      {[0, 1, 2].map((dot) => (
-        <motion.span
-          key={dot}
-          className="size-1.5 rounded-full bg-foreground/40"
-          animate={{ scale: [1, 1.3, 1], opacity: [0.35, 1, 0.35] }}
-          transition={{
-            duration: 1.2,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: dot * 0.18,
-          }}
-        />
+    <form
+      onSubmit={(e) => e.preventDefault()}
+      className={bubbleClass(false, "flex w-full max-w-[75%] flex-col gap-2")}
+    >
+      <input type="text" name="name" placeholder="John Doe" className={field} />
+      <input
+        type="email"
+        name="email"
+        placeholder="john@doe.com"
+        className={field}
+      />
+      <textarea
+        name="message"
+        rows={3}
+        placeholder="Enter your message"
+        className={cn(field, "resize-none")}
+      />
+      <button
+        type="submit"
+        className="rounded-lg bg-blue-500 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-600"
+      >
+        Send
+      </button>
+    </form>
+  );
+}
+
+function ActionsBubble({ actions }: { actions: Action[] }) {
+  return (
+    <div className={bubbleClass(false, "flex flex-col gap-2")}>
+      {actions.map((action) => (
+        <a
+          key={action.href}
+          href={action.href}
+          target={action.href.startsWith("mailto") ? undefined : "_blank"}
+          rel="noopener noreferrer"
+          className="flex items-center justify-center gap-2 rounded-xl bg-foreground/5 px-3 py-2 font-medium text-foreground transition-colors hover:bg-foreground/10"
+        >
+          {action.icon}
+          {action.label}
+        </a>
       ))}
     </div>
   );
 }
 
 export function ContactChat() {
-  const ref = useRef<HTMLDivElement>(null);
-  const ghostRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, amount: 0.25 });
-
-  const [minHeight, setMinHeight] = useState<number>();
-  const [reduced, setReduced] = useState(false);
-  const [shown, setShown] = useState(0);
-  const [typing, setTyping] = useState(false);
-
-  // Reserve the conversation's full height so nothing below shifts as bubbles
-  // arrive. Measured from an invisible full render, kept in sync on resize.
-  useEffect(() => {
-    const el = ghostRef.current;
-    if (!el) return;
-    const update = () => setMinHeight(el.offsetHeight);
-    update();
-    const observer = new ResizeObserver(update);
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!inView) return;
-
-    if (
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
-      setReduced(true);
-      setShown(messages.length);
-      return;
-    }
-
-    let cancelled = false;
-    const sleep = (ms: number) =>
-      new Promise<void>((resolve) => setTimeout(resolve, ms));
-
-    (async () => {
-      for (let i = 0; i < messages.length; i++) {
-        if (cancelled) return;
-        const message = messages[i];
-
-        if (message.from === "them") {
-          setTyping(true);
-          await sleep(typingDuration(message));
-          if (cancelled) return;
-          setTyping(false);
-        } else {
-          await sleep(420);
-        }
-
-        if (cancelled) return;
-        setShown(i + 1);
-        await sleep(message.from === "them" ? 340 : 240);
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [inView]);
-
   return (
-    <div className="relative">
-      {/* Invisible full render used only to reserve a stable height. */}
-      <div
-        ref={ghostRef}
-        aria-hidden
-        className="pointer-events-none invisible absolute inset-x-0 top-0 flex flex-col gap-1.5"
-      >
-        {messages.map((message, i) => (
-          <div key={i} className={rowClass(message.from === "me")}>
-            <MessageBubble message={message} />
+    <div className="flex flex-col gap-1.5">
+      {messages.map((message, i) => {
+        const mine = message.from === "visitor";
+        return (
+          <div key={i} className={rowClass(mine)}>
+            {message.kind === "text" ? (
+              <TextBubble mine={mine} text={message.text} />
+            ) : message.kind === "email" ? (
+              <EmailBubble email={message.email} />
+            ) : message.kind === "form" ? (
+              <ContactForm />
+            ) : (
+              <ActionsBubble actions={message.actions} />
+            )}
           </div>
-        ))}
-      </div>
-
-      <div
-        ref={ref}
-        style={minHeight ? { minHeight } : undefined}
-        className="flex flex-col gap-1.5"
-      >
-        <AnimatePresence mode="popLayout">
-          {messages.slice(0, shown).map((message, i) => {
-            const mine = message.from === "me";
-            return (
-              <motion.div
-                key={i}
-                initial={reduced ? false : { opacity: 0, scale: 0.85, y: 8 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={reduced ? { duration: 0 } : bubbleSpring(mine)}
-                style={{ transformOrigin: mine ? "bottom right" : "bottom left" }}
-                className={rowClass(mine)}
-              >
-                <MessageBubble message={message} />
-              </motion.div>
-            );
-          })}
-
-          {typing && (
-            <motion.div
-              key="typing"
-              initial={{ opacity: 0, scale: 0.85, y: 8 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.6, transition: { duration: 0.18 } }}
-              transition={bubbleSpring(false)}
-              style={{ transformOrigin: "bottom left" }}
-              className="flex justify-start"
-            >
-              <div className="rounded-2xl rounded-bl-md bg-muted px-3.5 py-3">
-                <TypingDots />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+        );
+      })}
     </div>
   );
 }
