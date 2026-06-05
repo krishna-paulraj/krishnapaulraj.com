@@ -14,7 +14,8 @@ export function CopyEmail({ email }: { email: string }) {
         onClick={() => copy(email)}
         className="text-foreground hover:underline underline-offset-4 cursor-pointer"
       >
-        {email}
+        <span className="sm:hidden">Email</span>
+        <span className="hidden sm:inline">{email}</span>
       </button>
       <Button
         variant="ghost"

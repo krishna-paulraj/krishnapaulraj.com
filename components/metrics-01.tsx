@@ -22,7 +22,7 @@ export function Metrics01() {
   }, []);
 
   return (
-    <div className="mx-auto w-full max-w-2xl px-6 pb-6 font-sans">
+    <div className="mx-auto w-full max-w-2xl px-3 md:px-6 pb-6 font-sans">
       <div className="mt-5 w-full border-t pt-5">
         <h1 className="text-3xl font-bold tracking-tight">Insights</h1>
         <HighlightedHeading className="my-4">

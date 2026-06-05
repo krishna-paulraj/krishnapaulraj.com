@@ -11,7 +11,7 @@ export default async function NowPlaying() {
       href={track.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+      className="flex w-full items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
     >
       <Image
         src={appleMusicIcon}
@@ -20,9 +20,11 @@ export default async function NowPlaying() {
         height={18}
         className="shrink-0"
       />
-      <span>{track.nowPlaying ? "Now playing" : "Last played"}</span>
-      <span className="text-muted-foreground/50">—</span>
-      <span className="text-foreground">
+      <span className="shrink-0 whitespace-nowrap">
+        {track.nowPlaying ? "Now playing" : "Last played"}
+      </span>
+      <span className="shrink-0 text-muted-foreground/50">—</span>
+      <span className="min-w-0 truncate text-foreground">
         {track.name}
         <span className="text-muted-foreground"> · {track.artist}</span>
       </span>
