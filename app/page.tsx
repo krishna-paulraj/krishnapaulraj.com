@@ -4,8 +4,15 @@ import Link from "next/link";
 import { Suspense } from "react";
 import pfpDark from "@/assets/pfp_dark.png";
 import pfpLight from "@/assets/pfp_light.png";
-import { TerminalIcon, WrenchIcon } from "lucide-react";
+import { MailIcon, TerminalIcon, WrenchIcon } from "lucide-react";
+import {
+  FaGithub,
+  FaInstagram,
+  FaLinkedinIn,
+  FaXTwitter,
+} from "react-icons/fa6";
 import { Metrics01 } from "@/components/metrics-01";
+import ClosingNote from "@/components/closing-note";
 
 import NowPlaying from "@/components/NowPlaying";
 import WorkExperienceComponent from "@/components/work/index";
@@ -20,6 +27,12 @@ import {
   GitHubContributionsFallback,
 } from "@/components/github-contributions";
 import { getCachedContributions } from "@/lib/get-cached-contributions";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export const metadata: Metadata = {
   alternates: {
@@ -33,10 +46,38 @@ export const metadata: Metadata = {
 export default async function Home() {
   const contributions = getCachedContributions("suresh-krishna-paulraj-1032");
 
+  const socials = [
+    {
+      href: "https://x.com/thedevkrish",
+      label: "X / Twitter",
+      icon: FaXTwitter,
+    },
+    {
+      href: "https://github.com/krishna-paulraj",
+      label: "GitHub",
+      icon: FaGithub,
+    },
+    {
+      href: "https://linkedin.com/in/suresh-krishna-paulraj",
+      label: "LinkedIn",
+      icon: FaLinkedinIn,
+    },
+    {
+      href: "https://instagram.com/krishnapaulraj",
+      label: "Instagram",
+      icon: FaInstagram,
+    },
+    {
+      href: "mailto:krishnapaulraj2004@gmail.com",
+      label: "Email",
+      icon: MailIcon,
+    },
+  ];
+
   return (
     <>
-      <div className="mx-auto w-full max-w-2xl flex-1 px-6 pb-6 font-sans">
-        <div className="w-full overflow-x-auto overflow-y-hidden">
+      <div className="mx-auto w-full max-w-2xl flex-1 px-3 md:px-6 pb-6 font-sans">
+        <div className="-mt-2.5 w-full overflow-x-auto overflow-y-hidden">
           <Suspense fallback={<GitHubContributionsFallback />}>
             <GitHubContributions
               contributions={contributions}
@@ -52,7 +93,7 @@ export default async function Home() {
               alt="Suresh Krishna Paulraj"
               width={110}
               height={110}
-              className="rounded-full object-cover shrink-0 dark:hidden"
+              className="size-20 rounded-full object-cover shrink-0 sm:size-[110px] dark:hidden"
               priority
             />
             <Image
@@ -60,15 +101,18 @@ export default async function Home() {
               alt="Suresh Krishna Paulraj"
               width={110}
               height={110}
-              className="rounded-full object-cover shrink-0 hidden dark:block"
+              className="size-20 rounded-full object-cover shrink-0 hidden sm:size-[110px] dark:block"
               priority
             />
             <div>
               <h1 className="text-2xl font-semibold tracking-tight">
-                Suresh Krishna Paulraj
+                Suresh Krishna
               </h1>
               <p className="text-sm text-muted-foreground">
-                Software Engineer at{" "}
+                <span className="sm:hidden">SDE</span>
+                <span className="hidden sm:inline">
+                  Software Engineer
+                </span> at{" "}
                 <a
                   href="https://blocsys.com"
                   target="_blank"
@@ -85,8 +129,35 @@ export default async function Home() {
           </div>
         </Reveal>
 
+        <Reveal delay={0.08} className="mt-4">
+          <TooltipProvider>
+            <ul className="flex flex-wrap gap-1">
+              {socials.map(({ href, label, icon: Icon }) => (
+                <li key={href}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <a
+                        href={href}
+                        target={
+                          href.startsWith("mailto") ? undefined : "_blank"
+                        }
+                        rel="noopener noreferrer"
+                        aria-label={label}
+                        className="flex size-9 items-center justify-center rounded-lg border border-border bg-background text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                      >
+                        <Icon className="size-5" />
+                      </a>
+                    </TooltipTrigger>
+                    <TooltipContent>{label}</TooltipContent>
+                  </Tooltip>
+                </li>
+              ))}
+            </ul>
+          </TooltipProvider>
+        </Reveal>
+
         <Reveal
-          delay={0.08}
+          delay={0.12}
           className="mt-4 space-y-2 text-sm text-muted-foreground leading-relaxed"
         >
           <p>
@@ -156,6 +227,7 @@ export default async function Home() {
         </Reveal>
       </div>
       <Metrics01 />
+      <ClosingNote />
     </>
   );
 }
