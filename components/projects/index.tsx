@@ -1,66 +1,72 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 
 import HighlightedHeading from "@/components/highlighted-heading";
 import TechStack from "@/components/projects/tech-stack";
-import { PROJECTS, type Project } from "@/lib/projects";
+import { PROJECTS, type Project, type ProjectStatus } from "@/lib/projects";
 
-function ProjectCard({ project, views }: { project: Project; views?: number }) {
+const STATUS_LABEL: Record<ProjectStatus, string> = {
+  live: "Live",
+  "in-progress": "In progress",
+  archived: "Archived",
+};
+
+const STATUS_DOT: Record<ProjectStatus, string> = {
+  live: "bg-emerald-500",
+  "in-progress": "bg-amber-500",
+  archived: "bg-zinc-500",
+};
+
+function ProjectRow({ project, views }: { project: Project; views?: number }) {
   const detailHref = `/projects/${project.slug}`;
+  const viewCount = views ?? 0;
 
   return (
-    <div className="flex flex-col gap-3">
-      <Link
-        href={detailHref}
-        aria-label={`${project.name} — read more`}
-        className="group block"
-      >
-        <div className="aspect-video overflow-hidden rounded-lg border border-border bg-muted">
-          {project.image ? (
-            <>
-              <Image
-                src={project.image}
-                alt={project.name}
-                width={600}
-                height={338}
-                className={`h-full w-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-110 ${project.imageDark ? "dark:hidden" : ""}`}
-              />
-              {project.imageDark && (
-                <Image
-                  src={project.imageDark}
-                  alt={project.name}
-                  width={600}
-                  height={338}
-                  className="hidden h-full w-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-110 dark:block"
-                />
-              )}
-            </>
-          ) : (
-            <div className="h-full w-full bg-muted" />
-          )}
-        </div>
-      </Link>
-
-      <div>
-        <p className="font-semibold text-foreground">
-          <Link href={detailHref} className="hover:underline">
-            {project.name}
-          </Link>
+    <Link
+      href={detailHref}
+      aria-label={`${project.name} — read more`}
+      className="group flex flex-col gap-1 py-4 sm:flex-row sm:items-start sm:justify-between sm:gap-8"
+    >
+      <div className="flex-1">
+        <p className="font-semibold text-foreground group-hover:underline">
+          {project.name}
         </p>
         <p className="mt-0.5 line-clamp-2 text-sm text-muted-foreground">
           {project.description}
         </p>
-        {views !== undefined && views > 0 && (
-          <p className="mt-1 text-xs text-muted-foreground">
-            {views.toLocaleString()} {views === 1 ? "view" : "views"}
-          </p>
-        )}
+        <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2">
+          {project.tech.length > 0 && <TechStack tech={project.tech} />}
+          {(project.status || viewCount > 0) && (
+            <div className="flex items-center gap-x-2 text-xs text-muted-foreground">
+              {project.status && (
+                <span className="inline-flex items-center gap-1.5">
+                  <span
+                    aria-hidden="true"
+                    className={`inline-block size-1.5 rounded-full ${STATUS_DOT[project.status]}`}
+                  />
+                  {STATUS_LABEL[project.status]}
+                </span>
+              )}
+              {project.status && viewCount > 0 && (
+                <span aria-hidden="true">·</span>
+              )}
+              {viewCount > 0 && (
+                <span>
+                  {viewCount.toLocaleString()}{" "}
+                  {viewCount === 1 ? "view" : "views"}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
       </div>
-
-      {project.tech.length > 0 && <TechStack tech={project.tech} />}
-    </div>
+      {project.year && (
+        <span className="shrink-0 text-sm text-muted-foreground">
+          {project.year}
+        </span>
+      )}
+    </Link>
   );
 }
 
@@ -80,15 +86,13 @@ export default function ProjectsSection({
         I love building things
       </HighlightedHeading>
 
-      <div className="mt-6 grid grid-cols-1 gap-8 sm:grid-cols-2">
+      <ul className="divide-y divide-border">
         {PROJECTS.map((project) => (
-          <ProjectCard
-            key={project.slug}
-            project={project}
-            views={viewCounts?.[project.slug]}
-          />
+          <li key={project.slug}>
+            <ProjectRow project={project} views={viewCounts?.[project.slug]} />
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 }
