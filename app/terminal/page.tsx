@@ -278,7 +278,7 @@ export default async function TerminalPage() {
   ]);
 
   return (
-    <div className="mx-auto w-full max-w-3xl flex-1 px-3 md:px-6 py-6 font-sans">
+    <div className="mx-auto w-full max-w-2xl flex-1 px-3 md:px-6 py-6 font-sans">
       <Reveal>
         <h1 className="text-3xl font-bold tracking-tight">Terminal Setup</h1>
         <p className="mt-2 text-sm text-muted-foreground">
