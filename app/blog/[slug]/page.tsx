@@ -5,10 +5,10 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { notFound } from "next/navigation";
 
 import { Reveal } from "@/components/motion/reveal";
-import BlogToc from "@/components/blog/blog-toc";
-import ArticleCopyButtons from "@/components/blog/article-copy-buttons";
-import ShareButtons from "@/components/blog/share-buttons";
-import Views from "@/components/views";
+import BlogToc from "@/components/sections/blog/blog-toc";
+import ArticleCopyButtons from "@/components/sections/blog/article-copy-buttons";
+import ShareButtons from "@/components/sections/blog/share-buttons";
+import Views from "@/components/ui/views";
 import {
   getBlogPost,
   getBlogPosts,
@@ -91,7 +91,7 @@ export default async function BlogPostPage({
   );
 
   return (
-    <article className="mx-auto w-full max-w-2xl flex-1 px-6 py-6 font-sans">
+    <article className="mx-auto w-full max-w-2xl flex-1 px-3 md:px-6 py-6 font-sans">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: ldJson }}

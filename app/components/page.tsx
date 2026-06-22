@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import { Reveal } from "@/components/motion/reveal";
-import ComponentsSection from "@/components/components-page/components-section";
+import ComponentsSection from "@/components/sections/components-page/components-section";
 
 export const metadata: Metadata = {
   title: "Components",
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function ComponentsPage() {
   return (
-    <div className="mx-auto w-full max-w-2xl flex-1 px-6 py-6 font-sans">
+    <div className="mx-auto w-full max-w-2xl flex-1 px-3 md:px-6 py-6 font-sans">
       <Reveal>
         <ComponentsSection standalone />
       </Reveal>

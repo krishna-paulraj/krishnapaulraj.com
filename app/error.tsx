@@ -4,8 +4,9 @@ import Link from "next/link";
 import { ArrowRightIcon, RefreshCwIcon } from "lucide-react";
 import { useEffect } from "react";
 
-import HighlightedHeading from "@/components/highlighted-heading";
+import HighlightedHeading from "@/components/ui/highlighted-heading";
 import { Reveal } from "@/components/motion/reveal";
+import { ACTION_BUTTON_CLASS } from "@/constants";
 
 export default function Error({
   error,
@@ -21,7 +22,7 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="mx-auto w-full max-w-2xl flex-1 px-6 py-16 font-sans">
+    <div className="mx-auto w-full max-w-2xl flex-1 px-3 md:px-6 py-16 font-sans">
       <Reveal>
         <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
           Error
@@ -50,7 +51,7 @@ export default function Error({
         <button
           type="button"
           onClick={() => unstable_retry()}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-foreground transition-colors hover:bg-muted"
+          className={ACTION_BUTTON_CLASS}
         >
           <RefreshCwIcon className="size-3.5" />
           Try again

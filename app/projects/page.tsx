@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import ProjectsSection from "@/components/projects/index";
+import ProjectsSection from "@/components/sections/projects/index";
 import { Reveal } from "@/components/motion/reveal";
 import { PROJECTS } from "@/lib/projects";
 import { getViews } from "@/lib/redis";
@@ -19,7 +19,7 @@ export default async function ProjectsPage() {
   );
 
   return (
-    <div className="mx-auto w-full max-w-2xl flex-1 px-6 py-6 font-sans">
+    <div className="mx-auto w-full max-w-2xl flex-1 px-3 md:px-6 py-6 font-sans">
       <Reveal>
         <ProjectsSection standalone viewCounts={viewCounts} />
       </Reveal>

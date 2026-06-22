@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRightIcon } from "lucide-react";
 
-import HighlightedHeading from "@/components/highlighted-heading";
+import HighlightedHeading from "@/components/ui/highlighted-heading";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { getBlogPosts } from "@/lib/blog";
 
@@ -24,7 +24,7 @@ export default function NotFound() {
   const recent = getBlogPosts().slice(0, 3);
 
   return (
-    <div className="mx-auto w-full max-w-2xl flex-1 px-6 py-16 font-sans">
+    <div className="mx-auto w-full max-w-2xl flex-1 px-3 md:px-6 py-16 font-sans">
       <Reveal>
         <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
           404

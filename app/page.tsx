@@ -11,21 +11,21 @@ import {
   FaLinkedinIn,
   FaXTwitter,
 } from "react-icons/fa6";
-import { Metrics01 } from "@/components/metrics-01";
-import ClosingNote from "@/components/closing-note";
+import { Metrics01 } from "@/components/sections/metrics-01";
+import ClosingNote from "@/components/sections/closing-note";
 
-import NowPlaying from "@/components/NowPlaying";
-import WorkExperienceComponent from "@/components/work/index";
-import ProjectsSection from "@/components/projects/index";
-import BlogSection from "@/components/blog";
-import ComponentsSection from "@/components/components-page/components-section";
-import { CopyEmail } from "@/components/copy-email";
-import HighlightedHeading from "@/components/highlighted-heading";
+import NowPlaying from "@/components/sections/NowPlaying";
+import WorkExperienceComponent from "@/components/sections/work/index";
+import ProjectsSection from "@/components/sections/projects/index";
+import BlogSection from "@/components/sections/blog";
+import ComponentsSection from "@/components/sections/components-page/components-section";
+import { CopyEmail } from "@/components/ui/copy-email";
+import HighlightedHeading from "@/components/ui/highlighted-heading";
 import { Reveal } from "@/components/motion/reveal";
 import {
   GitHubContributions,
   GitHubContributionsFallback,
-} from "@/components/github-contributions";
+} from "@/components/sections/github-contributions";
 import { getCachedContributions } from "@/lib/get-cached-contributions";
 import {
   Tooltip,
@@ -81,7 +81,6 @@ export default async function Home() {
           <Suspense fallback={<GitHubContributionsFallback />}>
             <GitHubContributions
               contributions={contributions}
-              githubProfileUrl="https://github.com/suresh-krishna-paulraj-1032"
               className="text-xs"
             />
           </Suspense>

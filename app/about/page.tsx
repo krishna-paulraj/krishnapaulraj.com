@@ -3,7 +3,7 @@ import Link from "next/link";
 import { MailIcon } from "lucide-react";
 import { FaGithub, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
 
-import HighlightedHeading from "@/components/highlighted-heading";
+import HighlightedHeading from "@/components/ui/highlighted-heading";
 import { Reveal } from "@/components/motion/reveal";
 import { FaInstagram } from "react-icons/fa6";
 
@@ -40,7 +40,7 @@ const socials = [
 
 export default function AboutPage() {
   return (
-    <div className="mx-auto w-full max-w-2xl flex-1 px-6 py-6 font-sans">
+    <div className="mx-auto w-full max-w-2xl flex-1 px-3 md:px-6 py-6 font-sans">
       <Reveal>
         <h1 className="text-3xl font-bold tracking-tight">About</h1>
         <HighlightedHeading className="my-4">

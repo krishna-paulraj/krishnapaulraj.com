@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { AppWindowIcon, LaptopIcon, PuzzleIcon } from "lucide-react";
 
-import HighlightedHeading from "@/components/highlighted-heading";
+import HighlightedHeading from "@/components/ui/highlighted-heading";
 import { Reveal } from "@/components/motion/reveal";
 
 export const metadata: Metadata = {
@@ -93,7 +93,7 @@ function LinkItem({ label, href }: { label: string; href: string }) {
 
 export default function GearsPage() {
   return (
-    <div className="mx-auto w-full max-w-2xl flex-1 px-6 py-6 font-sans">
+    <div className="mx-auto w-full max-w-2xl flex-1 px-3 md:px-6 py-6 font-sans">
       <Reveal>
         <h1 className="text-3xl font-bold tracking-tight">Gears</h1>
         <HighlightedHeading className="my-4">

@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { DownloadIcon, ExternalLinkIcon } from "lucide-react";
 
-import HighlightedHeading from "@/components/highlighted-heading";
-import WorkExperienceComponent from "@/components/work/index";
+import HighlightedHeading from "@/components/ui/highlighted-heading";
+import WorkExperienceComponent from "@/components/sections/work/index";
 import { Reveal } from "@/components/motion/reveal";
+import { ACTION_BUTTON_CLASS } from "@/constants";
 
 export const metadata: Metadata = {
   title: "Resume",
@@ -23,7 +24,7 @@ const skills = {
 
 export default function ResumePage() {
   return (
-    <div className="mx-auto w-full max-w-2xl flex-1 px-6 py-6 font-sans">
+    <div className="mx-auto w-full max-w-2xl flex-1 px-3 md:px-6 py-6 font-sans">
       <Reveal className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Resume</h1>
@@ -43,7 +44,7 @@ export default function ResumePage() {
           <a
             href={RESUME_FILE}
             download
-            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-foreground transition-colors hover:bg-muted"
+            className={ACTION_BUTTON_CLASS}
           >
             <DownloadIcon className="size-4" />
             Download
@@ -52,7 +53,7 @@ export default function ResumePage() {
             href={RESUME_FILE}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-foreground transition-colors hover:bg-muted"
+            className={ACTION_BUTTON_CLASS}
           >
             <ExternalLinkIcon className="size-4" />
             Open
@@ -73,7 +74,7 @@ export default function ResumePage() {
             </p>
             <a
               href={RESUME_FILE}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-foreground transition-colors hover:bg-muted"
+              className={ACTION_BUTTON_CLASS}
             >
               <DownloadIcon className="size-4" />
               Download the PDF

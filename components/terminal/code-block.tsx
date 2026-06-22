@@ -2,7 +2,7 @@
 
 import { CheckIcon, CopyIcon } from "lucide-react";
 
-import { CopyButton } from "@/components/copy-button";
+import { CopyButton } from "@/components/ui/copy-button";
 
 export default function CodeBlock({
   code,

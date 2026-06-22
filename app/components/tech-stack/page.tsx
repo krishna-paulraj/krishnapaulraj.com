@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 import { highlightCode } from "@/lib/highlight";
-import { ComponentShowcase } from "@/components/components-page/component-showcase";
-import type { ApiEntry } from "@/components/components-page/api-reference";
-import { TechStackDemo } from "@/components/components-page/demos/tech-stack-demo";
+import { ComponentShowcase } from "@/components/sections/components-page/component-showcase";
+import type { ApiEntry } from "@/components/sections/components-page/api-reference";
+import { TechStackDemo } from "@/components/sections/components-page/demos/tech-stack-demo";
 import registry from "@/public/r/tech-stack.json";
 
 export const metadata: Metadata = {

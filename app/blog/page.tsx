@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import HighlightedHeading from "@/components/highlighted-heading";
+import HighlightedHeading from "@/components/ui/highlighted-heading";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { getAllTags, getBlogPosts } from "@/lib/blog";
 import { getViews } from "@/lib/redis";
@@ -46,7 +46,7 @@ export default async function BlogPage({
   );
 
   return (
-    <div className="mx-auto w-full max-w-2xl flex-1 px-6 py-6 font-sans">
+    <div className="mx-auto w-full max-w-2xl flex-1 px-3 md:px-6 py-6 font-sans">
       <Reveal>
         <h1 className="text-3xl font-bold tracking-tight">Writing</h1>
         <HighlightedHeading className="my-4">

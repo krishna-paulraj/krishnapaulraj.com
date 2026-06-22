@@ -10,11 +10,12 @@ import {
 } from "lucide-react";
 import { FaGithub } from "react-icons/fa6";
 
+import { ACTION_BUTTON_CLASS } from "@/constants";
 import { Reveal } from "@/components/motion/reveal";
-import ShareButtons from "@/components/blog/share-buttons";
-import TechStack from "@/components/projects/tech-stack";
-import { GitHubStars } from "@/components/github-stars";
-import Views from "@/components/views";
+import ShareButtons from "@/components/sections/blog/share-buttons";
+import TechStack from "@/components/sections/projects/tech-stack";
+import { GitHubStars } from "@/components/ui/github-stars";
+import Views from "@/components/ui/views";
 import { extractGitHubRepo, getGitHubStars } from "@/lib/github";
 import { SITE_URL } from "@/lib/constants";
 import { renderMarkdown } from "@/lib/markdown";
@@ -71,8 +72,7 @@ const STATUS_DOT: Record<ProjectStatus, string> = {
 
 function LinkButton({ link }: { link: ProjectLink }) {
   const isInternal = link.href.startsWith("/");
-  const className =
-    "inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-foreground transition-colors hover:bg-muted";
+  const className = ACTION_BUTTON_CLASS;
 
   const icon =
     link.type === "source" ? (
@@ -129,7 +129,7 @@ export default async function ProjectPage({
     project.links?.find((l) => l.type === "live") ?? sourceLink ?? null;
 
   return (
-    <article className="mx-auto w-full max-w-2xl flex-1 px-6 py-6 font-sans">
+    <article className="mx-auto w-full max-w-2xl flex-1 px-3 md:px-6 py-6 font-sans">
       <Reveal>
         <div className="flex items-center justify-between gap-3">
           <Link
