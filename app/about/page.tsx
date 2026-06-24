@@ -27,7 +27,7 @@ const socials = [
     icon: FaInstagram,
   },
   {
-    href: "https://linkedin.com/in/krishnapaulraj",
+    href: "https://linkedin.com/in/suresh-krishna-paulraj",
     label: "LinkedIn",
     icon: FaLinkedinIn,
   },

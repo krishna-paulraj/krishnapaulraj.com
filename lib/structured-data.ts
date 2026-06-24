@@ -10,9 +10,8 @@ const WEBSITE_ID = `${SITE_URL}/#website`;
 
 const SOCIAL_PROFILES = [
   "https://x.com/thedevkrish",
-  "https://github.com/krishnapaulraj",
-  "https://linkedin.com/in/krishnapaulraj",
-  "https://youtube.com/@thedevkrish",
+  "https://github.com/krishna-paulraj",
+  "https://linkedin.com/in/suresh-krishna-paulraj",
 ];
 
 export function buildSiteGraph() {
