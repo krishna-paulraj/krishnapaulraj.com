@@ -37,3 +37,21 @@ export async function getViews(
   const values = await redis.mget<(number | null)[]>(...keys);
   return Object.fromEntries(slugs.map((s, i) => [s, values[i] ?? 0]));
 }
+
+/**
+ * Fixed-window rate limiter keyed by visitor fingerprint. Returns whether the
+ * caller is still under `limit` for the current `windowSeconds` window.
+ */
+export async function rateLimit(
+  scope: string,
+  limit: number,
+  windowSeconds: number,
+): Promise<{ ok: boolean; remaining: number }> {
+  const fp = await visitorFingerprint();
+  const key = `ratelimit:${scope}:${fp}`;
+  const count = await redis.incr(key);
+  if (count === 1) {
+    await redis.expire(key, windowSeconds);
+  }
+  return { ok: count <= limit, remaining: Math.max(0, limit - count) };
+}

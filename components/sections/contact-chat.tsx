@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
 
 import { cn } from "@/lib/utils";
@@ -114,32 +115,104 @@ function EmailBubble({ email }: { email: string }) {
   );
 }
 
+type FormStatus = "idle" | "sending" | "success" | "error";
+
 function ContactForm() {
   const field =
     "w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none placeholder:text-muted-foreground focus:border-foreground/30";
+  const [status, setStatus] = useState<FormStatus>("idle");
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (status === "sending") return;
+
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    setStatus("sending");
+    setError(null);
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: String(data.get("name") ?? ""),
+          email: String(data.get("email") ?? ""),
+          message: String(data.get("message") ?? ""),
+          company: String(data.get("company") ?? ""),
+        }),
+      });
+
+      if (!res.ok) {
+        const payload = (await res.json().catch(() => null)) as {
+          error?: string;
+        } | null;
+        throw new Error(payload?.error ?? "Something went wrong.");
+      }
+
+      form.reset();
+      setStatus("success");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setStatus("error");
+    }
+  }
+
+  if (status === "success") {
+    return (
+      <div className={bubbleClass(false, "flex flex-col gap-1")}>
+        <span className="font-medium">Got it — thanks for reaching out.</span>
+        <span className="text-muted-foreground">
+          Your message is on its way to my inbox. I&apos;ll get back to you soon.
+        </span>
+      </div>
+    );
+  }
+
   return (
     <form
-      onSubmit={(e) => e.preventDefault()}
+      onSubmit={handleSubmit}
       className={bubbleClass(false, "flex w-full max-w-[75%] flex-col gap-2")}
     >
-      <input type="text" name="name" placeholder="John Doe" className={field} />
+      <input
+        type="text"
+        name="name"
+        placeholder="John Doe"
+        className={field}
+        required
+      />
       <input
         type="email"
         name="email"
         placeholder="john@doe.com"
         className={field}
+        required
       />
       <textarea
         name="message"
         rows={3}
         placeholder="Enter your message"
         className={cn(field, "resize-none")}
+        required
       />
+      {/* Honeypot: hidden from people, tempting to bots. Submissions that fill
+          it are dropped server-side. */}
+      <input
+        type="text"
+        name="company"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="hidden"
+      />
+      {error && <span className="text-xs text-destructive">{error}</span>}
       <button
         type="submit"
-        className="rounded-lg bg-blue-500 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-600"
+        disabled={status === "sending"}
+        className="rounded-lg bg-blue-500 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        Send
+        {status === "sending" ? "Sending…" : "Send"}
       </button>
     </form>
   );
