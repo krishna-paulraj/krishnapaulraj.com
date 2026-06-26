@@ -4,7 +4,6 @@ import { use } from "react";
 import { format } from "date-fns";
 
 import { cn } from "@/lib/utils";
-import { Spinner } from "@/components/ui/spinner";
 import {
   Tooltip,
   TooltipContent,
@@ -63,9 +62,42 @@ export function GitHubContributions({
 }
 
 export function GitHubContributionsFallback() {
+  // Mirror the real graph's geometry so swapping in the data causes no layout shift.
+  const blockSize = 11;
+  const blockMargin = 3;
+  const weeks = 53;
+  const days = 7;
+  const labelHeight = 22;
+  const width = weeks * (blockSize + blockMargin) - blockMargin;
+  const height = labelHeight + (blockSize + blockMargin) * days - blockMargin;
+
   return (
-    <div className="flex h-40.5 w-full items-center justify-center">
-      <Spinner className="text-muted-foreground" />
+    <div
+      className="mx-auto flex w-max max-w-full flex-col gap-2"
+      role="status"
+      aria-label="Loading GitHub contributions"
+    >
+      <svg
+        className="block animate-pulse overflow-visible"
+        height={height}
+        viewBox={`0 0 ${width} ${height}`}
+        width={width}
+      >
+        {Array.from({ length: weeks }).map((_, weekIndex) =>
+          Array.from({ length: days }).map((_, dayIndex) => (
+            <rect
+              key={`${weekIndex}-${dayIndex}`}
+              className="fill-muted-foreground/15"
+              height={blockSize}
+              width={blockSize}
+              rx={2}
+              ry={2}
+              x={(blockSize + blockMargin) * weekIndex}
+              y={labelHeight + (blockSize + blockMargin) * dayIndex}
+            />
+          )),
+        )}
+      </svg>
     </div>
   );
 }
