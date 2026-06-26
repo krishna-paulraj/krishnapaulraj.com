@@ -28,8 +28,8 @@ export function ProfileHeader() {
           Suresh Krishna
         </h1>
         <p className="text-sm text-muted-foreground">
-          <span className="sm:hidden">SDE</span>
-          <span className="hidden sm:inline">Software Engineer</span> at{" "}
+          <span className="sm:hidden">Jr. Blockchain Dev</span>
+          <span className="hidden sm:inline">Jr. Blockchain Developer</span> at{" "}
           <a
             href="https://blocsys.com"
             target="_blank"

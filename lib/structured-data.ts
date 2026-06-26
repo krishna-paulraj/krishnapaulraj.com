@@ -24,7 +24,7 @@ export function buildSiteGraph() {
         name: SITE_AUTHOR,
         url: SITE_URL,
         image: `${SITE_URL}/opengraph-image`,
-        jobTitle: "Software Engineer",
+        jobTitle: "Jr. Blockchain Developer",
         worksFor: {
           "@type": "Organization",
           name: "Blocsys",

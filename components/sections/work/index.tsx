@@ -15,14 +15,13 @@ const WORK_EXPERIENCE: ExperienceItemType[] = [
     positions: [
       {
         id: "1-1",
-        title: "Software Engineer",
+        title: "Jr. Blockchain Developer",
         employmentPeriod: { start: "06.2025" },
         employmentType: "Full-time",
         description: `
-- Build and optimize core features to improve functionality and user experience.
-- Maintain design consistency and ensure adherence to UI/UX best practices.
-- Implement scalable and robust frontend solutions for both web and mobile platforms.
-- Conduct technical analysis to identify and deliver optimal solutions.`,
+- **Built scalable web applications:** Focusing on clean architecture, performance, and seamless user experience.
+- **Web3 applications:** Worked on decentralized applications across Solana and EVM ecosystems, integrating smart wallets, smart contracts, and on-chain interactions.
+- **Managed server deployments:** CI/CD pipelines to streamline development workflows, automate releases, and ensure reliable application delivery across environments.`,
         icon: <Code2Icon />,
         skills: ["TypeScript", "React.js", "Next.js", "LangChain"],
         isExpanded: true,

@@ -4,7 +4,7 @@ import { ImageResponse } from "next/og";
 
 import { SITE_URL } from "@/lib/constants";
 
-export const alt = "Suresh Krishna — Software Engineer";
+export const alt = "Suresh Krishna — Jr. Blockchain Developer";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -79,7 +79,7 @@ export default async function Image() {
               letterSpacing: "-0.01em",
             }}
           >
-            Software Engineer · TypeScript, React, AI
+            Jr. Blockchain Developer · TypeScript, React, AI
           </div>
         </div>
       </div>

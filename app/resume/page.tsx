@@ -29,7 +29,7 @@ export default function ResumePage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Resume</h1>
           <HighlightedHeading className="my-4">
-            Suresh Krishna Paulraj · Software Engineer
+            Suresh Krishna Paulraj · Jr. Blockchain Developer
           </HighlightedHeading>
           <Reveal delay={0.24}>
             <p className="text-sm leading-relaxed text-muted-foreground">
