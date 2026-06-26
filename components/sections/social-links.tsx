@@ -50,6 +50,10 @@ export function SocialLinks() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <a
+                  // Some browser extensions rewrite link attributes before
+                  // React hydrates, which trips a (harmless) hydration warning.
+                  // The markup is deterministic, so suppress it on these links.
+                  suppressHydrationWarning
                   href={href}
                   target={href.startsWith("mailto") ? undefined : "_blank"}
                   rel="noopener noreferrer"
