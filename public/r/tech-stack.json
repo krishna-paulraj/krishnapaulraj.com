@@ -4,10 +4,8 @@
   "type": "registry:component",
   "title": "Tech Stack",
   "author": "Suresh Krishna Paulraj <krishnapaulraj2004@gmail.com>",
-  "description": "A hover-expandable stack of overlapping pills for displaying a list of technologies, languages, or tools \u2014 animated with framer-motion.",
-  "dependencies": [
-    "framer-motion"
-  ],
+  "description": "A hover-expandable stack of overlapping pills for displaying a list of technologies, languages, or tools animated with framer-motion.",
+  "dependencies": ["framer-motion"],
   "registryDependencies": [],
   "files": [
     {
@@ -17,7 +15,5 @@
       "target": "components/tech-stack.tsx"
     }
   ],
-  "categories": [
-    "display"
-  ]
+  "categories": ["display"]
 }
