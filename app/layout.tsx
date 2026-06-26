@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme/theme-provider";
 import { MotionProvider } from "@/components/motion/motion-provider";
 import { SearchProvider } from "@/components/search/search";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
 import { getSearchItems } from "@/lib/search";
 import { buildSiteGraph, jsonLdString } from "@/lib/structured-data";
 
@@ -31,7 +32,7 @@ export const metadata: Metadata = {
   keywords: [
     "Krishna Paulraj",
     "Suresh Krishna Paulraj",
-    "Software Engineer",
+    "Jr. Blockchain Developer",
     "Next.js Developer",
     "React Developer",
     "TypeScript",
@@ -90,7 +91,7 @@ export default function RootLayout({
       className={`${outfit.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">
+      <body className="flex min-h-full flex-col">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: jsonLdString(buildSiteGraph()) }}
@@ -105,6 +106,7 @@ export default function RootLayout({
               </SearchProvider>
             </TooltipProvider>
           </MotionProvider>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

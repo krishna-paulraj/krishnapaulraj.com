@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
+import { toast } from "sonner";
 
 import { cn } from "@/lib/utils";
 import { CopyButton } from "@/components/ui/copy-button";
@@ -121,7 +122,6 @@ function ContactForm() {
   const field =
     "w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none placeholder:text-muted-foreground focus:border-foreground/30";
   const [status, setStatus] = useState<FormStatus>("idle");
-  const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -130,7 +130,6 @@ function ContactForm() {
     const form = event.currentTarget;
     const data = new FormData(form);
     setStatus("sending");
-    setError(null);
 
     try {
       const res = await fetch("/api/contact", {
@@ -153,8 +152,9 @@ function ContactForm() {
 
       form.reset();
       setStatus("success");
+      toast.success("Message sent — thanks for reaching out!");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      toast.error(err instanceof Error ? err.message : "Something went wrong.");
       setStatus("error");
     }
   }
@@ -206,13 +206,19 @@ function ContactForm() {
         aria-hidden="true"
         className="hidden"
       />
-      {error && <span className="text-xs text-destructive">{error}</span>}
       <button
         type="submit"
         disabled={status === "sending"}
-        className="rounded-lg bg-blue-500 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60"
+        aria-busy={status === "sending"}
+        className="relative overflow-hidden rounded-lg bg-blue-500 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-600 disabled:cursor-not-allowed disabled:hover:bg-blue-500"
       >
-        {status === "sending" ? "Sending…" : "Send"}
+        {status === "sending" && (
+          <span
+            aria-hidden="true"
+            className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/40 to-transparent"
+          />
+        )}
+        <span className="relative">Send</span>
       </button>
     </form>
   );

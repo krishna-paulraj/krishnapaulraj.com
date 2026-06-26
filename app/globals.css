@@ -49,6 +49,7 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
   --color-line: color-mix(in oklab, var(--border) 64%, var(--background));
+  --animate-shimmer: shimmer 1.4s ease-in-out infinite;
   --color-chart-label: var(----chart-label);
   --color-chart-ring-background: var(----chart-ring-background);
   --color-chart-marker-foreground: var(----chart-marker-foreground);
@@ -361,4 +362,14 @@ figure[data-rehype-pretty-code-figure] pre::-webkit-scrollbar-thumb:hover {
 .signature-wrap .signature-main svg path {
   stroke: var(--foreground) !important;
   stroke-width: 1.5 !important;
+}
+
+/* Sweeping highlight used on buttons in a pending state. */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
