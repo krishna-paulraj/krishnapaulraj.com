@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { Reveal } from "@/components/motion/reveal";
+import { SpotlightLogo } from "@/components/spotlight-logo";
 import { GithubActivity } from "@/components/sections/github-activity";
 import { ProfileHeader } from "@/components/sections/profile-header";
 import { SocialLinks } from "@/components/sections/social-links";
@@ -26,8 +27,10 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
-      <div className="mx-auto w-full max-w-2xl flex-1 px-3 md:px-6 pb-6 font-sans">
-        <GithubActivity />
+      <div className="mx-auto w-full max-w-2xl flex-1 px-3 pb-6 font-sans md:px-6">
+        <Reveal className="mx-auto mt-4 mb-8 w-full max-w-md">
+          <SpotlightLogo />
+        </Reveal>
         <Reveal>
           <ProfileHeader />
         </Reveal>
@@ -36,7 +39,7 @@ export default function Home() {
         </Reveal>
         <Reveal
           delay={0.12}
-          className="mt-4 space-y-2 text-sm text-muted-foreground leading-relaxed"
+          className="text-muted-foreground mt-4 space-y-2 text-sm leading-relaxed"
         >
           <Bio />
         </Reveal>

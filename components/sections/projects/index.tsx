@@ -5,6 +5,7 @@ import Link from "next/link";
 import HighlightedHeading from "@/components/ui/highlighted-heading";
 import TechStack from "@/components/sections/projects/tech-stack";
 import { PROJECTS, type Project, type ProjectStatus } from "@/lib/projects";
+import { GithubActivity } from "../github-activity";
 
 const STATUS_LABEL: Record<ProjectStatus, string> = {
   live: "Live",
@@ -29,16 +30,16 @@ function ProjectRow({ project, views }: { project: Project; views?: number }) {
       className="group flex flex-col gap-1 py-4 sm:flex-row sm:items-start sm:justify-between sm:gap-8"
     >
       <div className="flex-1">
-        <p className="font-semibold text-foreground group-hover:underline">
+        <p className="text-foreground font-semibold group-hover:underline">
           {project.name}
         </p>
-        <p className="mt-0.5 line-clamp-2 text-sm text-muted-foreground">
+        <p className="text-muted-foreground mt-0.5 line-clamp-2 text-sm">
           {project.description}
         </p>
         <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2">
           {project.tech.length > 0 && <TechStack tech={project.tech} />}
           {(project.status || viewCount > 0) && (
-            <div className="flex items-center gap-x-2 text-xs text-muted-foreground">
+            <div className="text-muted-foreground flex items-center gap-x-2 text-xs">
               {project.status && (
                 <span className="inline-flex items-center gap-1.5">
                   <span
@@ -62,7 +63,7 @@ function ProjectRow({ project, views }: { project: Project; views?: number }) {
         </div>
       </div>
       {project.year && (
-        <span className="shrink-0 text-sm text-muted-foreground">
+        <span className="text-muted-foreground shrink-0 text-sm">
           {project.year}
         </span>
       )}
@@ -82,11 +83,12 @@ export default function ProjectsSection({
   return (
     <div className={standalone ? "w-full" : "mt-5 w-full border-t pt-5"}>
       <h1 className="text-3xl font-bold tracking-tight">Projects</h1>
-      <HighlightedHeading className="my-4">
+      <HighlightedHeading className="mt-4">
         I love building things
       </HighlightedHeading>
+      <GithubActivity />
 
-      <ul className="divide-y divide-border">
+      <ul className="divide-border divide-y">
         {PROJECTS.map((project) => (
           <li key={project.slug}>
             <ProjectRow project={project} views={viewCounts?.[project.slug]} />
