@@ -22,20 +22,25 @@ const transition: Transition = {
 }
 
 /**
- * An isometric "K." mark whose outline is traced by a gradient highlight that
- * follows the cursor, paired with a springy press effect and a tactile click
- * sound. Based on @ncdai/spotlight-logo; the artwork is generated — a blocky K
- * built from overlapping slabs plus a dot cube, extruded on a 2:1 isometric
- * grid (unit 55.425×32, depth 32). Pressing sinks the top plane 16px; the
- * paired normal/pressed `d` values keep an identical command structure so the
- * path morph interpolates cleanly.
+ * An isometric "SK." mark whose outline is traced by a gradient highlight
+ * that follows the cursor, paired with a springy press effect and a tactile
+ * click sound. Based on @ncdai/spotlight-logo; the artwork is generated —
+ * pixel-style letters, each drawn as a single polygon on a 2:1 isometric grid
+ * (x = 0.5 + (w+h)·55.425, y = 301.58 + (h−w)·32) and extruded 32px down.
+ * The S is bars 1.25 thick; the K is a 1.25-wide stem plus five identical
+ * 1.5×1.5 staircase cells; the dot cube sits baseline-aligned after the K.
+ * Wall edges are stroked beneath the top faces so the faces occlude them
+ * where they pass behind; outlines are stroked on top. Pressing sinks the
+ * top plane 16px; the paired normal/pressed `d` values keep an identical
+ * command structure so the path morph interpolates cleanly.
  */
 export function SpotlightLogo() {
   const id = useId()
   const ids = {
     facePattern: `spotlight-logo-face-pattern-${id}`,
     faceFill: `spotlight-logo-face-fill-${id}`,
-    stroke: `spotlight-logo-stroke-${id}`,
+    strokeBelow: `spotlight-logo-stroke-below-${id}`,
+    strokeAbove: `spotlight-logo-stroke-above-${id}`,
     radialGradient: `spotlight-logo-radial-gradient-${id}`,
   }
 
@@ -49,13 +54,13 @@ export function SpotlightLogo() {
   const mouseX = useMotionValue(0.5)
   const mouseY = useMotionValue(0.5)
 
-  const cx = useSpring(useTransform(mouseX, [0, 1], [0, 667]), {
+  const cx = useSpring(useTransform(mouseX, [0, 1], [0, 930]), {
     stiffness: 300,
     damping: 30,
     mass: 0.1,
   })
 
-  const cy = useSpring(useTransform(mouseY, [0, 1], [0, 354]), {
+  const cy = useSpring(useTransform(mouseY, [0, 1], [0, 507]), {
     stiffness: 300,
     damping: 30,
     mass: 0.1,
@@ -89,7 +94,7 @@ export function SpotlightLogo() {
     <motion.svg
       ref={ref}
       className="h-auto w-full touch-manipulation [--pattern:color-mix(in_oklab,var(--foreground)_12%,var(--background))] [--stroke:color-mix(in_oklab,var(--foreground)_16%,var(--background))]"
-      viewBox="0 0 667 354"
+      viewBox="0 0 930 507"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden
@@ -125,21 +130,31 @@ export function SpotlightLogo() {
           }}
           transition={transition}
         >
-          <path d="M0.5 160.58L55.92 128.58L166.77 192.58L222.2 160.58L277.63 192.58L222.2 224.58L333.05 288.58L277.63 320.58Z" />
-          <path d="M166.77 128.58L277.63 64.58L333.05 96.58L222.2 160.58Z" />
-          <path d="M166.77 64.58L277.63 0.58L333.05 32.58L222.2 96.58Z" />
-          <path d="M277.63 192.58L388.47 128.58L443.9 160.58L333.05 224.58Z" />
-          <path d="M388.47 192.58L499.32 128.58L554.75 160.58L443.9 224.58Z" />
+          <path d="M0.5 301.58L194.49 189.58L263.77 229.58L139.06 301.58L173.7 321.58L298.41 249.58L471.61 349.58L277.63 461.58L208.34 421.58L333.05 349.58L298.41 329.58L173.7 401.58Z" />
+          <path d="M263.77 149.58L333.05 109.58L430.04 165.58L464.68 145.58L416.19 117.58L464.68 89.58L416.19 61.58L499.33 13.58L582.46 61.58L533.97 89.58L582.46 117.58L533.97 145.58L547.82 153.58L596.32 125.58L644.82 153.58L693.31 125.58L776.45 173.58L693.31 221.58L644.82 193.58L596.32 221.58L547.82 193.58L513.18 213.58L610.17 269.58L540.89 309.58Z" />
         </motion.g>
 
         <motion.path
-          id={ids.stroke}
+          id={ids.strokeBelow}
           variants={{
             normal: {
-              d: "M0.5 160.58L55.92 128.58L166.77 192.58L222.2 160.58L277.63 192.58L222.2 224.58L333.05 288.58L277.63 320.58ZM166.77 128.58L277.63 64.58L333.05 96.58L222.2 160.58ZM166.77 64.58L277.63 0.58L333.05 32.58L222.2 96.58ZM277.63 192.58L388.47 128.58L443.9 160.58L333.05 224.58ZM388.47 192.58L499.32 128.58L554.75 160.58L443.9 224.58ZM554.75 96.58L610.17 64.58L665.6 96.58L610.17 128.58ZM0.5 192.58L277.63 352.58M277.63 352.58L333.05 320.58M249.91 240.58L277.63 224.58M166.77 160.58L194.49 176.58M249.91 176.58L333.05 128.58M166.77 96.58L194.49 112.58M305.34 80.58L333.05 64.58M277.63 224.58L333.05 256.58M333.05 256.58L416.19 208.58M388.47 224.58L443.9 256.58M443.9 256.58L554.75 192.58M554.75 128.58L610.17 160.58M610.17 160.58L665.6 128.58M0.5 160.58L0.5 192.58M277.63 320.58L277.63 352.58M333.05 288.58L333.05 320.58M277.63 192.58L277.63 224.58M166.77 128.58L166.77 160.58M333.05 96.58L333.05 128.58M166.77 64.58L166.77 96.58M333.05 32.58L333.05 64.58M333.05 224.58L333.05 256.58M388.47 192.58L388.47 224.58M443.9 224.58L443.9 256.58M554.75 160.58L554.75 192.58M554.75 96.58L554.75 128.58M610.17 128.58L610.17 160.58M665.6 96.58L665.6 128.58",
+              d: "M263.77 261.58L139.06 333.58M263.77 229.58L263.77 261.58M139.06 301.58L139.06 333.58M471.61 381.58L277.63 493.58L208.34 453.58M471.61 349.58L471.61 381.58M277.63 461.58L277.63 493.58M208.34 421.58L208.34 453.58M333.05 381.58L298.41 361.58L173.7 433.58L0.5 333.58M333.05 349.58L333.05 381.58M298.41 329.58L298.41 361.58M173.7 401.58L173.7 433.58M0.5 301.58L0.5 333.58M464.68 177.58L416.19 149.58M464.68 145.58L464.68 177.58M416.19 117.58L416.19 149.58M464.68 121.58L416.19 93.58M464.68 89.58L464.68 121.58M416.19 61.58L416.19 93.58M582.46 93.58L533.97 121.58M582.46 61.58L582.46 93.58M533.97 89.58L533.97 121.58M582.46 149.58L533.97 177.58M582.46 117.58L582.46 149.58M533.97 145.58L533.97 177.58M776.45 205.58L693.31 253.58L644.82 225.58L596.32 253.58L547.82 225.58L513.18 245.58M776.45 173.58L776.45 205.58M693.31 221.58L693.31 253.58M644.82 193.58L644.82 225.58M596.32 221.58L596.32 253.58M547.82 193.58L547.82 225.58M513.18 213.58L513.18 245.58M610.17 301.58L540.89 341.58L263.77 181.58M610.17 269.58L610.17 301.58M540.89 309.58L540.89 341.58M263.77 149.58L263.77 181.58",
             },
             pressed: {
-              d: "M0.5 176.58L55.92 144.58L166.77 208.58L222.2 176.58L277.63 208.58L222.2 240.58L333.05 304.58L277.63 336.58ZM166.77 144.58L277.63 80.58L333.05 112.58L222.2 176.58ZM166.77 80.58L277.63 16.58L333.05 48.58L222.2 112.58ZM277.63 208.58L388.47 144.58L443.9 176.58L333.05 240.58ZM388.47 208.58L499.32 144.58L554.75 176.58L443.9 240.58ZM554.75 112.58L610.17 80.58L665.6 112.58L610.17 144.58ZM0.5 192.58L277.63 352.58M277.63 352.58L333.05 320.58M236.06 248.58L277.63 224.58M166.77 160.58L208.34 184.58M236.06 184.58L333.05 128.58M166.77 96.58L208.34 120.58M291.48 88.58L333.05 64.58M277.63 224.58L333.05 256.58M333.05 256.58L402.33 216.58M388.47 224.58L443.9 256.58M443.9 256.58L554.75 192.58M554.75 128.58L610.17 160.58M610.17 160.58L665.6 128.58M0.5 176.58L0.5 192.58M277.63 336.58L277.63 352.58M333.05 304.58L333.05 320.58M277.63 208.58L277.63 224.58M166.77 144.58L166.77 160.58M333.05 112.58L333.05 128.58M166.77 80.58L166.77 96.58M333.05 48.58L333.05 64.58M333.05 240.58L333.05 256.58M388.47 208.58L388.47 224.58M443.9 240.58L443.9 256.58M554.75 176.58L554.75 192.58M554.75 112.58L554.75 128.58M610.17 144.58L610.17 160.58M665.6 112.58L665.6 128.58",
+              d: "M263.77 261.58L139.06 333.58M263.77 245.58L263.77 261.58M139.06 317.58L139.06 333.58M471.61 381.58L277.63 493.58L208.34 453.58M471.61 365.58L471.61 381.58M277.63 477.58L277.63 493.58M208.34 437.58L208.34 453.58M333.05 381.58L298.41 361.58L173.7 433.58L0.5 333.58M333.05 365.58L333.05 381.58M298.41 345.58L298.41 361.58M173.7 417.58L173.7 433.58M0.5 317.58L0.5 333.58M464.68 177.58L416.19 149.58M464.68 161.58L464.68 177.58M416.19 133.58L416.19 149.58M464.68 121.58L416.19 93.58M464.68 105.58L464.68 121.58M416.19 77.58L416.19 93.58M582.46 93.58L533.97 121.58M582.46 77.58L582.46 93.58M533.97 105.58L533.97 121.58M582.46 149.58L533.97 177.58M582.46 133.58L582.46 149.58M533.97 161.58L533.97 177.58M776.45 205.58L693.31 253.58L644.82 225.58L596.32 253.58L547.82 225.58L513.18 245.58M776.45 189.58L776.45 205.58M693.31 237.58L693.31 253.58M644.82 209.58L644.82 225.58M596.32 237.58L596.32 253.58M547.82 209.58L547.82 225.58M513.18 229.58L513.18 245.58M610.17 301.58L540.89 341.58L263.77 181.58M610.17 285.58L610.17 301.58M540.89 325.58L540.89 341.58M263.77 165.58L263.77 181.58",
+            },
+          }}
+          transition={transition}
+        />
+
+        <motion.path
+          id={ids.strokeAbove}
+          variants={{
+            normal: {
+              d: "M0.5 301.58L194.49 189.58L263.77 229.58L139.06 301.58L173.7 321.58L298.41 249.58L471.61 349.58L277.63 461.58L208.34 421.58L333.05 349.58L298.41 329.58L173.7 401.58ZM263.77 149.58L333.05 109.58L430.04 165.58L464.68 145.58L416.19 117.58L464.68 89.58L416.19 61.58L499.33 13.58L582.46 61.58L533.97 89.58L582.46 117.58L533.97 145.58L547.82 153.58L596.32 125.58L644.82 153.58L693.31 125.58L776.45 173.58L693.31 221.58L644.82 193.58L596.32 221.58L547.82 193.58L513.18 213.58L610.17 269.58L540.89 309.58ZM818.02 85.58L873.44 53.58L928.87 85.58L873.44 117.58ZM928.87 117.58L873.44 149.58L818.02 117.58M928.87 85.58L928.87 117.58M873.44 117.58L873.44 149.58M818.02 85.58L818.02 117.58",
+            },
+            pressed: {
+              d: "M0.5 317.58L194.49 205.58L263.77 245.58L139.06 317.58L173.7 337.58L298.41 265.58L471.61 365.58L277.63 477.58L208.34 437.58L333.05 365.58L298.41 345.58L173.7 417.58ZM263.77 165.58L333.05 125.58L430.04 181.58L464.68 161.58L416.19 133.58L464.68 105.58L416.19 77.58L499.33 29.58L582.46 77.58L533.97 105.58L582.46 133.58L533.97 161.58L547.82 169.58L596.32 141.58L644.82 169.58L693.31 141.58L776.45 189.58L693.31 237.58L644.82 209.58L596.32 237.58L547.82 209.58L513.18 229.58L610.17 285.58L540.89 325.58ZM818.02 101.58L873.44 69.58L928.87 101.58L873.44 133.58ZM928.87 117.58L873.44 149.58L818.02 117.58M928.87 101.58L928.87 117.58M873.44 133.58L873.44 149.58M818.02 101.58L818.02 117.58",
             },
           }}
           transition={transition}
@@ -149,7 +164,7 @@ export function SpotlightLogo() {
           id={ids.radialGradient}
           cx={cx}
           cy={cy}
-          r="240"
+          r="335"
           gradientUnits="userSpaceOnUse"
         >
           <stop
@@ -163,67 +178,91 @@ export function SpotlightLogo() {
       <g className="fill-background" fillRule="evenodd" clipRule="evenodd">
         <motion.path
           variants={{
-            normal: { d: "M0.5 160.58L277.63 320.58L333.05 288.58L333.05 320.58L277.63 352.58L0.5 192.58Z" },
-            pressed: { d: "M0.5 176.58L277.63 336.58L333.05 304.58L333.05 320.58L277.63 352.58L0.5 192.58Z" },
+            normal: { d: "M263.77 229.58L139.06 301.58L139.06 333.58L263.77 261.58Z" },
+            pressed: { d: "M263.77 245.58L139.06 317.58L139.06 333.58L263.77 261.58Z" },
           }}
           transition={transition}
         />
         <motion.path
           variants={{
-            normal: { d: "M222.2 224.58L277.63 192.58L277.63 224.58L222.2 256.58Z" },
-            pressed: { d: "M222.2 240.58L277.63 208.58L277.63 224.58L222.2 256.58Z" },
+            normal: { d: "M471.61 349.58L277.63 461.58L208.34 421.58L208.34 453.58L277.63 493.58L471.61 381.58Z" },
+            pressed: { d: "M471.61 365.58L277.63 477.58L208.34 437.58L208.34 453.58L277.63 493.58L471.61 381.58Z" },
           }}
           transition={transition}
         />
         <motion.path
           variants={{
-            normal: { d: "M166.77 128.58L222.2 160.58L333.05 96.58L333.05 128.58L222.2 192.58L166.77 160.58Z" },
-            pressed: { d: "M166.77 144.58L222.2 176.58L333.05 112.58L333.05 128.58L222.2 192.58L166.77 160.58Z" },
+            normal: { d: "M333.05 349.58L298.41 329.58L173.7 401.58L0.5 301.58L0.5 333.58L173.7 433.58L298.41 361.58L333.05 381.58Z" },
+            pressed: { d: "M333.05 365.58L298.41 345.58L173.7 417.58L0.5 317.58L0.5 333.58L173.7 433.58L298.41 361.58L333.05 381.58Z" },
           }}
           transition={transition}
         />
         <motion.path
           variants={{
-            normal: { d: "M166.77 64.58L222.2 96.58L333.05 32.58L333.05 64.58L222.2 128.58L166.77 96.58Z" },
-            pressed: { d: "M166.77 80.58L222.2 112.58L333.05 48.58L333.05 64.58L222.2 128.58L166.77 96.58Z" },
+            normal: { d: "M464.68 145.58L416.19 117.58L416.19 149.58L464.68 177.58Z" },
+            pressed: { d: "M464.68 161.58L416.19 133.58L416.19 149.58L464.68 177.58Z" },
           }}
           transition={transition}
         />
         <motion.path
           variants={{
-            normal: { d: "M277.63 192.58L333.05 224.58L443.9 160.58L443.9 192.58L333.05 256.58L277.63 224.58Z" },
-            pressed: { d: "M277.63 208.58L333.05 240.58L443.9 176.58L443.9 192.58L333.05 256.58L277.63 224.58Z" },
+            normal: { d: "M464.68 89.58L416.19 61.58L416.19 93.58L464.68 121.58Z" },
+            pressed: { d: "M464.68 105.58L416.19 77.58L416.19 93.58L464.68 121.58Z" },
           }}
           transition={transition}
         />
         <motion.path
           variants={{
-            normal: { d: "M388.47 192.58L443.9 224.58L554.75 160.58L554.75 192.58L443.9 256.58L388.47 224.58Z" },
-            pressed: { d: "M388.47 208.58L443.9 240.58L554.75 176.58L554.75 192.58L443.9 256.58L388.47 224.58Z" },
+            normal: { d: "M582.46 61.58L533.97 89.58L533.97 121.58L582.46 93.58Z" },
+            pressed: { d: "M582.46 77.58L533.97 105.58L533.97 121.58L582.46 93.58Z" },
+          }}
+          transition={transition}
+        />
+        <motion.path
+          variants={{
+            normal: { d: "M582.46 117.58L533.97 145.58L533.97 177.58L582.46 149.58Z" },
+            pressed: { d: "M582.46 133.58L533.97 161.58L533.97 177.58L582.46 149.58Z" },
+          }}
+          transition={transition}
+        />
+        <motion.path
+          variants={{
+            normal: { d: "M776.45 173.58L693.31 221.58L644.82 193.58L596.32 221.58L547.82 193.58L513.18 213.58L513.18 245.58L547.82 225.58L596.32 253.58L644.82 225.58L693.31 253.58L776.45 205.58Z" },
+            pressed: { d: "M776.45 189.58L693.31 237.58L644.82 209.58L596.32 237.58L547.82 209.58L513.18 229.58L513.18 245.58L547.82 225.58L596.32 253.58L644.82 225.58L693.31 253.58L776.45 205.58Z" },
+          }}
+          transition={transition}
+        />
+        <motion.path
+          variants={{
+            normal: { d: "M610.17 269.58L540.89 309.58L263.77 149.58L263.77 181.58L540.89 341.58L610.17 301.58Z" },
+            pressed: { d: "M610.17 285.58L540.89 325.58L263.77 165.58L263.77 181.58L540.89 341.58L610.17 301.58Z" },
           }}
           transition={transition}
         />
       </g>
 
+      <use href={`#${ids.strokeBelow}`} stroke="var(--stroke)" />
+      <use href={`#${ids.strokeBelow}`} stroke={`url(#${ids.radialGradient})`} />
+
+      <use href={`#${ids.faceFill}`} className="fill-background" />
+      <use href={`#${ids.faceFill}`} fill={`url(#${ids.facePattern})`} />
+
       <motion.path
         className="fill-sky-600 dark:fill-sky-500"
         variants={{
-          normal: { d: "M610.17 128.58L665.6 96.58L665.6 128.58L610.17 160.58Z" },
-          pressed: { d: "M610.17 144.58L665.6 112.58L665.6 128.58L610.17 160.58Z" },
+          normal: { d: "M873.44 117.58L928.87 85.58L928.87 117.58L873.44 149.58Z" },
+          pressed: { d: "M873.44 133.58L928.87 101.58L928.87 117.58L873.44 149.58Z" },
         }}
         transition={transition}
       />
       <motion.path
         className="fill-sky-700 dark:fill-sky-600"
         variants={{
-          normal: { d: "M554.75 96.58L610.17 128.58L610.17 160.58L554.75 128.58Z" },
-          pressed: { d: "M554.75 112.58L610.17 144.58L610.17 160.58L554.75 128.58Z" },
+          normal: { d: "M818.02 85.58L873.44 117.58L873.44 149.58L818.02 117.58Z" },
+          pressed: { d: "M818.02 101.58L873.44 133.58L873.44 149.58L818.02 117.58Z" },
         }}
         transition={transition}
       />
-
-      <use href={`#${ids.faceFill}`} className="fill-background" />
-      <use href={`#${ids.faceFill}`} fill={`url(#${ids.facePattern})`} />
 
       <motion.g
         className="fill-sky-500 dark:fill-sky-400"
@@ -237,11 +276,11 @@ export function SpotlightLogo() {
         }}
         transition={transition}
       >
-        <path d="M554.75 96.58L610.17 64.58L665.6 96.58L610.17 128.58Z" />
+        <path d="M818.02 85.58L873.44 53.58L928.87 85.58L873.44 117.58Z" />
       </motion.g>
 
-      <use href={`#${ids.stroke}`} stroke="var(--stroke)" />
-      <use href={`#${ids.stroke}`} stroke={`url(#${ids.radialGradient})`} />
+      <use href={`#${ids.strokeAbove}`} stroke="var(--stroke)" />
+      <use href={`#${ids.strokeAbove}`} stroke={`url(#${ids.radialGradient})`} />
     </motion.svg>
   )
 }
