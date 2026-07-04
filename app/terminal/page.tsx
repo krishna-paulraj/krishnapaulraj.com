@@ -217,7 +217,7 @@ function Step({
       <div className="flex size-6 shrink-0 items-center justify-center rounded-md border border-border bg-muted/40 font-mono text-[11px] text-muted-foreground">
         {n}
       </div>
-      <div className="flex-1 space-y-3">
+      <div className="min-w-0 flex-1 space-y-3">
         <p className="pt-0.5 text-sm text-foreground">{text}</p>
         {children}
       </div>
@@ -244,7 +244,7 @@ function PrereqItem({
       <div className="flex size-6 shrink-0 items-center justify-center rounded-md border border-border bg-muted/40 text-muted-foreground [&_svg]:size-3.5">
         {icon}
       </div>
-      <div>
+      <div className="min-w-0 flex-1">
         <p className="text-sm font-medium text-foreground">{title}</p>
         <p className="text-xs text-muted-foreground">{desc}</p>
       </div>
