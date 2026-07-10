@@ -21,10 +21,11 @@ import { SITE_URL } from "@/lib/constants";
 import { renderMarkdown } from "@/lib/markdown";
 import {
   PROJECTS,
+  STATUS_DOT,
+  STATUS_LABEL,
   getProjectBySlug,
   getProjectSlugs,
   type ProjectLink,
-  type ProjectStatus,
 } from "@/lib/projects";
 
 export const dynamicParams = false;
@@ -58,17 +59,6 @@ export async function generateMetadata({
   };
 }
 
-const STATUS_LABEL: Record<ProjectStatus, string> = {
-  live: "Live",
-  "in-progress": "In progress",
-  archived: "Archived",
-};
-
-const STATUS_DOT: Record<ProjectStatus, string> = {
-  live: "bg-foreground",
-  "in-progress": "bg-muted-foreground",
-  archived: "bg-muted-foreground/40",
-};
 
 function LinkButton({ link }: { link: ProjectLink }) {
   const isInternal = link.href.startsWith("/");

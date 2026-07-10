@@ -4,20 +4,13 @@ import Link from "next/link";
 
 import HighlightedHeading from "@/components/ui/highlighted-heading";
 import TechStack from "@/components/sections/projects/tech-stack";
-import { PROJECTS, type Project, type ProjectStatus } from "@/lib/projects";
+import {
+  PROJECTS,
+  STATUS_DOT,
+  STATUS_LABEL,
+  type Project,
+} from "@/lib/projects";
 import { GithubActivity } from "../github-activity";
-
-const STATUS_LABEL: Record<ProjectStatus, string> = {
-  live: "Live",
-  "in-progress": "In progress",
-  archived: "Archived",
-};
-
-const STATUS_DOT: Record<ProjectStatus, string> = {
-  live: "bg-foreground",
-  "in-progress": "bg-muted-foreground",
-  archived: "bg-muted-foreground/40",
-};
 
 function ProjectRow({ project, views }: { project: Project; views?: number }) {
   const detailHref = `/projects/${project.slug}`;

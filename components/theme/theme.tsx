@@ -96,7 +96,7 @@ const Options = ({
   return (
     <motion.div
       drag
-      className="top-30 border-foreground/10 bg-muted2 absolute right-1/2 flex w-[245px] translate-x-1/2 flex-col gap-3 rounded-3xl border p-3 backdrop-blur-sm lg:right-4 lg:translate-x-0"
+      className="top-30 border-foreground/10 bg-muted/80 absolute right-1/2 flex w-[245px] translate-x-1/2 flex-col gap-3 rounded-3xl border p-3 backdrop-blur-sm lg:right-4 lg:translate-x-0"
     >
       <div className="flex items-center justify-between">
         <span className="size-4 cursor-grab active:cursor-grabbing">

@@ -51,6 +51,18 @@ export type ProjectLink = {
 
 export type ProjectStatus = "live" | "in-progress" | "archived";
 
+export const STATUS_LABEL: Record<ProjectStatus, string> = {
+  live: "Live",
+  "in-progress": "In progress",
+  archived: "Archived",
+};
+
+export const STATUS_DOT: Record<ProjectStatus, string> = {
+  live: "bg-foreground",
+  "in-progress": "bg-muted-foreground",
+  archived: "bg-muted-foreground/40",
+};
+
 export type Project = {
   slug: string;
   name: string;
