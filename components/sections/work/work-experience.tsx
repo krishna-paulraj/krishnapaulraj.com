@@ -100,7 +100,7 @@ export function ExperienceItem({ experience }: ExperienceItemProps) {
               aria-hidden
             />
           ) : (
-            <span className="flex size-2 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+            <span className="flex size-2 rounded-full bg-muted-foreground/40" />
           )}
         </div>
 
@@ -124,8 +124,8 @@ export function ExperienceItem({ experience }: ExperienceItemProps) {
             className="relative flex items-center justify-center"
             aria-label="Current Employer"
           >
-            <span className="absolute inline-flex size-3 animate-ping rounded-full bg-sky-500 opacity-50" />
-            <span className="relative inline-flex size-2 rounded-full bg-sky-500" />
+            <span className="absolute inline-flex size-3 animate-ping rounded-full bg-foreground opacity-50" />
+            <span className="relative inline-flex size-2 rounded-full bg-foreground" />
           </span>
         )}
       </div>
@@ -183,7 +183,7 @@ export function ExperiencePositionItem({
               className={cn(
                 "flex size-6 shrink-0 items-center justify-center rounded-lg",
                 "bg-muted text-muted-foreground",
-                "border border-neutral-300 dark:border-neutral-600 ring-1 ring-line ring-offset-1 ring-offset-background",
+                "border border-border ring-1 ring-line ring-offset-1 ring-offset-background",
                 "[&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
               )}
             >

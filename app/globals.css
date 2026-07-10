@@ -50,115 +50,115 @@
   --radius-4xl: calc(var(--radius) * 2.6);
   --color-line: color-mix(in oklab, var(--border) 64%, var(--background));
   --animate-shimmer: shimmer 1.4s ease-in-out infinite;
-  --color-chart-label: var(----chart-label);
-  --color-chart-ring-background: var(----chart-ring-background);
-  --color-chart-marker-foreground: var(----chart-marker-foreground);
-  --color-chart-marker-border: var(----chart-marker-border);
-  --color-chart-marker-background: var(----chart-marker-background);
-  --color-chart-tooltip-muted: var(----chart-tooltip-muted);
-  --color-chart-tooltip-foreground: var(----chart-tooltip-foreground);
-  --color-chart-tooltip-background: var(----chart-tooltip-background);
-  --color-chart-grid: var(----chart-grid);
-  --color-chart-crosshair: var(----chart-crosshair);
-  --chart-line-secondary: var(----chart-line-secondary);
-  --chart-line-primary: var(----chart-line-primary);
-  --color-chart-foreground-muted: var(----chart-foreground-muted);
-  --color-chart-foreground: var(----chart-foreground);
-  --color-chart-background: var(----chart-background);
+  --color-chart-label: var(--chart-label);
+  --color-chart-ring-background: var(--chart-ring-background);
+  --color-chart-marker-foreground: var(--chart-marker-foreground);
+  --color-chart-marker-border: var(--chart-marker-border);
+  --color-chart-marker-background: var(--chart-marker-background);
+  --color-chart-tooltip-muted: var(--chart-tooltip-muted);
+  --color-chart-tooltip-foreground: var(--chart-tooltip-foreground);
+  --color-chart-tooltip-background: var(--chart-tooltip-background);
+  --color-chart-grid: var(--chart-grid);
+  --color-chart-crosshair: var(--chart-crosshair);
+  --chart-line-secondary: var(--chart-line-secondary);
+  --chart-line-primary: var(--chart-line-primary);
+  --color-chart-foreground-muted: var(--chart-foreground-muted);
+  --color-chart-foreground: var(--chart-foreground);
+  --color-chart-background: var(--chart-background);
 }
 
 :root {
-  --card: oklch(0.96 0.018 80);
-  --card-foreground: oklch(0.2 0.02 60);
-  --popover: oklch(0.96 0.018 80);
-  --popover-foreground: oklch(0.2 0.02 60);
-  --primary: oklch(0.2 0.02 60);
-  --primary-foreground: oklch(0.97 0.015 80);
-  --secondary: oklch(0.93 0.02 80);
-  --secondary-foreground: oklch(0.2 0.02 60);
-  --muted: oklch(0.93 0.02 80);
-  --muted-foreground: oklch(0.5 0.02 60);
-  --accent: oklch(0.93 0.02 80);
-  --accent-foreground: oklch(0.2 0.02 60);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.88 0.02 70);
-  --input: oklch(0.88 0.02 70);
-  --ring: oklch(0.65 0.04 70);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
   --radius: 0.625rem;
-  --sidebar: oklch(0.96 0.018 80);
-  --sidebar-foreground: oklch(0.2 0.02 60);
-  --sidebar-primary: oklch(0.2 0.02 60);
-  --sidebar-primary-foreground: oklch(0.97 0.015 80);
-  --sidebar-accent: oklch(0.93 0.02 80);
-  --sidebar-accent-foreground: oklch(0.2 0.02 60);
-  --sidebar-border: oklch(0.88 0.02 70);
-  --sidebar-ring: oklch(0.65 0.04 70);
-  --background: oklch(0.97 0.015 80);
-  --foreground: oklch(0.2 0.02 60);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
   --chart-background: oklch(1 0 0);
-  --chart-foreground: oklch(0.145 0.004 285);
-  --chart-foreground-muted: oklch(0.55 0.014 260);
+  --chart-foreground: oklch(0.145 0 0);
+  --chart-foreground-muted: oklch(0.55 0 0);
   --chart-line-primary: var(--chart-1);
   --chart-line-secondary: var(--chart-2);
-  --chart-crosshair: oklch(0.4 0.1828 274.34);
+  --chart-crosshair: oklch(0.4 0 0);
   --chart-grid: oklch(0.9 0 0);
-  --chart-tooltip-background: oklch(0.21 0.006 285 / 0.8);
+  --chart-tooltip-background: oklch(0.21 0 0 / 0.8);
   --chart-tooltip-foreground: oklch(0.985 0 0);
-  --chart-tooltip-muted: oklch(0.65 0.01 260);
-  --chart-marker-background: oklch(0.97 0.005 260);
-  --chart-marker-border: oklch(0.85 0.01 260);
-  --chart-marker-foreground: oklch(0.3 0.01 260);
-  --chart-ring-background: oklch(0.9 0.005 260 / 0.25);
-  --chart-label: oklch(0.45 0.01 260);
+  --chart-tooltip-muted: oklch(0.65 0 0);
+  --chart-marker-background: oklch(0.97 0 0);
+  --chart-marker-border: oklch(0.85 0 0);
+  --chart-marker-foreground: oklch(0.3 0 0);
+  --chart-ring-background: oklch(0.9 0 0 / 0.25);
+  --chart-label: oklch(0.45 0 0);
 }
 
 .dark {
-  --background: oklch(0.16 0.012 50);
-  --foreground: oklch(0.93 0.015 80);
-  --card: oklch(0.2 0.012 50);
-  --card-foreground: oklch(0.93 0.015 80);
-  --popover: oklch(0.2 0.012 50);
-  --popover-foreground: oklch(0.93 0.015 80);
-  --primary: oklch(0.9 0.018 80);
-  --primary-foreground: oklch(0.2 0.012 50);
-  --secondary: oklch(0.27 0.012 50);
-  --secondary-foreground: oklch(0.93 0.015 80);
-  --muted: oklch(0.27 0.012 50);
-  --muted-foreground: oklch(0.7 0.018 70);
-  --accent: oklch(0.27 0.012 50);
-  --accent-foreground: oklch(0.93 0.015 80);
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(0.88 0.02 70 / 12%);
-  --input: oklch(0.88 0.02 70 / 15%);
-  --ring: oklch(0.55 0.03 60);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.2 0.012 50);
-  --sidebar-foreground: oklch(0.93 0.015 80);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.93 0.015 80);
-  --sidebar-accent: oklch(0.27 0.012 50);
-  --sidebar-accent-foreground: oklch(0.93 0.015 80);
-  --sidebar-border: oklch(0.88 0.02 70 / 12%);
-  --sidebar-ring: oklch(0.55 0.03 60);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.922 0 0);
+  --sidebar-primary-foreground: oklch(0.205 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
   --chart-background: oklch(0.145 0 0);
   --chart-foreground: oklch(0.45 0 0);
-  --chart-foreground-muted: oklch(0.65 0.01 260);
+  --chart-foreground-muted: oklch(0.65 0 0);
   --chart-crosshair: oklch(0.45 0 0);
   --chart-grid: oklch(0.25 0 0);
-  --chart-marker-background: oklch(0.25 0.01 260);
-  --chart-marker-border: oklch(0.4 0.01 260);
+  --chart-marker-background: oklch(0.25 0 0);
+  --chart-marker-border: oklch(0.4 0 0);
   --chart-marker-foreground: oklch(0.9 0 0);
-  --chart-ring-background: oklch(0.35 0.01 260 / 0.25);
-  --chart-label: oklch(0.75 0.01 260);
+  --chart-ring-background: oklch(0.35 0 0 / 0.25);
+  --chart-label: oklch(0.75 0 0);
 }
 
 @custom-variant retina {
@@ -199,23 +199,6 @@
     outline-offset: 2px;
     border-radius: 0.25rem;
   }
-}
-
-/* Paper grain overlay — subtle SVG noise fixed to the viewport.
-   z-60 sits above sticky navbar (z-50) but below modal dialogs (z-100). */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 60;
-  opacity: 0.04;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  mix-blend-mode: multiply;
-}
-.dark body::before {
-  opacity: 0.06;
-  mix-blend-mode: overlay;
 }
 
 /* Heading anchors (rehype-autolink-headings) */
@@ -362,6 +345,9 @@ figure[data-rehype-pretty-code-figure] pre::-webkit-scrollbar-thumb:hover {
 .signature-wrap .signature-main svg path {
   stroke: var(--foreground) !important;
   stroke-width: 1.5 !important;
+  /* butt caps: round caps paint a stray dot at each letter's start while it
+     waits to draw (zero-length dash still renders its round end-cap) */
+  stroke-linecap: butt !important;
 }
 
 /* Sweeping highlight used on buttons in a pending state. */

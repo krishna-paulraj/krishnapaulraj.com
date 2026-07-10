@@ -14,9 +14,9 @@ const STATUS_LABEL: Record<ProjectStatus, string> = {
 };
 
 const STATUS_DOT: Record<ProjectStatus, string> = {
-  live: "bg-emerald-500",
-  "in-progress": "bg-amber-500",
-  archived: "bg-zinc-500",
+  live: "bg-foreground",
+  "in-progress": "bg-muted-foreground",
+  archived: "bg-muted-foreground/40",
 };
 
 function ProjectRow({ project, views }: { project: Project; views?: number }) {

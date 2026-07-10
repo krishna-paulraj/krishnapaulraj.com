@@ -89,7 +89,7 @@ function bubbleClass(mine: boolean, extra?: string) {
   return cn(
     "max-w-[80%] rounded-2xl px-3.5 py-2 text-sm leading-snug",
     mine
-      ? "rounded-br-md bg-blue-500 text-white"
+      ? "rounded-br-md bg-primary text-primary-foreground"
       : "rounded-bl-md bg-muted text-foreground",
     extra,
   );
@@ -210,12 +210,12 @@ function ContactForm() {
         type="submit"
         disabled={status === "sending"}
         aria-busy={status === "sending"}
-        className="relative overflow-hidden rounded-lg bg-blue-500 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-600 disabled:cursor-not-allowed disabled:hover:bg-blue-500"
+        className="relative overflow-hidden rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:hover:bg-primary"
       >
         {status === "sending" && (
           <span
             aria-hidden="true"
-            className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/40 to-transparent"
+            className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-primary-foreground/40 to-transparent"
           />
         )}
         <span className="relative">Send</span>

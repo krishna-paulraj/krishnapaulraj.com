@@ -105,7 +105,7 @@ export default function ShareButtons({
           aria-haspopup="false"
           className="gap-2 rounded-r-none border-r-0 border-border bg-background px-3 text-xs text-foreground hover:bg-muted"
           idleIcon={<CopyIcon />}
-          doneIcon={<CheckIcon className="text-emerald-500" />}
+          doneIcon={<CheckIcon className="text-foreground" />}
           aria-label="Copy page link"
         >
           <span>Copy Page</span>
@@ -143,7 +143,7 @@ export default function ShareButtons({
               className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-xs text-foreground transition-colors hover:bg-muted"
             >
               {copiedMarkdown ? (
-                <CheckIcon className="size-4 text-emerald-500" />
+                <CheckIcon className="size-4 text-foreground" />
               ) : (
                 <FileCode2Icon className="size-4 text-muted-foreground" />
               )}
@@ -158,7 +158,7 @@ export default function ShareButtons({
               className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-xs text-foreground transition-colors hover:bg-muted"
             >
               {copiedTitle ? (
-                <CheckIcon className="size-4 text-emerald-500" />
+                <CheckIcon className="size-4 text-foreground" />
               ) : (
                 <HashIcon className="size-4 text-muted-foreground" />
               )}
@@ -196,7 +196,7 @@ export default function ShareButtons({
               className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-xs text-foreground transition-colors hover:bg-muted"
             >
               {copiedLink ? (
-                <CheckIcon className="size-4 text-emerald-500" />
+                <CheckIcon className="size-4 text-foreground" />
               ) : (
                 <LinkIcon className="size-4 text-muted-foreground" />
               )}

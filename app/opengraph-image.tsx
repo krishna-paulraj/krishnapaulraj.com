@@ -35,7 +35,7 @@ export default async function Image() {
             width: "12px",
             height: "12px",
             borderRadius: "9999px",
-            background: "#0ea5e9",
+            background: "#fafafa",
           }}
         />
         <span

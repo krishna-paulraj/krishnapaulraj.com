@@ -23,8 +23,8 @@ const STATUS_LABEL: Record<ProjectStatus, string> = {
 };
 
 const STATUS_COLOR: Record<ProjectStatus, string> = {
-  live: "#10b981",
-  "in-progress": "#f59e0b",
+  live: "#fafafa",
+  "in-progress": "#a1a1aa",
   archived: "#71717a",
 };
 
@@ -80,7 +80,7 @@ export default async function Image({
               width: "12px",
               height: "12px",
               borderRadius: "9999px",
-              background: "#0ea5e9",
+              background: "#fafafa",
             }}
           />
           <span>krishnapaulraj.com / projects</span>

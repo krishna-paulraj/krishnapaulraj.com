@@ -431,7 +431,7 @@ export default async function TerminalPage() {
 
       <Reveal delay={0.42} className="mt-10 pl-12">
         <div className="inline-flex items-center gap-2 rounded-lg border border-border bg-card/40 px-4 py-3 text-sm">
-          <CheckCircle2Icon className="size-4 text-emerald-500" />
+          <CheckCircle2Icon className="size-4 text-foreground" />
           <span>Done! Your terminal is now configured.</span>
         </div>
       </Reveal>

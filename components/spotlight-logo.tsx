@@ -248,7 +248,7 @@ export function SpotlightLogo() {
       <use href={`#${ids.faceFill}`} fill={`url(#${ids.facePattern})`} />
 
       <motion.path
-        className="fill-sky-600 dark:fill-sky-500"
+        className="fill-neutral-600 dark:fill-neutral-500"
         variants={{
           normal: { d: "M873.44 117.58L928.87 85.58L928.87 117.58L873.44 149.58Z" },
           pressed: { d: "M873.44 133.58L928.87 101.58L928.87 117.58L873.44 149.58Z" },
@@ -256,7 +256,7 @@ export function SpotlightLogo() {
         transition={transition}
       />
       <motion.path
-        className="fill-sky-700 dark:fill-sky-600"
+        className="fill-neutral-700 dark:fill-neutral-600"
         variants={{
           normal: { d: "M818.02 85.58L873.44 117.58L873.44 149.58L818.02 117.58Z" },
           pressed: { d: "M818.02 101.58L873.44 133.58L873.44 149.58L818.02 117.58Z" },
@@ -265,7 +265,7 @@ export function SpotlightLogo() {
       />
 
       <motion.g
-        className="fill-sky-500 dark:fill-sky-400"
+        className="fill-neutral-500 dark:fill-neutral-400"
         variants={{
           normal: {
             transform: "translate(0px, 0px)",
