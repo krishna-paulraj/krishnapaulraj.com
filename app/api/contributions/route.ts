@@ -4,13 +4,14 @@ import type { Activity } from "@/components/sections/contribution-graph";
 // skeleton — mirrors the /api/insights pattern (unstable_cache proved
 // unreliable when this ran inside the client component tree in Next 16).
 const GITHUB_USERNAME = "suresh-krishna-paulraj-1032";
-const REVALIDATE_SECONDS = 86400;
 
 type GitHubContributionsResponse = {
   contributions: Activity[];
 };
 
-export const revalidate = REVALIDATE_SECONDS;
+// Next.js requires the `revalidate` segment export to be a static literal —
+// it can't reference a variable — so the 24h value is inlined here and below.
+export const revalidate = 86400;
 
 export async function GET() {
   const base =
@@ -18,7 +19,7 @@ export async function GET() {
     "https://github-contributions-api.jogruber.de";
 
   const res = await fetch(`${base}/v4/${GITHUB_USERNAME}?y=last`, {
-    next: { revalidate: REVALIDATE_SECONDS },
+    next: { revalidate: 86400 },
   });
 
   if (!res.ok) {
