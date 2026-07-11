@@ -81,6 +81,10 @@ const messages: Message[] = [
   },
 ];
 
+// The one splash of color on an otherwise monochrome site: the visitor's
+// sent bubbles and the Send button use the classic iMessage blue.
+const IMESSAGE_BLUE = "bg-[#007AFF]";
+
 function rowClass(mine: boolean) {
   return cn("flex", mine ? "justify-end" : "justify-start");
 }
@@ -89,7 +93,7 @@ function bubbleClass(mine: boolean, extra?: string) {
   return cn(
     "max-w-[80%] rounded-2xl px-3.5 py-2 text-sm leading-snug",
     mine
-      ? "rounded-br-md bg-primary text-primary-foreground"
+      ? cn("rounded-br-md text-white", IMESSAGE_BLUE)
       : "rounded-bl-md bg-muted text-foreground",
     extra,
   );
@@ -210,12 +214,15 @@ function ContactForm() {
         type="submit"
         disabled={status === "sending"}
         aria-busy={status === "sending"}
-        className="relative overflow-hidden rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:hover:bg-primary"
+        className={cn(
+          "relative overflow-hidden rounded-lg px-3 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-100",
+          IMESSAGE_BLUE,
+        )}
       >
         {status === "sending" && (
           <span
             aria-hidden="true"
-            className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-primary-foreground/40 to-transparent"
+            className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/40 to-transparent"
           />
         )}
         <span className="relative">Send</span>
