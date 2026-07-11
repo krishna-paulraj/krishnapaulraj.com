@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 
 import { Reveal } from "@/components/motion/reveal";
 import { SpotlightLogo } from "@/components/spotlight-logo";
-import { GithubActivity } from "@/components/sections/github-activity";
 import { ProfileHeader } from "@/components/sections/profile-header";
 import { SocialLinks } from "@/components/sections/social-links";
 import { Bio } from "@/components/sections/bio";

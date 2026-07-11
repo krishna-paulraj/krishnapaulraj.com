@@ -1,21 +1,32 @@
-import { Suspense } from "react";
+"use client";
 
-import { getCachedContributions } from "@/lib/get-cached-contributions";
+import { useEffect, useState } from "react";
+
+import type { Activity } from "@/components/sections/contribution-graph";
 import {
   GitHubContributions,
   GitHubContributionsFallback,
 } from "@/components/sections/github-contributions";
 
-const GITHUB_USERNAME = "suresh-krishna-paulraj-1032";
-
 export function GithubActivity() {
-  const contributions = getCachedContributions(GITHUB_USERNAME);
+  const [data, setData] = useState<Activity[] | null>(null);
+
+  useEffect(() => {
+    fetch("/api/contributions")
+      .then((r) => r.json())
+      .then((d: { contributions?: Activity[] }) =>
+        setData(d.contributions ?? []),
+      )
+      .catch(() => {});
+  }, []);
 
   return (
     <div className="-mt-2.5 w-full overflow-x-auto overflow-y-hidden">
-      <Suspense fallback={<GitHubContributionsFallback />}>
-        <GitHubContributions contributions={contributions} className="text-xs" />
-      </Suspense>
+      {data === null ? (
+        <GitHubContributionsFallback />
+      ) : (
+        <GitHubContributions data={data} className="text-xs" />
+      )}
     </div>
   );
 }

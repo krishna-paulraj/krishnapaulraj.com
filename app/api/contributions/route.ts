@@ -1,0 +1,30 @@
+import type { Activity } from "@/components/sections/contribution-graph";
+
+// Fetched server-side and cached here so the client can load it with a
+// skeleton — mirrors the /api/insights pattern (unstable_cache proved
+// unreliable when this ran inside the client component tree in Next 16).
+const GITHUB_USERNAME = "suresh-krishna-paulraj-1032";
+const REVALIDATE_SECONDS = 86400;
+
+type GitHubContributionsResponse = {
+  contributions: Activity[];
+};
+
+export const revalidate = REVALIDATE_SECONDS;
+
+export async function GET() {
+  const base =
+    process.env.GITHUB_CONTRIBUTIONS_API_URL ||
+    "https://github-contributions-api.jogruber.de";
+
+  const res = await fetch(`${base}/v4/${GITHUB_USERNAME}?y=last`, {
+    next: { revalidate: REVALIDATE_SECONDS },
+  });
+
+  if (!res.ok) {
+    return Response.json({ contributions: [] }, { status: 502 });
+  }
+
+  const data = (await res.json()) as GitHubContributionsResponse;
+  return Response.json({ contributions: data.contributions ?? [] });
+}

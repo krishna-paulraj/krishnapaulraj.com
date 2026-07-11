@@ -1,6 +1,5 @@
 "use client";
 
-import { use } from "react";
 import { format } from "date-fns";
 
 import { cn } from "@/lib/utils";
@@ -17,14 +16,12 @@ import {
 } from "@/components/sections/contribution-graph";
 
 export function GitHubContributions({
-  contributions,
+  data,
   className,
 }: {
-  contributions: Promise<Activity[]>;
+  data: Activity[];
   className?: string;
 }) {
-  const data = use(contributions);
-
   return (
     <ContributionGraph
       className={cn("mx-auto", className)}
