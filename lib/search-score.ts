@@ -37,7 +37,9 @@ function fuzzyScore(haystack: string, query: string): number {
     hi++;
   }
   if (qi < q.length) return 0;
-  return 200 + maxConsec * 8 - gap;
+  // Clamp: sparse matches in long haystacks can push this negative, and
+  // callers filter on `score > 0` — a genuine match must stay positive.
+  return Math.max(1, 200 + maxConsec * 8 - gap);
 }
 
 export function scoreItem(item: SearchItem, query: string): number {

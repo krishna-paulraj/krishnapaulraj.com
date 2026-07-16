@@ -2,29 +2,35 @@
 
 import { useEffect, useState } from "react";
 
+import { ordinalSuffix } from "@/lib/utils";
+
 export default function VisitorCount() {
   const [count, setCount] = useState<number | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
+
     fetch("/api/visitors", { method: "POST" })
-      .then((r) => r.json())
-      .then((data) => setCount(data.count))
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (cancelled || data?.count == null) return;
+        setCount(data.count);
+      })
       .catch(() => {});
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  if (count === null) return null;
-
-  const suffix =
-    count % 100 >= 11 && count % 100 <= 13
-      ? "th"
-      : (["th", "st", "nd", "rd"][Math.min(count % 10, 3)] ?? "th");
+  if (count == null) return null;
 
   return (
     <span>
       You&apos;re the{" "}
       <strong className="text-foreground">
         {count.toLocaleString()}
-        <sup>{suffix}</sup>
+        <sup>{ordinalSuffix(count)}</sup>
       </strong>{" "}
       visitor
     </span>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTiks } from "@rexa-developer/tiks/react";
 import { useWebHaptics } from "web-haptics/react";
 
@@ -22,6 +22,16 @@ export function useCopyToClipboard({
 
   const { trigger: haptic } = useWebHaptics();
   const { success: tiksSuccess, error: tiksError } = useTiks();
+
+  // Clear any pending reset on unmount so it can't fire on an unmounted hook.
+  useEffect(
+    () => () => {
+      if (resetTimeoutRef.current) {
+        clearTimeout(resetTimeoutRef.current);
+      }
+    },
+    [],
+  );
 
   const copy = useCallback(
     async (text: string | (() => string)) => {

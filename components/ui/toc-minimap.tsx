@@ -47,7 +47,7 @@ export function TOCMinimap({ items, className }: TOCMinimapProps) {
         }}
       >
         <HoverCardTrigger asChild>
-          <div className="flex max-h-[50dvh] flex-col gap-3 overflow-hidden py-3 pl-6 opacity-100 transition-opacity duration-200 data-popup-open:opacity-0">
+          <div className="flex max-h-[50dvh] flex-col gap-3 overflow-hidden py-3 pl-6 opacity-100 transition-opacity duration-200 data-[state=open]:opacity-0">
             {items.map((item) => (
               <div
                 key={item.url}

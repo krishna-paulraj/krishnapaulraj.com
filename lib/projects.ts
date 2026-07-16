@@ -36,9 +36,9 @@ export const TECH = {
   rabbitmq: { icon: SiRabbitmq, label: "RabbitMQ", color: "#FF6600" },
   docker: { icon: SiDocker, label: "Docker", color: "#2496ED" },
   vite: { icon: SiVite, label: "Vite", color: "#646CFF" },
-  webrtc: { icon: SiWebrtc, label: "WebRTC", color: "#" },
-  relay: { icon: SiRelay, label: "Relay", color: "#" },
-  cli: { icon: SiIterm2, label: "Cli", color: "#17A64E" },
+  webrtc: { icon: SiWebrtc, label: "WebRTC", color: "currentColor" },
+  relay: { icon: SiRelay, label: "Relay", color: "currentColor" },
+  cli: { icon: SiIterm2, label: "CLI", color: "#17A64E" },
 } satisfies Record<string, ProjectTech>;
 
 export type TechKey = keyof typeof TECH;

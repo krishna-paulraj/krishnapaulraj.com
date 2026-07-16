@@ -21,6 +21,10 @@ export function useSound(
   const [isPlaying, setIsPlaying] = useState(false);
   const playbackRef = useRef<SoundPlayback | null>(null);
 
+  // Incremented by stop()/unmount to invalidate playbacks that are still
+  // decoding, so a playSound that resolves after stop() doesn't keep playing.
+  const generationRef = useRef(0);
+
   // Keep the latest options/sound without re-creating callbacks on each render.
   const optionsRef = useRef(options);
   const soundRef = useRef(sound);
@@ -30,6 +34,7 @@ export function useSound(
   });
 
   const stop = useCallback(() => {
+    generationRef.current += 1;
     playbackRef.current?.stop();
     playbackRef.current = null;
     setIsPlaying(false);
@@ -44,20 +49,40 @@ export function useSound(
     o.onPlay?.();
     setIsPlaying(true);
 
-    void playSound(soundRef.current.dataUri, {
+    const generation = generationRef.current;
+
+    playSound(soundRef.current.dataUri, {
       volume: overrides?.volume ?? o.volume ?? 1,
       playbackRate: overrides?.playbackRate ?? o.playbackRate ?? 1,
       onEnd: () => {
+        if (generation !== generationRef.current) return;
         setIsPlaying(false);
         optionsRef.current.onEnd?.();
       },
-    }).then((playback) => {
-      playbackRef.current = playback;
-    });
+    })
+      .then((playback) => {
+        if (generation !== generationRef.current) {
+          // stop() was called while the sound was decoding — kill it now.
+          playback.stop();
+          return;
+        }
+        playbackRef.current = playback;
+      })
+      .catch(() => {
+        // Decode/autoplay failure — don't leave `isPlaying` stuck true.
+        if (generation !== generationRef.current) return;
+        setIsPlaying(false);
+      });
   }, []);
 
   // Stop any in-flight playback on unmount.
-  useEffect(() => () => playbackRef.current?.stop(), []);
+  useEffect(
+    () => () => {
+      generationRef.current += 1;
+      playbackRef.current?.stop();
+    },
+    [],
+  );
 
   return [
     play,
