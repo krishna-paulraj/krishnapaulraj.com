@@ -17,6 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/projects`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${SITE_URL}/resume`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${SITE_URL}/board`, changeFrequency: "weekly", priority: 0.6 },
+    { url: `${SITE_URL}/timeline`, changeFrequency: "yearly", priority: 0.5 },
     { url: `${SITE_URL}/terminal`, changeFrequency: "yearly", priority: 0.4 },
     { url: `${SITE_URL}/gears`, changeFrequency: "monthly", priority: 0.5 },
     {

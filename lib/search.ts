@@ -51,6 +51,14 @@ const PAGE_ITEMS: SearchItem[] = [
     keywords: ["kanban", "board", "tasks", "now", "working on"],
   },
   {
+    id: "page-timeline",
+    title: "Timeline",
+    description: "Milestones of my journey so far.",
+    href: "/timeline",
+    kind: "page",
+    keywords: ["journey", "milestones", "career", "history"],
+  },
+  {
     id: "page-terminal",
     title: "Terminal Setup",
     description: "My Zsh + Powerlevel10k + tmux configuration.",

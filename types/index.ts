@@ -13,6 +13,7 @@ export type {
 } from "@/lib/projects";
 export type { BlogPost, BlogPostDetail } from "@/lib/blog";
 export type { BoardCard, BoardColumnId, BoardState } from "@/lib/board";
+export type { TimelineMilestone } from "@/lib/timeline";
 
 /**
  * Site analytics served by `app/api/insights/route.ts` and fetched

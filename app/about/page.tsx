@@ -83,6 +83,13 @@ export default function AboutPage() {
           >
             Writing
           </Link>
+          , and for the longer arc there&apos;s a{" "}
+          <Link
+            href="/timeline"
+            className="text-foreground font-medium underline-offset-4 hover:underline"
+          >
+            timeline
+          </Link>
           .
         </p>
       </Reveal>
