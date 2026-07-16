@@ -12,6 +12,7 @@ import {
 } from "@/components/reui/kanban";
 import { Button } from "@/components/ui/button";
 import { BOARD_COLUMNS } from "@/lib/board";
+import { cn } from "@/lib/utils";
 import type { BoardCard, BoardColumnId, BoardState } from "@/types";
 
 import { BoardCardView } from "./board-card";
@@ -80,9 +81,16 @@ export function BoardKanban({
                   key={card.id}
                   value={card.id}
                   disabled={!editable}
-                  // Read-only cards are informational, not "disabled" — undo
-                  // the dimming.
-                  className="opacity-100"
+                  // opacity-100: read-only cards are informational, not
+                  // "disabled" — undo the component's dimming. While this
+                  // card is being dragged, its in-list instance marks the
+                  // landing position: hide the content and render a faint
+                  // dashed slot of the same size instead.
+                  className={cn(
+                    "opacity-100",
+                    "data-[dragging=true]:border-border data-[dragging=true]:bg-muted/30 data-[dragging=true]:rounded-lg data-[dragging=true]:border data-[dragging=true]:border-dashed",
+                    "data-[dragging=true]:*:invisible",
+                  )}
                 >
                   <BoardCardView
                     card={card}
