@@ -112,14 +112,14 @@ export function SearchTrigger() {
       type="button"
       onClick={() => setOpen(true)}
       aria-label="Open search (⌘K)"
-      className="inline-flex items-center gap-1 rounded-full border border-border bg-background p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:py-1 sm:pl-3 sm:pr-1"
+      className="border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground inline-flex items-center gap-1 rounded-full border p-1.5 transition-colors sm:py-1 sm:pr-1 sm:pl-3"
     >
       <SearchIcon className="size-3.5" />
       <span className="hidden items-center gap-0.5 sm:inline-flex">
-        <kbd className="inline-flex size-5 items-center justify-center rounded-md bg-muted text-foreground">
+        <kbd className="bg-muted text-foreground inline-flex size-5 items-center justify-center rounded-md">
           <CommandIcon className="size-3" />
         </kbd>
-        <kbd className="inline-flex size-5 items-center justify-center rounded-md bg-muted font-mono text-[11px] text-foreground">
+        <kbd className="bg-muted text-foreground inline-flex size-5 items-center justify-center rounded-md font-mono text-[11px]">
           K
         </kbd>
       </span>
@@ -218,8 +218,8 @@ function SearchDialog({ items }: { items: SearchItem[] }) {
         className="top-[15%] left-1/2 w-[92vw] max-w-xl -translate-x-1/2 -translate-y-0 gap-0 overflow-hidden p-0 sm:max-w-xl"
       >
         <DialogTitle className="sr-only">Search</DialogTitle>
-        <div className="flex items-center gap-3 border-b border-border px-4 py-3">
-          <SearchIcon className="size-4 shrink-0 text-muted-foreground" />
+        <div className="border-border flex items-center gap-3 border-b px-4 py-3">
+          <SearchIcon className="text-muted-foreground size-4 shrink-0" />
           <input
             ref={inputRef}
             value={query}
@@ -229,22 +229,22 @@ function SearchDialog({ items }: { items: SearchItem[] }) {
             spellCheck={false}
             autoComplete="off"
             aria-label="Search query"
-            className="flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
+            className="text-foreground placeholder:text-muted-foreground flex-1 bg-transparent text-sm outline-none"
           />
-          <kbd className="hidden rounded border border-border bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground sm:inline">
+          <kbd className="border-border bg-muted text-muted-foreground hidden rounded border px-1.5 py-0.5 font-mono text-[10px] sm:inline">
             ESC
           </kbd>
         </div>
 
         <div ref={listRef} className="max-h-[60vh] overflow-y-auto p-2">
           {flat.length === 0 ? (
-            <p className="px-3 py-8 text-center text-sm text-muted-foreground">
+            <p className="text-muted-foreground px-3 py-8 text-center text-sm">
               No results for &ldquo;{query}&rdquo;
             </p>
           ) : (
             groups.map((g) => (
               <div key={g.kind} className="mb-3 last:mb-0">
-                <p className="px-3 py-1.5 text-xs font-medium uppercase tracking-widest text-muted-foreground/70">
+                <p className="text-muted-foreground/70 px-3 py-1.5 text-xs font-medium tracking-widest uppercase">
                   {KIND_LABEL[g.kind]}
                 </p>
                 <ul>
@@ -264,19 +264,19 @@ function SearchDialog({ items }: { items: SearchItem[] }) {
                             isActive ? "bg-muted" : "hover:bg-muted/60",
                           )}
                         >
-                          <Icon className="size-4 shrink-0 text-muted-foreground" />
+                          <Icon className="text-muted-foreground size-4 shrink-0" />
                           <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-medium text-foreground">
+                            <p className="text-foreground truncate text-sm font-medium">
                               {item.title}
                             </p>
                             {item.description && (
-                              <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                              <p className="text-muted-foreground mt-0.5 truncate text-xs">
                                 {item.description}
                               </p>
                             )}
                           </div>
                           {isActive && (
-                            <ArrowRightIcon className="size-4 shrink-0 text-muted-foreground" />
+                            <ArrowRightIcon className="text-muted-foreground size-4 shrink-0" />
                           )}
                         </button>
                       </li>
@@ -288,21 +288,21 @@ function SearchDialog({ items }: { items: SearchItem[] }) {
           )}
         </div>
 
-        <div className="hidden items-center gap-4 border-t border-border px-4 py-2 text-[11px] text-muted-foreground sm:flex">
+        <div className="border-border text-muted-foreground hidden items-center gap-4 border-t px-4 py-2 text-[11px] sm:flex">
           <span className="inline-flex items-center gap-1">
-            <kbd className="rounded border border-border bg-muted px-1 py-px font-mono">
+            <kbd className="border-border bg-muted rounded border px-1 py-px font-mono">
               ↑↓
             </kbd>
             navigate
           </span>
           <span className="inline-flex items-center gap-1">
-            <kbd className="rounded border border-border bg-muted px-1 py-px font-mono">
+            <kbd className="border-border bg-muted rounded border px-1 py-px font-mono">
               ↵
             </kbd>
             open
           </span>
           <span className="inline-flex items-center gap-1">
-            <kbd className="rounded border border-border bg-muted px-1 py-px font-mono">
+            <kbd className="border-border bg-muted rounded border px-1 py-px font-mono">
               esc
             </kbd>
             close

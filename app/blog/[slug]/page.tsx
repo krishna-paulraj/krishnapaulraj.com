@@ -91,7 +91,7 @@ export default async function BlogPostPage({
   );
 
   return (
-    <article className="mx-auto w-full max-w-2xl flex-1 px-3 md:px-6 py-6 font-sans">
+    <article className="mx-auto w-full max-w-2xl flex-1 px-3 py-6 font-sans md:px-6">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: ldJson }}
@@ -102,7 +102,7 @@ export default async function BlogPostPage({
         <div className="flex items-center justify-between gap-3">
           <Link
             href="/blog"
-            className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-sm transition-colors"
           >
             <ChevronLeft className="size-4" />
             Back to writing
@@ -119,11 +119,11 @@ export default async function BlogPostPage({
           {post.title}
         </h1>
         {post.description && (
-          <p className="mt-3 text-muted-foreground leading-relaxed">
+          <p className="text-muted-foreground mt-3 leading-relaxed">
             {post.description}
           </p>
         )}
-        <div className="mt-4 flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
+        <div className="text-muted-foreground mt-4 flex flex-wrap items-center gap-x-2 text-xs">
           {post.createdAt && (
             <time dateTime={post.createdAt}>{formatDate(post.createdAt)}</time>
           )}
@@ -143,7 +143,7 @@ export default async function BlogPostPage({
               <li key={tag}>
                 <Link
                   href={`/blog?tag=${encodeURIComponent(tag)}`}
-                  className="inline-flex items-center rounded-full border border-border px-2.5 py-0.5 font-mono text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  className="border-border text-muted-foreground hover:bg-muted hover:text-foreground inline-flex items-center rounded-full border px-2.5 py-0.5 font-mono text-xs transition-colors"
                 >
                   #{tag}
                 </Link>
@@ -156,7 +156,7 @@ export default async function BlogPostPage({
       {post.image && (
         <Reveal
           delay={0.16}
-          className="mt-8 overflow-hidden rounded-lg border border-border bg-muted"
+          className="border-border bg-muted mt-8 overflow-hidden rounded-lg border"
         >
           <Image
             src={post.image}
@@ -179,7 +179,7 @@ export default async function BlogPostPage({
         <Reveal
           as="section"
           delay={0.3}
-          className="mt-16 border-t border-border pt-8"
+          className="border-border mt-16 border-t pt-8"
           aria-label="Related posts"
         >
           <h2 className="text-lg font-semibold tracking-tight">
@@ -190,17 +190,17 @@ export default async function BlogPostPage({
               <li key={p.slug}>
                 <Link
                   href={`/blog/${p.slug}`}
-                  className="group flex flex-col gap-1 rounded-lg border border-border bg-card/40 p-4 transition-colors hover:bg-muted/40"
+                  className="group border-border bg-card/40 hover:bg-muted/40 flex flex-col gap-1 rounded-lg border p-4 transition-colors"
                 >
-                  <h3 className="text-sm font-medium text-foreground group-hover:underline">
+                  <h3 className="text-foreground text-sm font-medium group-hover:underline">
                     {p.title}
                   </h3>
                   {p.description && (
-                    <p className="line-clamp-2 text-xs text-muted-foreground">
+                    <p className="text-muted-foreground line-clamp-2 text-xs">
                       {p.description}
                     </p>
                   )}
-                  <div className="mt-1 flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
+                  <div className="text-muted-foreground mt-1 flex flex-wrap items-center gap-x-2 text-xs">
                     {p.createdAt && (
                       <time dateTime={p.createdAt}>
                         {formatDate(p.createdAt)}
@@ -229,20 +229,20 @@ export default async function BlogPostPage({
         <Reveal
           as="section"
           delay={0.36}
-          className="mt-12 border-t border-border pt-8"
+          className="border-border mt-12 border-t pt-8"
           aria-label="Post navigation"
         >
           <div className="grid gap-3 sm:grid-cols-2">
             {older ? (
               <Link
                 href={`/blog/${older.slug}`}
-                className="group flex flex-col gap-1 rounded-lg border border-border bg-card/40 p-4 transition-colors hover:bg-muted/40"
+                className="group border-border bg-card/40 hover:bg-muted/40 flex flex-col gap-1 rounded-lg border p-4 transition-colors"
               >
-                <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                <span className="text-muted-foreground flex items-center gap-1 text-xs">
                   <ChevronLeft className="size-3" />
                   Previous post
                 </span>
-                <span className="text-sm font-medium text-foreground group-hover:underline">
+                <span className="text-foreground text-sm font-medium group-hover:underline">
                   {older.title}
                 </span>
               </Link>
@@ -252,13 +252,13 @@ export default async function BlogPostPage({
             {newer ? (
               <Link
                 href={`/blog/${newer.slug}`}
-                className="group flex flex-col items-end gap-1 rounded-lg border border-border bg-card/40 p-4 text-right transition-colors hover:bg-muted/40"
+                className="group border-border bg-card/40 hover:bg-muted/40 flex flex-col items-end gap-1 rounded-lg border p-4 text-right transition-colors"
               >
-                <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                <span className="text-muted-foreground flex items-center gap-1 text-xs">
                   Next post
                   <ChevronRight className="size-3" />
                 </span>
-                <span className="text-sm font-medium text-foreground group-hover:underline">
+                <span className="text-foreground text-sm font-medium group-hover:underline">
                   {newer.title}
                 </span>
               </Link>

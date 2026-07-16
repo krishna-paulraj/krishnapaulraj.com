@@ -10,7 +10,7 @@ export default function BlogToc({ items }: { items: TOCItemType[] }) {
   if (items.length === 0) return null;
 
   return (
-    <div className="fixed right-6 top-1/2 z-40 hidden -translate-y-1/2 lg:block">
+    <div className="fixed top-1/2 right-6 z-40 hidden -translate-y-1/2 lg:block">
       <TOCMinimap items={items} />
     </div>
   );

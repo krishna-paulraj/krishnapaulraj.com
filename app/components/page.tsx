@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function ComponentsPage() {
   return (
-    <div className="mx-auto w-full max-w-2xl flex-1 px-3 md:px-6 py-6 font-sans">
+    <div className="mx-auto w-full max-w-2xl flex-1 px-3 py-6 font-sans md:px-6">
       <Reveal>
         <ComponentsSection standalone />
       </Reveal>

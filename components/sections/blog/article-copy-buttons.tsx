@@ -42,7 +42,7 @@ export default function ArticleCopyButtons() {
             variant="ghost"
             size="sm"
             aria-label="Copy code"
-            className="absolute right-2 bottom-2 z-10 bg-black/40 text-muted-foreground backdrop-blur-sm hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground absolute right-2 bottom-2 z-10 bg-black/40 backdrop-blur-sm"
             idleIcon={<CopyIcon className="size-3.5" />}
             doneIcon={<CheckIcon className="size-3.5" />}
           >

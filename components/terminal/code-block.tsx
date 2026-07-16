@@ -12,7 +12,7 @@ export default function CodeBlock({
   html: string;
 }) {
   return (
-    <div className="group relative overflow-hidden rounded-lg border border-border">
+    <div className="group border-border relative overflow-hidden rounded-lg border">
       <div
         className="terminal-code-block overflow-x-auto"
         dangerouslySetInnerHTML={{ __html: html }}

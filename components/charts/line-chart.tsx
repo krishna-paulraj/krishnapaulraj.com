@@ -58,7 +58,7 @@ function getChildComponentName(child: ReactElement) {
 
 function registersLineDomain(
   child: ReactElement,
-  props: LineProps | undefined
+  props: LineProps | undefined,
 ) {
   if (!props?.dataKey) {
     return false;

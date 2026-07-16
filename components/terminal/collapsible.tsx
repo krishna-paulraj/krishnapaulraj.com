@@ -19,7 +19,7 @@ export default function Collapsible({
   return (
     <div>
       <div className="flex items-center gap-3">
-        <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-border bg-muted/40 text-muted-foreground [&_svg]:size-4">
+        <div className="border-border bg-muted/40 text-muted-foreground flex size-9 shrink-0 items-center justify-center rounded-lg border [&_svg]:size-4">
           {icon}
         </div>
         <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
@@ -27,7 +27,7 @@ export default function Collapsible({
           type="button"
           onClick={() => setOpen((o) => !o)}
           aria-expanded={open}
-          className="ml-auto inline-flex items-center gap-1 rounded-md border border-border bg-background px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          className="border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground ml-auto inline-flex items-center gap-1 rounded-md border px-2.5 py-1 text-xs transition-colors"
         >
           {open ? "Hide" : "Show"}
           <ChevronDown

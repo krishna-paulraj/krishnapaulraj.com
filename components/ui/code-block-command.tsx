@@ -128,7 +128,7 @@ export function CodeBlockCommand({
   );
 
   return (
-    <div className="relative overflow-hidden rounded-xl border border-border bg-muted">
+    <div className="border-border bg-muted relative overflow-hidden rounded-xl border">
       <Tabs
         className="gap-0"
         value={packageManager}
@@ -136,10 +136,10 @@ export function CodeBlockCommand({
           setPackageManager(value as PackageManager);
         }}
       >
-        <ScrollArea.Root className="w-full pr-10 shadow-[inset_0_-1px_0_0] shadow-border">
+        <ScrollArea.Root className="shadow-border w-full pr-10 shadow-[inset_0_-1px_0_0]">
           <TabsList
             className={cn(
-              "h-10 max-w-full justify-start rounded-none bg-transparent p-0 pl-4 inset-ring-0 dark:bg-transparent [&_svg]:size-4 [&_svg]:shrink-0 [&_svg]:text-muted-foreground",
+              "[&_svg]:text-muted-foreground h-10 max-w-full justify-start rounded-none bg-transparent p-0 pl-4 inset-ring-0 dark:bg-transparent [&_svg]:size-4 [&_svg]:shrink-0",
               "[--scroll-area-overflow-x-end:inherit] [--scroll-area-overflow-x-start:inherit]",
               "mask-linear-[to_right,transparent_0,black_min(2.5rem,var(--scroll-area-overflow-x-start)),black_calc(100%-min(2.5rem,var(--scroll-area-overflow-x-end,2.5rem))),transparent_100%]",
             )}
@@ -163,7 +163,7 @@ export function CodeBlockCommand({
               );
             })}
 
-            <TabsIndicator className="h-0.5 translate-y-0 rounded-none bg-foreground ring-0 dark:bg-foreground" />
+            <TabsIndicator className="bg-foreground dark:bg-foreground h-0.5 translate-y-0 rounded-none ring-0" />
           </TabsList>
         </ScrollArea.Root>
 
@@ -172,12 +172,12 @@ export function CodeBlockCommand({
             <TabsContent key={key} value={key}>
               <pre
                 data-pm={key}
-                className="group/tabs-content-pre overscroll-x-contain p-4 leading-6 not-data-[pm=prompt]:overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                className="group/tabs-content-pre [scrollbar-width:none] overscroll-x-contain p-4 leading-6 [-ms-overflow-style:none] not-data-[pm=prompt]:overflow-x-auto [&::-webkit-scrollbar]:hidden"
               >
                 <code
                   data-slot="code-block"
                   data-language="bash"
-                  className="font-mono text-sm/none text-muted-foreground group-data-[pm=prompt]/tabs-content-pre:whitespace-normal"
+                  className="text-muted-foreground font-mono text-sm/none group-data-[pm=prompt]/tabs-content-pre:whitespace-normal"
                 >
                   <span className="select-none group-data-[pm=prompt]/tabs-content-pre:hidden">
                     ${" "}

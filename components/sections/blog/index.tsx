@@ -14,7 +14,7 @@ export default function BlogSection() {
         Sharing knowledge as I learn
       </HighlightedHeading>
 
-      <ul className="mt-2 divide-y divide-border">
+      <ul className="divide-border mt-2 divide-y">
         {posts.map((post) => (
           <li key={post.slug}>
             <Link
@@ -22,11 +22,11 @@ export default function BlogSection() {
               className="group flex flex-col gap-1 py-4 sm:flex-row sm:items-start sm:justify-between sm:gap-8"
             >
               <div className="flex-1">
-                <p className="font-semibold text-foreground group-hover:underline">
+                <p className="text-foreground font-semibold group-hover:underline">
                   {post.title}
                 </p>
                 {post.description && (
-                  <p className="mt-0.5 line-clamp-2 text-sm text-muted-foreground">
+                  <p className="text-muted-foreground mt-0.5 line-clamp-2 text-sm">
                     {post.description}
                   </p>
                 )}
@@ -34,7 +34,7 @@ export default function BlogSection() {
               {post.createdAt && (
                 <time
                   dateTime={post.createdAt}
-                  className="shrink-0 text-sm text-muted-foreground"
+                  className="text-muted-foreground shrink-0 text-sm"
                 >
                   {new Date(post.createdAt).toLocaleDateString("en-US", {
                     weekday: "long",

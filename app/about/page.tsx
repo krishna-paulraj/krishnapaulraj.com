@@ -40,7 +40,7 @@ const socials = [
 
 export default function AboutPage() {
   return (
-    <div className="mx-auto w-full max-w-2xl flex-1 px-3 md:px-6 py-6 font-sans">
+    <div className="mx-auto w-full max-w-2xl flex-1 px-3 py-6 font-sans md:px-6">
       <Reveal>
         <h1 className="text-3xl font-bold tracking-tight">About</h1>
         <HighlightedHeading className="my-4">
@@ -50,7 +50,7 @@ export default function AboutPage() {
 
       <Reveal
         delay={0.1}
-        className="mt-6 space-y-4 text-sm leading-relaxed text-muted-foreground"
+        className="text-muted-foreground mt-6 space-y-4 text-sm leading-relaxed"
       >
         <p>
           Hey, I&apos;m Suresh Krishna Paulraj — a software engineer at{" "}
@@ -58,7 +58,7 @@ export default function AboutPage() {
             href="https://blocsys.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium text-foreground hover:underline underline-offset-4"
+            className="text-foreground font-medium underline-offset-4 hover:underline"
           >
             Blocsys
           </a>
@@ -79,7 +79,7 @@ export default function AboutPage() {
           over on{" "}
           <Link
             href="/blog"
-            className="font-medium text-foreground hover:underline underline-offset-4"
+            className="text-foreground font-medium underline-offset-4 hover:underline"
           >
             Writing
           </Link>
@@ -91,7 +91,7 @@ export default function AboutPage() {
         <h2 className="text-lg font-semibold tracking-tight">
           What I&apos;m working on
         </h2>
-        <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+        <ul className="text-muted-foreground mt-3 space-y-2 text-sm">
           <li>
             <span className="text-foreground">My day job:</span> shipping
             full-stack web applications at Blocsys.
@@ -117,7 +117,7 @@ export default function AboutPage() {
                 target={href.startsWith("mailto") ? undefined : "_blank"}
                 rel="noopener noreferrer"
                 aria-label={label}
-                className="flex size-9 items-center justify-center rounded-lg border border-border bg-background text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                className="border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground flex size-9 items-center justify-center rounded-lg border transition-colors"
               >
                 <Icon className="size-4" />
               </a>

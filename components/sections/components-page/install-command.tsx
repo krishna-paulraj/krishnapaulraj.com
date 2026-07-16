@@ -95,11 +95,11 @@ export function InstallCommand({
         <ol className="space-y-6">
           {steps.map((step, i) => (
             <li key={step.title} className="flex gap-4">
-              <div className="flex size-6 shrink-0 items-center justify-center rounded-full border border-border text-xs font-medium text-muted-foreground">
+              <div className="border-border text-muted-foreground flex size-6 shrink-0 items-center justify-center rounded-full border text-xs font-medium">
                 {i + 1}
               </div>
               <div className="min-w-0 flex-1">
-                <h3 className="pt-0.5 text-sm font-semibold tracking-tight text-foreground">
+                <h3 className="text-foreground pt-0.5 text-sm font-semibold tracking-tight">
                   {step.title}
                 </h3>
                 <div className="mt-3">{step.content}</div>
@@ -123,7 +123,7 @@ function FilePathCodeBlock({
 }) {
   return (
     <div>
-      <div className="rounded-t-lg border border-b-0 border-border bg-muted px-3 py-2 font-mono text-xs text-muted-foreground">
+      <div className="border-border bg-muted text-muted-foreground rounded-t-lg border border-b-0 px-3 py-2 font-mono text-xs">
         {path}
       </div>
       <div className="[&>*]:rounded-t-none">

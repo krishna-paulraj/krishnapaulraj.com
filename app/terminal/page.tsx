@@ -195,7 +195,7 @@ source ~/.config/tmux/statusline.conf`;
 function SectionHeader({ icon, title }: { icon: ReactNode; title: string }) {
   return (
     <div className="flex items-center gap-3">
-      <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-border bg-muted/40 text-muted-foreground [&_svg]:size-4">
+      <div className="border-border bg-muted/40 text-muted-foreground flex size-9 shrink-0 items-center justify-center rounded-lg border [&_svg]:size-4">
         {icon}
       </div>
       <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
@@ -214,11 +214,11 @@ function Step({
 }) {
   return (
     <div className="flex gap-3">
-      <div className="flex size-6 shrink-0 items-center justify-center rounded-md border border-border bg-muted/40 font-mono text-[11px] text-muted-foreground">
+      <div className="border-border bg-muted/40 text-muted-foreground flex size-6 shrink-0 items-center justify-center rounded-md border font-mono text-[11px]">
         {n}
       </div>
       <div className="min-w-0 flex-1 space-y-3">
-        <p className="pt-0.5 text-sm text-foreground">{text}</p>
+        <p className="text-foreground pt-0.5 text-sm">{text}</p>
         {children}
       </div>
     </div>
@@ -238,15 +238,15 @@ function PrereqItem({
 }) {
   return (
     <li className="flex items-start gap-3">
-      <div className="flex size-6 shrink-0 items-center justify-center rounded-md border border-border bg-muted/40 font-mono text-[11px] text-muted-foreground">
+      <div className="border-border bg-muted/40 text-muted-foreground flex size-6 shrink-0 items-center justify-center rounded-md border font-mono text-[11px]">
         {n}
       </div>
-      <div className="flex size-6 shrink-0 items-center justify-center rounded-md border border-border bg-muted/40 text-muted-foreground [&_svg]:size-3.5">
+      <div className="border-border bg-muted/40 text-muted-foreground flex size-6 shrink-0 items-center justify-center rounded-md border [&_svg]:size-3.5">
         {icon}
       </div>
       <div className="min-w-0 flex-1">
-        <p className="text-sm font-medium text-foreground">{title}</p>
-        <p className="text-xs text-muted-foreground">{desc}</p>
+        <p className="text-foreground text-sm font-medium">{title}</p>
+        <p className="text-muted-foreground text-xs">{desc}</p>
       </div>
     </li>
   );
@@ -278,10 +278,10 @@ export default async function TerminalPage() {
   ]);
 
   return (
-    <div className="mx-auto w-full max-w-2xl flex-1 px-3 md:px-6 py-6 font-sans">
+    <div className="mx-auto w-full max-w-2xl flex-1 px-3 py-6 font-sans md:px-6">
       <Reveal>
         <h1 className="text-3xl font-bold tracking-tight">Terminal Setup</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
+        <p className="text-muted-foreground mt-2 text-sm">
           The setup I actually use on macOS — iTerm2 running Zsh with
           Powerlevel10k, a tmux workflow, Neovim, and a handful of modern CLI
           tools. Everything below mirrors my dotfiles.
@@ -291,7 +291,7 @@ export default async function TerminalPage() {
       <Reveal
         as="section"
         delay={0.1}
-        className="mt-12 border-t border-border pt-8"
+        className="border-border mt-12 border-t pt-8"
       >
         <SectionHeader icon={<BoxIcon />} title="Prerequisites" />
         <ol className="mt-6 space-y-4 pl-12">
@@ -331,14 +331,17 @@ export default async function TerminalPage() {
       <Reveal
         as="section"
         delay={0.16}
-        className="mt-12 border-t border-border pt-8"
+        className="border-border mt-12 border-t pt-8"
       >
         <SectionHeader
           icon={<DownloadIcon />}
           title="Install Required Packages"
         />
         <div className="mt-6 space-y-6 pl-12">
-          <Step n="1.1" text="Install the CLI tools, prompt, and shell plugins:">
+          <Step
+            n="1.1"
+            text="Install the CLI tools, prompt, and shell plugins:"
+          >
             <CodeBlock code={BREW_FORMULAE} html={brewFormulaeHtml} />
           </Step>
           <Step n="1.2" text="Install iTerm2 and the Nerd Font:">
@@ -350,7 +353,7 @@ export default async function TerminalPage() {
       <Reveal
         as="section"
         delay={0.22}
-        className="mt-12 border-t border-border pt-8"
+        className="border-border mt-12 border-t pt-8"
       >
         <SectionHeader icon={<FileTextIcon />} title="Configure Zsh" />
         <div className="mt-6 space-y-6 pl-12">
@@ -375,7 +378,7 @@ export default async function TerminalPage() {
       <Reveal
         as="section"
         delay={0.26}
-        className="mt-12 border-t border-border pt-8"
+        className="border-border mt-12 border-t pt-8"
       >
         <SectionHeader icon={<SquareTerminalIcon />} title="Configure tmux" />
         <div className="mt-6 space-y-6 pl-12">
@@ -391,7 +394,7 @@ export default async function TerminalPage() {
       <Reveal
         as="section"
         delay={0.3}
-        className="mt-12 border-t border-border pt-8"
+        className="border-border mt-12 border-t pt-8"
       >
         <Collapsible icon={<FileTextIcon />} title=".zshrc Configuration">
           <CodeBlock code={ZSHRC_CONTENT} html={zshrcContentHtml} />
@@ -401,7 +404,7 @@ export default async function TerminalPage() {
       <Reveal
         as="section"
         delay={0.34}
-        className="mt-12 border-t border-border pt-8"
+        className="border-border mt-12 border-t pt-8"
       >
         <Collapsible icon={<SquareTerminalIcon />} title="tmux Configuration">
           <CodeBlock code={TMUX_CONTENT} html={tmuxContentHtml} />
@@ -411,7 +414,7 @@ export default async function TerminalPage() {
       <Reveal
         as="section"
         delay={0.38}
-        className="mt-12 border-t border-border pt-8"
+        className="border-border mt-12 border-t pt-8"
       >
         <SectionHeader icon={<RefreshCwIcon />} title="Apply Configuration" />
         <div className="mt-6 space-y-6 pl-12">
@@ -419,10 +422,10 @@ export default async function TerminalPage() {
             <CodeBlock code={RELOAD} html={reloadHtml} />
           </Step>
           <div className="flex gap-3">
-            <div className="flex size-6 shrink-0 items-center justify-center rounded-md border border-border bg-muted/40 font-mono text-[11px] text-muted-foreground">
+            <div className="border-border bg-muted/40 text-muted-foreground flex size-6 shrink-0 items-center justify-center rounded-md border font-mono text-[11px]">
               2
             </div>
-            <p className="pt-0.5 text-sm text-foreground">
+            <p className="text-foreground pt-0.5 text-sm">
               Or simply restart your terminal
             </p>
           </div>
@@ -430,8 +433,8 @@ export default async function TerminalPage() {
       </Reveal>
 
       <Reveal delay={0.42} className="mt-10 pl-12">
-        <div className="inline-flex items-center gap-2 rounded-lg border border-border bg-card/40 px-4 py-3 text-sm">
-          <CheckCircle2Icon className="size-4 text-foreground" />
+        <div className="border-border bg-card/40 inline-flex items-center gap-2 rounded-lg border px-4 py-3 text-sm">
+          <CheckCircle2Icon className="text-foreground size-4" />
           <span>Done! Your terminal is now configured.</span>
         </div>
       </Reveal>
@@ -439,21 +442,21 @@ export default async function TerminalPage() {
       <Reveal
         as="section"
         delay={0.46}
-        className="mt-12 border-t border-border pt-8"
+        className="border-border mt-12 border-t pt-8"
       >
         <SectionHeader icon={<GitBranchIcon />} title="Source Repository" />
         <a
           href="https://github.com/krishna-paulraj/dotfiles"
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-6 ml-12 flex items-start gap-3 rounded-lg border border-border bg-card/40 p-4 transition-colors hover:bg-muted/40"
+          className="border-border bg-card/40 hover:bg-muted/40 mt-6 ml-12 flex items-start gap-3 rounded-lg border p-4 transition-colors"
         >
           <FaGithub className="mt-0.5 size-5 shrink-0" />
           <div>
-            <p className="text-sm font-semibold text-foreground">
+            <p className="text-foreground text-sm font-semibold">
               krishna-paulraj/dotfiles
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               Full configuration files, the tmux modules, and updates
             </p>
           </div>

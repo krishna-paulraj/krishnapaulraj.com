@@ -20,9 +20,9 @@ const DateTickerCompact = memo(function DateTickerCompact({
   const label = labels[currentIndex] ?? labels[0] ?? "";
 
   return (
-    <div className="overflow-hidden rounded-full bg-primary px-4 py-1 text-primary-foreground shadow-lg">
+    <div className="bg-primary text-primary-foreground overflow-hidden rounded-full px-4 py-1 shadow-lg">
       <div className="flex h-6 items-center justify-center">
-        <span className="whitespace-nowrap font-medium text-sm">{label}</span>
+        <span className="text-sm font-medium whitespace-nowrap">{label}</span>
       </div>
     </div>
   );
@@ -93,7 +93,7 @@ const DateTickerInner = memo(function DateTickerInner({
   }
 
   return (
-    <div className="overflow-hidden rounded-full bg-primary px-4 py-1 text-primary-foreground shadow-lg">
+    <div className="bg-primary text-primary-foreground overflow-hidden rounded-full px-4 py-1 shadow-lg">
       <div className="relative h-6 overflow-hidden">
         <div className="flex items-center justify-center gap-1">
           {/* Month stack */}
@@ -104,7 +104,7 @@ const DateTickerInner = memo(function DateTickerInner({
                   className="flex h-6 shrink-0 items-center justify-center"
                   key={segment.key}
                 >
-                  <span className="whitespace-nowrap font-medium text-sm">
+                  <span className="text-sm font-medium whitespace-nowrap">
                     {segment.month}
                   </span>
                 </div>
@@ -120,7 +120,7 @@ const DateTickerInner = memo(function DateTickerInner({
                   className="flex h-6 shrink-0 items-center justify-center"
                   key={label.key}
                 >
-                  <span className="whitespace-nowrap font-medium text-sm">
+                  <span className="text-sm font-medium whitespace-nowrap">
                     {label.day}
                   </span>
                 </div>

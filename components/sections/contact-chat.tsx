@@ -112,7 +112,7 @@ function EmailBubble({ email }: { email: string }) {
         variant="ghost"
         size="sm"
         aria-label="Copy email"
-        className="w-full justify-center rounded-xl bg-foreground/5 text-muted-foreground hover:bg-foreground/10 hover:text-foreground dark:hover:bg-foreground/10"
+        className="bg-foreground/5 text-muted-foreground hover:bg-foreground/10 hover:text-foreground dark:hover:bg-foreground/10 w-full justify-center rounded-xl"
       >
         Copy
       </CopyButton>
@@ -168,7 +168,8 @@ function ContactForm() {
       <div className={bubbleClass(false, "flex flex-col gap-1")}>
         <span className="font-medium">Got it — thanks for reaching out.</span>
         <span className="text-muted-foreground">
-          Your message is on its way to my inbox. I&apos;ll get back to you soon.
+          Your message is on its way to my inbox. I&apos;ll get back to you
+          soon.
         </span>
       </div>
     );
@@ -222,7 +223,7 @@ function ContactForm() {
         {status === "sending" && (
           <span
             aria-hidden="true"
-            className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/40 to-transparent"
+            className="animate-shimmer absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent"
           />
         )}
         <span className="relative">Send</span>
@@ -240,7 +241,7 @@ function ActionsBubble({ actions }: { actions: Action[] }) {
           href={action.href}
           target={action.href.startsWith("mailto") ? undefined : "_blank"}
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 rounded-xl bg-foreground/5 px-3 py-2 font-medium text-foreground transition-colors hover:bg-foreground/10"
+          className="bg-foreground/5 text-foreground hover:bg-foreground/10 flex items-center justify-center gap-2 rounded-xl px-3 py-2 font-medium transition-colors"
         >
           {action.icon}
           {action.label}

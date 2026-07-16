@@ -30,7 +30,7 @@ export default function Signature() {
   return (
     <div
       ref={ref}
-      className="signature-wrap flex min-h-[51px] items-center justify-center text-foreground"
+      className="signature-wrap text-foreground flex min-h-[51px] items-center justify-center"
     >
       {inView && (
         <SignatureAnimation duration={0.4} delay={0}>

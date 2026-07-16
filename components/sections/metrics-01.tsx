@@ -22,7 +22,7 @@ export function Metrics01() {
   }, []);
 
   return (
-    <div className="mx-auto w-full max-w-2xl px-3 md:px-6 pb-6 font-sans">
+    <div className="mx-auto w-full max-w-2xl px-3 pb-6 font-sans md:px-6">
       <div className="mt-5 w-full border-t pt-5">
         <h1 className="text-3xl font-bold tracking-tight">Insights</h1>
         <HighlightedHeading className="my-4">
@@ -31,25 +31,25 @@ export function Metrics01() {
 
         {data === null ? (
           <>
-            <div className="mt-1 h-4 w-32 animate-pulse rounded bg-muted" />
+            <div className="bg-muted mt-1 h-4 w-32 animate-pulse rounded" />
             <dl className="mt-4 grid grid-cols-2 gap-3">
               {["Unique Visitors", "Sessions"].map((label) => (
                 <div
                   key={label}
-                  className="rounded-lg border border-border bg-card/40 p-4"
+                  className="border-border bg-card/40 rounded-lg border p-4"
                 >
-                  <dt className="text-xs text-muted-foreground">{label}</dt>
-                  <div className="mt-1 h-7 w-12 animate-pulse rounded bg-muted" />
+                  <dt className="text-muted-foreground text-xs">{label}</dt>
+                  <div className="bg-muted mt-1 h-7 w-12 animate-pulse rounded" />
                 </div>
               ))}
             </dl>
             <div className="mt-4 grid aspect-3/1 w-full place-content-center">
-              <div className="h-4 w-32 animate-pulse rounded bg-muted" />
+              <div className="bg-muted h-4 w-32 animate-pulse rounded" />
             </div>
           </>
         ) : (
           <>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="text-muted-foreground mt-1 text-sm">
               {format(new Date(data.startDate), "MMM d")}
               {" – "}
               {format(new Date(data.endDate), "MMM d, yyyy")}
@@ -65,9 +65,9 @@ export function Metrics01() {
               ].map(({ label, value }) => (
                 <div
                   key={label}
-                  className="rounded-lg border border-border bg-card/40 p-4"
+                  className="border-border bg-card/40 rounded-lg border p-4"
                 >
-                  <dt className="text-xs text-muted-foreground">{label}</dt>
+                  <dt className="text-muted-foreground text-xs">{label}</dt>
                   <dd className="mt-1 text-xl font-semibold tabular-nums">
                     {value.toLocaleString()}
                   </dd>
@@ -111,7 +111,7 @@ export function Metrics01() {
               </LineChart>
             ) : (
               <div className="mt-4 grid aspect-3/1 w-full place-content-center">
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   No data yet — check back after some visits.
                 </p>
               </div>

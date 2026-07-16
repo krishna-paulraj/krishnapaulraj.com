@@ -17,7 +17,7 @@ function TechPill({
     <motion.div
       animate={{ width: isHovered ? "auto" : 28 }}
       transition={SPRING}
-      className="flex h-7 cursor-default items-center justify-center overflow-hidden rounded-full border border-border bg-muted"
+      className="border-border bg-muted flex h-7 cursor-default items-center justify-center overflow-hidden rounded-full border"
     >
       <span className="flex size-7 shrink-0 items-center justify-center">
         <Icon className="size-3.5" style={{ color }} />
@@ -30,7 +30,7 @@ function TechPill({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.12 }}
-            className="whitespace-nowrap pr-2.5 text-xs font-medium text-foreground"
+            className="text-foreground pr-2.5 text-xs font-medium whitespace-nowrap"
           >
             {label}
           </motion.span>

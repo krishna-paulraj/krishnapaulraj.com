@@ -485,7 +485,7 @@ export const ContributionGraphLegend = ({
       className={cn("ml-auto flex items-center gap-0.75", className)}
       {...props}
     >
-      <span className="mr-1 text-muted-foreground">
+      <span className="text-muted-foreground mr-1">
         {labels.legend?.less || "Less"}
       </span>
       {new Array(maxLevel + 1).fill(undefined).map((_, level) =>
@@ -505,7 +505,7 @@ export const ContributionGraphLegend = ({
           </svg>
         ),
       )}
-      <span className="ml-1 text-muted-foreground">
+      <span className="text-muted-foreground ml-1">
         {labels.legend?.more || "More"}
       </span>
     </div>

@@ -2,7 +2,11 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 
-import { countWords, renderMarkdownWithToc, type TocItem } from "@/lib/markdown";
+import {
+  countWords,
+  renderMarkdownWithToc,
+  type TocItem,
+} from "@/lib/markdown";
 
 export type BlogPost = {
   slug: string;

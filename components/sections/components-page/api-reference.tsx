@@ -16,17 +16,17 @@ export function ApiReference({ entries }: { entries: ApiEntry[] }) {
     <div className="space-y-8">
       {entries.map((entry) => (
         <div key={entry.name}>
-          <h3 className="font-mono text-base font-semibold tracking-tight text-foreground">
+          <h3 className="text-foreground font-mono text-base font-semibold tracking-tight">
             {entry.name}
           </h3>
           {entry.description && (
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="text-muted-foreground mt-1 text-sm">
               {entry.description}
             </p>
           )}
-          <div className="mt-4 overflow-hidden rounded-lg border border-border">
+          <div className="border-border mt-4 overflow-hidden rounded-lg border">
             <table className="w-full text-left text-sm">
-              <thead className="bg-muted/40 text-xs text-muted-foreground">
+              <thead className="bg-muted/40 text-muted-foreground text-xs">
                 <tr>
                   <th className="px-4 py-2.5 font-medium">Prop</th>
                   <th className="px-4 py-2.5 font-medium">Type</th>
@@ -35,17 +35,17 @@ export function ApiReference({ entries }: { entries: ApiEntry[] }) {
               </thead>
               <tbody>
                 {entry.props.map((p) => (
-                  <tr key={p.name} className="border-t border-border align-top">
-                    <td className="whitespace-nowrap px-4 py-3 font-mono text-xs text-foreground">
+                  <tr key={p.name} className="border-border border-t align-top">
+                    <td className="text-foreground px-4 py-3 font-mono text-xs whitespace-nowrap">
                       {p.name}
                       {p.required && (
-                        <span className="ml-0.5 text-destructive">*</span>
+                        <span className="text-destructive ml-0.5">*</span>
                       )}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-3 font-mono text-xs text-muted-foreground">
+                    <td className="text-muted-foreground px-4 py-3 font-mono text-xs whitespace-nowrap">
                       {p.type}
                     </td>
-                    <td className="px-4 py-3 text-sm text-muted-foreground">
+                    <td className="text-muted-foreground px-4 py-3 text-sm">
                       {p.description ?? "—"}
                     </td>
                   </tr>

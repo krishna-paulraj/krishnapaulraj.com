@@ -19,7 +19,7 @@ export default async function ProjectsPage() {
   );
 
   return (
-    <div className="mx-auto w-full max-w-2xl flex-1 px-3 md:px-6 py-6 font-sans">
+    <div className="mx-auto w-full max-w-2xl flex-1 px-3 py-6 font-sans md:px-6">
       <Reveal>
         <ProjectsSection standalone viewCounts={viewCounts} />
       </Reveal>

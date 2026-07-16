@@ -41,7 +41,7 @@ const Skiper26 = () => {
       </div>
 
       <div className="text-foreground grid content-start justify-items-center gap-6 py-20 text-center">
-        <span className="after:from-background after:to-foreground relative max-w-[12ch] text-xs uppercase leading-tight opacity-40 after:absolute after:left-1/2 after:top-full after:h-16 after:w-px after:bg-gradient-to-b after:content-['']">
+        <span className="after:from-background after:to-foreground relative max-w-[12ch] text-xs leading-tight uppercase opacity-40 after:absolute after:top-full after:left-1/2 after:h-16 after:w-px after:bg-gradient-to-b after:content-['']">
           Click to toggle the theme
         </span>
       </div>
@@ -96,7 +96,7 @@ const Options = ({
   return (
     <motion.div
       drag
-      className="top-30 border-foreground/10 bg-muted/80 absolute right-1/2 flex w-[245px] translate-x-1/2 flex-col gap-3 rounded-3xl border p-3 backdrop-blur-sm lg:right-4 lg:translate-x-0"
+      className="border-foreground/10 bg-muted/80 absolute top-30 right-1/2 flex w-[245px] translate-x-1/2 flex-col gap-3 rounded-3xl border p-3 backdrop-blur-sm lg:right-4 lg:translate-x-0"
     >
       <div className="flex items-center justify-between">
         <span className="size-4 cursor-grab active:cursor-grabbing">
@@ -110,7 +110,7 @@ const Options = ({
 
       <div className="flex flex-col">
         <div className="mt-1 flex justify-between py-1">
-          <p className="w-20 whitespace-nowrap text-sm opacity-50">variant :</p>
+          <p className="w-20 text-sm whitespace-nowrap opacity-50">variant :</p>
           <div className="flex flex-wrap items-center justify-end gap-1">
             <button
               onClick={() => setVariant("circle")}
@@ -171,7 +171,7 @@ const Options = ({
         </div>
 
         <div className="mt-1 flex justify-between py-1">
-          <p className="w-20 whitespace-nowrap text-sm opacity-50">blur :</p>
+          <p className="w-20 text-sm whitespace-nowrap opacity-50">blur :</p>
           <div className="flex flex-wrap items-center justify-end gap-1">
             <button
               onClick={() => setBlur(false)}
@@ -204,7 +204,7 @@ const Options = ({
           variant === "polygon" ||
           variant === "circle-blur") && (
           <div className="mt-1 flex justify-between py-1">
-            <p className="w-20 whitespace-nowrap text-sm opacity-50">start :</p>
+            <p className="w-20 text-sm whitespace-nowrap opacity-50">start :</p>
             <div className="flex flex-wrap items-center justify-end gap-1">
               {/* Show center option only for circle and circle-blur */}
               {(variant === "circle" || variant === "circle-blur") && (
@@ -579,7 +579,7 @@ export const ThemeToggleButton = ({
     <button
       type="button"
       className={cn(
-        "size-6 cursor-pointer rounded-full bg-foreground text-background p-0 transition-all duration-300 active:scale-95",
+        "bg-foreground text-background size-6 cursor-pointer rounded-full p-0 transition-all duration-300 active:scale-95",
         className,
       )}
       onClick={toggleTheme}

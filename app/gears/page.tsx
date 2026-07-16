@@ -64,7 +64,7 @@ function SectionTitle({
 }) {
   return (
     <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight">
-      <span className="flex size-7 items-center justify-center rounded-md border border-border bg-muted/40 text-muted-foreground [&_svg]:size-3.5">
+      <span className="border-border bg-muted/40 text-muted-foreground flex size-7 items-center justify-center rounded-md border [&_svg]:size-3.5">
         {icon}
       </span>
       {title}
@@ -77,7 +77,7 @@ function LinkItem({ label, href }: { label: string; href: string }) {
     <li className="flex items-start gap-2 text-sm">
       <span
         aria-hidden="true"
-        className="mt-2 inline-block size-1 shrink-0 rounded-full bg-muted-foreground/60"
+        className="bg-muted-foreground/60 mt-2 inline-block size-1 shrink-0 rounded-full"
       />
       <a
         href={href}
@@ -93,7 +93,7 @@ function LinkItem({ label, href }: { label: string; href: string }) {
 
 export default function GearsPage() {
   return (
-    <div className="mx-auto w-full max-w-2xl flex-1 px-3 md:px-6 py-6 font-sans">
+    <div className="mx-auto w-full max-w-2xl flex-1 px-3 py-6 font-sans md:px-6">
       <Reveal>
         <h1 className="text-3xl font-bold tracking-tight">Gears</h1>
         <HighlightedHeading className="my-4">
@@ -104,7 +104,7 @@ export default function GearsPage() {
       <Reveal
         as="section"
         delay={0.1}
-        className="mt-10 border-t border-border pt-8"
+        className="border-border mt-10 border-t pt-8"
       >
         <SectionTitle icon={<LaptopIcon />} title="Devices & Accessories" />
         <ul className="mt-5 space-y-2">
@@ -112,7 +112,7 @@ export default function GearsPage() {
             <li key={d.label} className="flex items-start gap-2 text-sm">
               <span
                 aria-hidden="true"
-                className="mt-2 inline-block size-1 shrink-0 rounded-full bg-muted-foreground/60"
+                className="bg-muted-foreground/60 mt-2 inline-block size-1 shrink-0 rounded-full"
               />
               <a
                 href={d.href}
@@ -130,7 +130,7 @@ export default function GearsPage() {
       <Reveal
         as="section"
         delay={0.3}
-        className="mt-10 border-t border-border pt-8"
+        className="border-border mt-10 border-t pt-8"
       >
         <SectionTitle icon={<AppWindowIcon />} title="Software" />
         <ul className="mt-5 space-y-2">
@@ -143,7 +143,7 @@ export default function GearsPage() {
       <Reveal
         as="section"
         delay={0.2}
-        className="mt-10 border-t border-border pt-8"
+        className="border-border mt-10 border-t pt-8"
       >
         <SectionTitle icon={<PuzzleIcon />} title="Development" />
         <ul className="mt-5 space-y-2">

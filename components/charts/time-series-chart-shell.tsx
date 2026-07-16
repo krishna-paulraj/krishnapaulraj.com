@@ -33,7 +33,7 @@ import { useChartInteraction } from "./use-chart-interaction";
 
 function collectNumericExtents(
   data: Record<string, unknown>[],
-  dataKeys: string[]
+  dataKeys: string[],
 ) {
   let minValue = Number.POSITIVE_INFINITY;
   let maxValue = Number.NEGATIVE_INFINITY;
@@ -62,7 +62,7 @@ function collectNumericExtents(
 function resolveTimeSeriesYDomain(
   data: Record<string, unknown>[],
   dataKeys: string[],
-  yScaleDomainMax: number | undefined
+  yScaleDomainMax: number | undefined,
 ): [number, number] {
   if (yScaleDomainMax != null && yScaleDomainMax > 0) {
     return [0, yScaleDomainMax * 1.1];
@@ -178,12 +178,12 @@ const TimeSeriesChartCore = memo(function TimeSeriesChartCore({
       const value = d[xDataKey];
       return value instanceof Date ? value : new Date(value as string | number);
     },
-    [xDataKey]
+    [xDataKey],
   );
 
   const bisectDate = useMemo(
     () => bisector<Record<string, unknown>, Date>((d) => xAccessor(d)).left,
-    [xAccessor]
+    [xAccessor],
   );
 
   const xScale = useMemo(() => {
@@ -202,7 +202,7 @@ const TimeSeriesChartCore = memo(function TimeSeriesChartCore({
     return decimateTimeSeries(
       data,
       maxRenderPointsForWidth(innerWidth),
-      valueKeys
+      valueKeys,
     );
   }, [data, innerWidth, lines]);
 
@@ -226,7 +226,7 @@ const TimeSeriesChartCore = memo(function TimeSeriesChartCore({
 
   const dateLabels = useMemo(
     () => data.map((d) => shortDateFmt.format(xAccessor(d))),
-    [data, xAccessor]
+    [data, xAccessor],
   );
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: revealSignature
@@ -351,7 +351,7 @@ const TimeSeriesChartCore = memo(function TimeSeriesChartCore({
       composedStacked,
       composedStackOffsets,
       composedStackGap,
-    ]
+    ],
   );
 
   // Single shared reveal clip for every series. Replaces the per-<Line> /

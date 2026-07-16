@@ -42,23 +42,23 @@ export async function ComponentShowcase({
     : undefined;
 
   return (
-    <div className="mx-auto w-full max-w-2xl flex-1 px-3 md:px-6 py-6 font-sans">
+    <div className="mx-auto w-full max-w-2xl flex-1 px-3 py-6 font-sans md:px-6">
       <Reveal>
         <Link
           href="/components"
-          className="group inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          className="group text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm transition-colors"
         >
           <ArrowLeftIcon className="size-3.5 transition-transform group-hover:-translate-x-0.5" />
           Components
         </Link>
         <h1 className="mt-6 text-3xl font-bold tracking-tight">{title}</h1>
-        <p className="mt-2 text-sm text-muted-foreground">{description}</p>
+        <p className="text-muted-foreground mt-2 text-sm">{description}</p>
       </Reveal>
 
       <Reveal as="section" delay={0.2} className="mt-10">
         <PreviewTabs
           preview={
-            <div className="flex min-h-56 items-center justify-center rounded-lg border border-border bg-muted/30 p-8 [background-image:radial-gradient(var(--border)_1px,transparent_1px)] [background-position:0_0] [background-size:14px_14px]">
+            <div className="border-border bg-muted/30 flex min-h-56 items-center justify-center rounded-lg border [background-image:radial-gradient(var(--border)_1px,transparent_1px)] [background-size:14px_14px] [background-position:0_0] p-8">
               {demo}
             </div>
           }
@@ -99,7 +99,7 @@ export async function ComponentShowcase({
 
 function SectionHeading({ children }: { children: ReactNode }) {
   return (
-    <h2 className="border-b border-border pb-2 text-lg font-semibold tracking-tight text-foreground">
+    <h2 className="border-border text-foreground border-b pb-2 text-lg font-semibold tracking-tight">
       {children}
     </h2>
   );

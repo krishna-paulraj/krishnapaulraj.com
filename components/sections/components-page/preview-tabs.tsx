@@ -18,7 +18,7 @@ export function PreviewTabs({
       <div
         role="tablist"
         aria-label="Component view"
-        className="flex items-center gap-1 border-b border-border"
+        className="border-border flex items-center gap-1 border-b"
       >
         <TabButton active={tab === "preview"} onClick={() => setTab("preview")}>
           Preview
@@ -50,8 +50,8 @@ function TabButton({
       className={cn(
         "relative -mb-px border-b-2 px-3 py-1.5 text-sm transition-colors",
         active
-          ? "border-foreground font-medium text-foreground"
-          : "border-transparent text-muted-foreground hover:text-foreground",
+          ? "border-foreground text-foreground font-medium"
+          : "text-muted-foreground hover:text-foreground border-transparent",
       )}
     >
       {children}

@@ -46,7 +46,7 @@ export default async function BlogPage({
   );
 
   return (
-    <div className="mx-auto w-full max-w-2xl flex-1 px-3 md:px-6 py-6 font-sans">
+    <div className="mx-auto w-full max-w-2xl flex-1 px-3 py-6 font-sans md:px-6">
       <Reveal>
         <h1 className="text-3xl font-bold tracking-tight">Writing</h1>
         <HighlightedHeading className="my-4">
@@ -109,14 +109,14 @@ export default async function BlogPage({
 
       {posts.length === 0 ? (
         <Reveal delay={0.16}>
-          <p className="mt-10 text-sm text-muted-foreground">
+          <p className="text-muted-foreground mt-10 text-sm">
             {activeTag
               ? `No posts tagged #${activeTag} yet.`
               : "Nothing here yet — check back soon."}
           </p>
         </Reveal>
       ) : (
-        <RevealGroup as="ul" className="mt-6 divide-y divide-border">
+        <RevealGroup as="ul" className="divide-border mt-6 divide-y">
           {posts.map((post) => {
             const viewCount = views[post.slug] ?? 0;
             const hasUpdate =
@@ -128,15 +128,15 @@ export default async function BlogPage({
                   className="group flex flex-col gap-1 py-4 sm:flex-row sm:items-start sm:justify-between sm:gap-8"
                 >
                   <div className="flex-1">
-                    <p className="font-semibold text-foreground group-hover:underline">
+                    <p className="text-foreground font-semibold group-hover:underline">
                       {post.title}
                     </p>
                     {post.description && (
-                      <p className="mt-0.5 line-clamp-2 text-sm text-muted-foreground">
+                      <p className="text-muted-foreground mt-0.5 line-clamp-2 text-sm">
                         {post.description}
                       </p>
                     )}
-                    <div className="mt-1 flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
+                    <div className="text-muted-foreground mt-1 flex flex-wrap items-center gap-x-2 text-xs">
                       <span>{post.readingTimeMinutes} min read</span>
                       {viewCount > 0 && (
                         <>
@@ -160,7 +160,7 @@ export default async function BlogPage({
                   {post.createdAt && (
                     <time
                       dateTime={post.createdAt}
-                      className="shrink-0 text-sm text-muted-foreground"
+                      className="text-muted-foreground shrink-0 text-sm"
                     >
                       {formatShortDate(post.createdAt)}
                     </time>

@@ -22,9 +22,9 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="mx-auto w-full max-w-2xl flex-1 px-3 md:px-6 py-16 font-sans">
+    <div className="mx-auto w-full max-w-2xl flex-1 px-3 py-16 font-sans md:px-6">
       <Reveal>
-        <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+        <p className="text-muted-foreground font-mono text-xs tracking-widest uppercase">
           Error
         </p>
         <h1 className="mt-3 text-3xl font-bold tracking-tight">
@@ -36,12 +36,12 @@ export default function Error({
       </Reveal>
 
       <Reveal delay={0.1}>
-        <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
+        <p className="text-muted-foreground mt-6 text-sm leading-relaxed">
           The page hit an unexpected error on the way to your screen. You can
           retry — sometimes that&apos;s all it takes — or head back home.
         </p>
         {error.digest && (
-          <p className="mt-2 font-mono text-xs text-muted-foreground/70">
+          <p className="text-muted-foreground/70 mt-2 font-mono text-xs">
             Reference: {error.digest}
           </p>
         )}
@@ -58,7 +58,7 @@ export default function Error({
         </button>
         <Link
           href="/"
-          className="inline-flex items-center gap-1 rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-foreground transition-colors hover:bg-muted"
+          className="border-border bg-background text-foreground hover:bg-muted inline-flex items-center gap-1 rounded-lg border px-3 py-1.5 text-sm transition-colors"
         >
           Go home
           <ArrowRightIcon className="size-3.5" />

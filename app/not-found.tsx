@@ -24,9 +24,9 @@ export default function NotFound() {
   const recent = getBlogPosts().slice(0, 3);
 
   return (
-    <div className="mx-auto w-full max-w-2xl flex-1 px-3 md:px-6 py-16 font-sans">
+    <div className="mx-auto w-full max-w-2xl flex-1 px-3 py-16 font-sans md:px-6">
       <Reveal>
-        <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+        <p className="text-muted-foreground font-mono text-xs tracking-widest uppercase">
           404
         </p>
         <h1 className="mt-3 text-3xl font-bold tracking-tight">Off the map</h1>
@@ -36,7 +36,7 @@ export default function NotFound() {
       </Reveal>
 
       <Reveal delay={0.1}>
-        <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
+        <p className="text-muted-foreground mt-6 text-sm leading-relaxed">
           The URL you tried isn&apos;t a page on this site. Maybe a typo, maybe
           a stale link, maybe something I moved and forgot to redirect. Either
           way — here&apos;s where to go next.
@@ -52,7 +52,7 @@ export default function NotFound() {
             <li key={href}>
               <Link
                 href={href}
-                className="inline-flex items-center gap-1 rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-foreground transition-colors hover:bg-muted"
+                className="border-border bg-background text-foreground hover:bg-muted inline-flex items-center gap-1 rounded-lg border px-3 py-1.5 text-sm transition-colors"
               >
                 {label}
                 <ArrowRightIcon className="size-3.5" />
@@ -67,20 +67,20 @@ export default function NotFound() {
           <h2 className="text-lg font-semibold tracking-tight">
             Recent writing
           </h2>
-          <RevealGroup as="ul" className="mt-3 divide-y divide-border">
+          <RevealGroup as="ul" className="divide-border mt-3 divide-y">
             {recent.map((post) => (
               <RevealItem as="li" key={post.slug}>
                 <Link
                   href={`/blog/${post.slug}`}
                   className="group flex flex-col gap-0.5 py-3 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6"
                 >
-                  <span className="font-medium text-foreground group-hover:underline">
+                  <span className="text-foreground font-medium group-hover:underline">
                     {post.title}
                   </span>
                   {post.createdAt && (
                     <time
                       dateTime={post.createdAt}
-                      className="shrink-0 text-xs text-muted-foreground"
+                      className="text-muted-foreground shrink-0 text-xs"
                     >
                       {new Date(post.createdAt).toLocaleDateString("en-US", {
                         month: "short",

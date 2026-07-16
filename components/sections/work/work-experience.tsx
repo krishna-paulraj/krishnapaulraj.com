@@ -73,7 +73,7 @@ export function WorkExperience({
   experiences,
 }: WorkExperienceProps) {
   return (
-    <div className={cn("bg-background px-4 text-foreground", className)}>
+    <div className={cn("bg-background text-foreground px-4", className)}>
       {experiences.map((experience) => (
         <ExperienceItem key={experience.id} experience={experience} />
       ))}
@@ -100,7 +100,7 @@ export function ExperienceItem({ experience }: ExperienceItemProps) {
               aria-hidden
             />
           ) : (
-            <span className="flex size-2 rounded-full bg-muted-foreground/40" />
+            <span className="bg-muted-foreground/40 flex size-2 rounded-full" />
           )}
         </div>
 
@@ -124,13 +124,13 @@ export function ExperienceItem({ experience }: ExperienceItemProps) {
             className="relative flex items-center justify-center"
             aria-label="Current Employer"
           >
-            <span className="absolute inline-flex size-3 animate-ping rounded-full bg-foreground opacity-50" />
-            <span className="relative inline-flex size-2 rounded-full bg-foreground" />
+            <span className="bg-foreground absolute inline-flex size-3 animate-ping rounded-full opacity-50" />
+            <span className="bg-foreground relative inline-flex size-2 rounded-full" />
           </span>
         )}
       </div>
 
-      <div className="relative space-y-4 before:absolute before:left-3 before:h-full before:w-px before:bg-border">
+      <div className="before:bg-border relative space-y-4 before:absolute before:left-3 before:h-full before:w-px">
         {experience.positions.map((position) => (
           <ExperiencePositionItem key={position.id} position={position} />
         ))}
@@ -170,11 +170,11 @@ export function ExperiencePositionItem({
       disabled={!position.description}
       asChild
     >
-      <div className="relative last:before:absolute last:before:h-full last:before:w-4 last:before:bg-background">
+      <div className="last:before:bg-background relative last:before:absolute last:before:h-full last:before:w-4">
         <CollapsibleTrigger
           className={cn(
             "group/experience-position not-prose block w-full text-left select-none",
-            "relative before:absolute before:-top-1 before:-right-1 before:-bottom-1.5 before:left-7 before:rounded-lg hover:before:bg-muted/30",
+            "hover:before:bg-muted/30 relative before:absolute before:-top-1 before:-right-1 before:-bottom-1.5 before:left-7 before:rounded-lg",
             "data-disabled:before:content-none",
           )}
         >
@@ -183,23 +183,23 @@ export function ExperiencePositionItem({
               className={cn(
                 "flex size-6 shrink-0 items-center justify-center rounded-lg",
                 "bg-muted text-muted-foreground",
-                "border border-border ring-1 ring-line ring-offset-1 ring-offset-background",
+                "border-border ring-line ring-offset-background border ring-1 ring-offset-1",
                 "[&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
               )}
             >
               {position.icon ?? <BriefcaseBusinessIcon />}
             </div>
 
-            <h4 className="flex-1 text-base font-medium text-balance text-foreground">
+            <h4 className="text-foreground flex-1 text-base font-medium text-balance">
               {position.title}
             </h4>
 
-            <div className="shrink-0 text-muted-foreground group-disabled/experience-position:hidden [&_svg]:size-4">
+            <div className="text-muted-foreground shrink-0 group-disabled/experience-position:hidden [&_svg]:size-4">
               <ChevronsUpDownIcon ref={chevronsIconRef} duration={0.15} />
             </div>
           </div>
 
-          <div className="relative z-1 flex items-center gap-2 pl-9 text-sm text-muted-foreground">
+          <div className="text-muted-foreground relative z-1 flex items-center gap-2 pl-9 text-sm">
             {position.employmentType && (
               <>
                 <dl>
@@ -271,7 +271,7 @@ function Prose({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
       className={cn(
-        "prose max-w-none prose-ncdai prose-zinc dark:prose-invert",
+        "prose prose-ncdai prose-zinc dark:prose-invert max-w-none",
         className,
       )}
       {...props}
@@ -283,7 +283,7 @@ function Skill({ className, ...props }: ComponentProps<"span">) {
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-md border bg-muted/50 px-1.5 py-0.5 font-mono text-xs text-muted-foreground",
+        "bg-muted/50 text-muted-foreground inline-flex items-center rounded-md border px-1.5 py-0.5 font-mono text-xs",
         className,
       )}
       {...props}

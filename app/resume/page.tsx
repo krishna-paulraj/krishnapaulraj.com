@@ -24,7 +24,7 @@ const skills = {
 
 export default function ResumePage() {
   return (
-    <div className="mx-auto w-full max-w-2xl flex-1 px-3 md:px-6 py-6 font-sans">
+    <div className="mx-auto w-full max-w-2xl flex-1 px-3 py-6 font-sans md:px-6">
       <Reveal className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Resume</h1>
@@ -32,7 +32,7 @@ export default function ResumePage() {
             Suresh Krishna Paulraj · Jr. Blockchain Developer
           </HighlightedHeading>
           <Reveal delay={0.24}>
-            <p className="text-sm leading-relaxed text-muted-foreground">
+            <p className="text-muted-foreground text-sm leading-relaxed">
               Software engineer building scalable web and mobile experiences.
               Most comfortable in TypeScript, React, and Next.js, with growing
               experience in AI tooling and retrieval systems.
@@ -41,11 +41,7 @@ export default function ResumePage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <a
-            href={RESUME_FILE}
-            download
-            className={ACTION_BUTTON_CLASS}
-          >
+          <a href={RESUME_FILE} download className={ACTION_BUTTON_CLASS}>
             <DownloadIcon className="size-4" />
             Download
           </a>
@@ -66,16 +62,13 @@ export default function ResumePage() {
           data={`${RESUME_FILE}#view=FitH&toolbar=1`}
           type="application/pdf"
           aria-label="Resume PDF"
-          className="min-h-100 md:min-h-200 w-full overflow-hidden rounded-lg border border-border bg-muted/40"
+          className="border-border bg-muted/40 min-h-100 w-full overflow-hidden rounded-lg border md:min-h-200"
         >
           <div className="flex h-full w-full flex-col items-center justify-center gap-3 p-8 text-center">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               Your browser can&apos;t display the PDF inline.
             </p>
-            <a
-              href={RESUME_FILE}
-              className={ACTION_BUTTON_CLASS}
-            >
+            <a href={RESUME_FILE} className={ACTION_BUTTON_CLASS}>
               <DownloadIcon className="size-4" />
               Download the PDF
             </a>
@@ -95,14 +88,14 @@ export default function ResumePage() {
               key={category}
               className="grid grid-cols-1 gap-1 sm:grid-cols-[10rem_1fr] sm:gap-4"
             >
-              <dt className="text-sm font-medium text-foreground">
+              <dt className="text-foreground text-sm font-medium">
                 {category}
               </dt>
               <dd className="flex flex-wrap gap-1.5">
                 {items.map((item) => (
                   <span
                     key={item}
-                    className="inline-flex items-center rounded-md border bg-muted/50 px-1.5 py-0.5 font-mono text-xs text-muted-foreground"
+                    className="bg-muted/50 text-muted-foreground inline-flex items-center rounded-md border px-1.5 py-0.5 font-mono text-xs"
                   >
                     {item}
                   </span>

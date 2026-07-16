@@ -61,7 +61,7 @@ function XAxisLabel({
       }}
     >
       <span
-        className={cn("whitespace-nowrap text-chart-label text-xs")}
+        className={cn("text-chart-label text-xs whitespace-nowrap")}
         style={{
           opacity,
           transition: "opacity 0.4s ease-in-out",
@@ -153,7 +153,7 @@ const XAxisInner = memo(function XAxisInner({
         />
       ))}
     </div>,
-    container
+    container,
   );
 });
 

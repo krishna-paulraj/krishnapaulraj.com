@@ -59,7 +59,6 @@ export async function generateMetadata({
   };
 }
 
-
 function LinkButton({ link }: { link: ProjectLink }) {
   const isInternal = link.href.startsWith("/");
   const className = ACTION_BUTTON_CLASS;
@@ -119,12 +118,12 @@ export default async function ProjectPage({
     project.links?.find((l) => l.type === "live") ?? sourceLink ?? null;
 
   return (
-    <article className="mx-auto w-full max-w-2xl flex-1 px-3 md:px-6 py-6 font-sans">
+    <article className="mx-auto w-full max-w-2xl flex-1 px-3 py-6 font-sans md:px-6">
       <Reveal>
         <div className="flex items-center justify-between gap-3">
           <Link
             href="/projects"
-            className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-sm transition-colors"
           >
             <ChevronLeft className="size-4" />
             Back to projects
@@ -143,7 +142,7 @@ export default async function ProjectPage({
               href={titleLink.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 hover:underline underline-offset-4"
+              className="inline-flex items-center gap-2 underline-offset-4 hover:underline"
             >
               {project.name}
             </a>
@@ -152,12 +151,12 @@ export default async function ProjectPage({
           )}
         </h1>
         {project.description && (
-          <p className="mt-3 leading-relaxed text-muted-foreground">
+          <p className="text-muted-foreground mt-3 leading-relaxed">
             {project.description}
           </p>
         )}
 
-        <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-muted-foreground">
+        <div className="text-muted-foreground mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs">
           {project.year && <span>{project.year}</span>}
           {project.year && project.status && <span aria-hidden="true">·</span>}
           {project.status && (
@@ -188,7 +187,7 @@ export default async function ProjectPage({
       {project.image && (
         <Reveal
           delay={0.16}
-          className="mt-8 overflow-hidden rounded-lg border border-border bg-muted"
+          className="border-border bg-muted mt-8 overflow-hidden rounded-lg border"
         >
           <Image
             src={project.image}
@@ -222,7 +221,7 @@ export default async function ProjectPage({
         <Reveal
           as="section"
           delay={0.28}
-          className="mt-12 border-t border-border pt-8"
+          className="border-border mt-12 border-t pt-8"
           aria-label="Highlights"
         >
           <h2 className="text-lg font-semibold tracking-tight">Highlights</h2>
@@ -230,11 +229,11 @@ export default async function ProjectPage({
             {project.highlights.map((h) => (
               <li
                 key={h}
-                className="flex items-start gap-2 text-sm text-muted-foreground"
+                className="text-muted-foreground flex items-start gap-2 text-sm"
               >
                 <span
                   aria-hidden="true"
-                  className="mt-2 inline-block size-1 shrink-0 rounded-full bg-muted-foreground/60"
+                  className="bg-muted-foreground/60 mt-2 inline-block size-1 shrink-0 rounded-full"
                 />
                 <span>{h}</span>
               </li>
@@ -247,7 +246,7 @@ export default async function ProjectPage({
         <Reveal
           as="section"
           delay={0.3}
-          className="mt-12 border-t border-border pt-8"
+          className="border-border mt-12 border-t pt-8"
           aria-label="Links"
         >
           <h2 className="text-lg font-semibold tracking-tight">Links</h2>
@@ -263,20 +262,20 @@ export default async function ProjectPage({
         <Reveal
           as="section"
           delay={0.34}
-          className="mt-12 border-t border-border pt-8"
+          className="border-border mt-12 border-t pt-8"
           aria-label="Project navigation"
         >
           <div className="grid gap-3 sm:grid-cols-2">
             {prev ? (
               <Link
                 href={`/projects/${prev.slug}`}
-                className="group flex flex-col gap-1 rounded-lg border border-border bg-card/40 p-4 transition-colors hover:bg-muted/40"
+                className="group border-border bg-card/40 hover:bg-muted/40 flex flex-col gap-1 rounded-lg border p-4 transition-colors"
               >
-                <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                <span className="text-muted-foreground flex items-center gap-1 text-xs">
                   <ChevronLeft className="size-3" />
                   Previous project
                 </span>
-                <span className="text-sm font-medium text-foreground group-hover:underline">
+                <span className="text-foreground text-sm font-medium group-hover:underline">
                   {prev.name}
                 </span>
               </Link>
@@ -286,13 +285,13 @@ export default async function ProjectPage({
             {next ? (
               <Link
                 href={`/projects/${next.slug}`}
-                className="group flex flex-col items-end gap-1 rounded-lg border border-border bg-card/40 p-4 text-right transition-colors hover:bg-muted/40"
+                className="group border-border bg-card/40 hover:bg-muted/40 flex flex-col items-end gap-1 rounded-lg border p-4 text-right transition-colors"
               >
-                <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                <span className="text-muted-foreground flex items-center gap-1 text-xs">
                   Next project
                   <ChevronRight className="size-3" />
                 </span>
-                <span className="text-sm font-medium text-foreground group-hover:underline">
+                <span className="text-foreground text-sm font-medium group-hover:underline">
                   {next.name}
                 </span>
               </Link>

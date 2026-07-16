@@ -103,25 +103,25 @@ export default function ShareButtons({
           variant="outline"
           size="sm"
           aria-haspopup="false"
-          className="gap-2 rounded-r-none border-r-0 border-border bg-background px-3 text-xs text-foreground hover:bg-muted"
+          className="border-border bg-background text-foreground hover:bg-muted gap-2 rounded-r-none border-r-0 px-3 text-xs"
           idleIcon={<CopyIcon />}
           doneIcon={<CheckIcon className="text-foreground" />}
           aria-label="Copy page link"
         >
           <span>Copy Page</span>
         </CopyButton>
-        <span aria-hidden="true" className="w-px self-stretch bg-border" />
+        <span aria-hidden="true" className="bg-border w-px self-stretch" />
         <button
           type="button"
           onClick={() => setOpenMenu((m) => (m === "copy" ? null : "copy"))}
           aria-haspopup="menu"
           aria-expanded={openMenu === "copy"}
           aria-label="More copy options"
-          className="inline-flex h-7 items-center justify-center rounded-r-sm border border-l-0 border-border bg-background px-2 transition-colors hover:bg-muted aria-expanded:bg-muted"
+          className="border-border bg-background hover:bg-muted aria-expanded:bg-muted inline-flex h-7 items-center justify-center rounded-r-sm border border-l-0 px-2 transition-colors"
         >
           <ChevronDownIcon
             className={cn(
-              "size-3.5 text-muted-foreground transition-transform",
+              "text-muted-foreground size-3.5 transition-transform",
               openMenu === "copy" && "rotate-180",
             )}
           />
@@ -132,20 +132,20 @@ export default function ShareButtons({
             role="menu"
             aria-label="Copy options"
             className={cn(
-              "absolute left-0 top-full z-50 mt-2 w-52 origin-top-left",
-              "rounded-xl border border-border bg-popover p-1.5 text-popover-foreground shadow-lg shadow-black/10",
+              "absolute top-full left-0 z-50 mt-2 w-52 origin-top-left",
+              "border-border bg-popover text-popover-foreground rounded-xl border p-1.5 shadow-lg shadow-black/10",
             )}
           >
             <button
               role="menuitem"
               type="button"
               onClick={onCopyMarkdown}
-              className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-xs text-foreground transition-colors hover:bg-muted"
+              className="text-foreground hover:bg-muted flex w-full items-center gap-3 rounded-lg px-3 py-2 text-xs transition-colors"
             >
               {copiedMarkdown ? (
-                <CheckIcon className="size-4 text-foreground" />
+                <CheckIcon className="text-foreground size-4" />
               ) : (
-                <FileCode2Icon className="size-4 text-muted-foreground" />
+                <FileCode2Icon className="text-muted-foreground size-4" />
               )}
               <span>
                 {copiedMarkdown ? "Markdown copied" : "Copy as Markdown"}
@@ -155,12 +155,12 @@ export default function ShareButtons({
               role="menuitem"
               type="button"
               onClick={onCopyTitle}
-              className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-xs text-foreground transition-colors hover:bg-muted"
+              className="text-foreground hover:bg-muted flex w-full items-center gap-3 rounded-lg px-3 py-2 text-xs transition-colors"
             >
               {copiedTitle ? (
-                <CheckIcon className="size-4 text-foreground" />
+                <CheckIcon className="text-foreground size-4" />
               ) : (
-                <HashIcon className="size-4 text-muted-foreground" />
+                <HashIcon className="text-muted-foreground size-4" />
               )}
               <span>{copiedTitle ? "Title copied" : "Copy title"}</span>
             </button>
@@ -175,7 +175,7 @@ export default function ShareButtons({
           aria-haspopup="menu"
           aria-expanded={openMenu === "share"}
           aria-label="Share menu"
-          className="cursor-pointer flex size-7 items-center justify-center rounded-sm border border-border bg-background text-foreground transition-colors hover:bg-muted"
+          className="border-border bg-background text-foreground hover:bg-muted flex size-7 cursor-pointer items-center justify-center rounded-sm border transition-colors"
         >
           <Share className="size-4" />
         </button>
@@ -185,20 +185,20 @@ export default function ShareButtons({
             role="menu"
             aria-label="Share options"
             className={cn(
-              "absolute right-0 top-full z-50 mt-2 w-56 origin-top-right",
-              "rounded-xl border border-border bg-popover p-1.5 text-popover-foreground shadow-lg shadow-black/10",
+              "absolute top-full right-0 z-50 mt-2 w-56 origin-top-right",
+              "border-border bg-popover text-popover-foreground rounded-xl border p-1.5 shadow-lg shadow-black/10",
             )}
           >
             <button
               role="menuitem"
               type="button"
               onClick={onCopyLink}
-              className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-xs text-foreground transition-colors hover:bg-muted"
+              className="text-foreground hover:bg-muted flex w-full items-center gap-3 rounded-lg px-3 py-2 text-xs transition-colors"
             >
               {copiedLink ? (
-                <CheckIcon className="size-4 text-foreground" />
+                <CheckIcon className="text-foreground size-4" />
               ) : (
-                <LinkIcon className="size-4 text-muted-foreground" />
+                <LinkIcon className="text-muted-foreground size-4" />
               )}
               <span>{copiedLink ? "Link copied" : "Copy link"}</span>
             </button>
@@ -208,9 +208,9 @@ export default function ShareButtons({
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setOpenMenu(null)}
-              className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-xs text-foreground transition-colors hover:bg-muted"
+              className="text-foreground hover:bg-muted flex w-full items-center gap-3 rounded-lg px-3 py-2 text-xs transition-colors"
             >
-              <FaXTwitter className="size-4 text-muted-foreground" />
+              <FaXTwitter className="text-muted-foreground size-4" />
               <span>Share on X</span>
             </a>
             <a
@@ -219,18 +219,18 @@ export default function ShareButtons({
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setOpenMenu(null)}
-              className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-xs text-foreground transition-colors hover:bg-muted"
+              className="text-foreground hover:bg-muted flex w-full items-center gap-3 rounded-lg px-3 py-2 text-xs transition-colors"
             >
-              <FaLinkedinIn className="size-4 text-muted-foreground" />
+              <FaLinkedinIn className="text-muted-foreground size-4" />
               <span>Share on LinkedIn</span>
             </a>
             <button
               role="menuitem"
               type="button"
               onClick={onNativeShare}
-              className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-xs text-foreground transition-colors hover:bg-muted"
+              className="text-foreground hover:bg-muted flex w-full items-center gap-3 rounded-lg px-3 py-2 text-xs transition-colors"
             >
-              <MoreHorizontalIcon className="size-4 text-muted-foreground" />
+              <MoreHorizontalIcon className="text-muted-foreground size-4" />
               <span>Other app</span>
             </button>
           </div>
