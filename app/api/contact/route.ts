@@ -71,6 +71,11 @@ export async function POST(request: Request) {
     );
   }
 
+  // Collapse control characters so a crafted name can't smuggle header-like
+  // content into the subject line. (The email is regex-validated above and
+  // can't contain whitespace.)
+  const cleanName = name.replace(/[\r\n\t]+/g, " ").trim();
+
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -81,8 +86,8 @@ export async function POST(request: Request) {
       from: `${SITE_AUTHOR} <onboarding@resend.dev>`,
       to: [SITE_AUTHOR_EMAIL],
       reply_to: email,
-      subject: `Portfolio message from ${name}`,
-      text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
+      subject: `Portfolio message from ${cleanName}`,
+      text: `Name: ${cleanName}\nEmail: ${email}\n\n${message}`,
     }),
   });
 

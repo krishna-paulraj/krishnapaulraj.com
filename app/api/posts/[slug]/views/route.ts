@@ -1,5 +1,5 @@
 import { getBlogSlugs } from "@/lib/blog";
-import { markUniqueVisit, redis } from "@/lib/redis";
+import { getRedis, markUniqueVisit } from "@/lib/redis";
 
 function viewsKey(slug: string) {
   return `post:${slug}:views`;
@@ -13,7 +13,7 @@ export async function GET(
   if (!getBlogSlugs().includes(slug)) {
     return new Response("Not found", { status: 404 });
   }
-  const count = (await redis.get<number>(viewsKey(slug))) ?? 0;
+  const count = (await getRedis().get<number>(viewsKey(slug))) ?? 0;
   return Response.json({ count });
 }
 
@@ -26,6 +26,7 @@ export async function POST(
     return new Response("Not found", { status: 404 });
   }
 
+  const redis = getRedis();
   const isNew = await markUniqueVisit(`post:${slug}:viewer`);
   const count = isNew
     ? await redis.incr(viewsKey(slug))

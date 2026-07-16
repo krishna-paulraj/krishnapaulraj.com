@@ -1,10 +1,8 @@
 export type Track = {
   name: string;
   artist: string;
-  album: string;
   url: string;
   nowPlaying: boolean;
-  image: string | null;
 };
 
 export async function getLastPlayed(): Promise<Track | null> {
@@ -25,13 +23,8 @@ export async function getLastPlayed(): Promise<Track | null> {
     return {
       name: track.name,
       artist: track.artist["#text"],
-      album: track.album["#text"],
       url: track.url,
       nowPlaying: track["@attr"]?.nowplaying === "true",
-      image:
-        track.image?.find((i: { size: string }) => i.size === "large")?.[
-          "#text"
-        ] ?? null,
     };
   } catch {
     return null;

@@ -1,6 +1,7 @@
-import { markUniqueVisit, redis } from "@/lib/redis";
+import { getRedis, markUniqueVisit } from "@/lib/redis";
 
 export async function POST() {
+  const redis = getRedis();
   const today = new Date().toISOString().slice(0, 10);
 
   const [isNew] = await Promise.all([
@@ -16,10 +17,5 @@ export async function POST() {
     await redis.incr(`visitors:daily:${today}`);
   }
 
-  return Response.json({ count });
-}
-
-export async function GET() {
-  const count = (await redis.get<number>("visitors")) ?? 0;
   return Response.json({ count });
 }

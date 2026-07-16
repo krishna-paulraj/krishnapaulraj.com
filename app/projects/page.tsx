@@ -12,6 +12,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "/projects" },
 };
 
+// Rendered dynamically (the Upstash fetch opts out of caching), so view
+// counts are live on every request — same as /blog.
+
 export default async function ProjectsPage() {
   const viewCounts = await getViews(
     "project",

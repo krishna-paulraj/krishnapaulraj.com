@@ -1,6 +1,4 @@
-import { redis } from "@/lib/redis";
-
-export const dynamic = "force-dynamic";
+import { getRedis } from "@/lib/redis";
 
 export async function GET() {
   const days = 30;
@@ -14,6 +12,7 @@ export async function GET() {
   const visitorKeys = dates.map((d) => `visitors:daily:${d}`);
   const sessionKeys = dates.map((d) => `sessions:daily:${d}`);
 
+  const redis = getRedis();
   const [visitors, sessions] = await Promise.all([
     redis.mget<(number | null)[]>(...visitorKeys),
     redis.mget<(number | null)[]>(...sessionKeys),
