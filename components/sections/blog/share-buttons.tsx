@@ -30,6 +30,13 @@ export default function ShareButtons({
   const [copiedMarkdown, setCopiedMarkdown] = useState(false);
   const [copiedTitle, setCopiedTitle] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
+  const resetTimersRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
+
+  // Clear pending "copied" reset timers when the component unmounts.
+  useEffect(() => {
+    const timers = resetTimersRef.current;
+    return () => timers.forEach((id) => clearTimeout(id));
+  }, []);
 
   useEffect(() => {
     if (!openMenu) return;
@@ -56,7 +63,11 @@ export default function ShareButtons({
     try {
       await navigator.clipboard.writeText(value);
       set(true);
-      setTimeout(() => set(false), 1500);
+      const id = setTimeout(() => {
+        set(false);
+        resetTimersRef.current.delete(id);
+      }, 1500);
+      resetTimersRef.current.add(id);
     } catch {
       // ignore
     }
@@ -81,10 +92,13 @@ export default function ShareButtons({
         await navigator.share({ title, url });
         setOpenMenu(null);
         return;
-      } catch {
-        // user cancelled
+      } catch (err) {
+        // User dismissed the share sheet — that's a cancel, not a failure;
+        // don't silently copy the link and flash "Link copied".
+        if (err instanceof Error && err.name === "AbortError") return;
       }
     }
+    // Share genuinely unsupported or failed: fall back to copying the link.
     void onCopyLink();
   };
 
@@ -102,7 +116,6 @@ export default function ShareButtons({
           text={url}
           variant="outline"
           size="sm"
-          aria-haspopup="false"
           className="border-border bg-background text-foreground hover:bg-muted gap-2 rounded-r-none border-r-0 px-3 text-xs"
           idleIcon={<CopyIcon />}
           doneIcon={<CheckIcon className="text-foreground" />}
@@ -114,7 +127,6 @@ export default function ShareButtons({
         <button
           type="button"
           onClick={() => setOpenMenu((m) => (m === "copy" ? null : "copy"))}
-          aria-haspopup="menu"
           aria-expanded={openMenu === "copy"}
           aria-label="More copy options"
           className="border-border bg-background hover:bg-muted aria-expanded:bg-muted inline-flex h-7 items-center justify-center rounded-r-sm border border-l-0 px-2 transition-colors"
@@ -128,16 +140,15 @@ export default function ShareButtons({
         </button>
 
         {openMenu === "copy" && (
+          // Plain buttons in a popover — not role="menu": the full APG menu
+          // keyboard contract isn't implemented, so don't claim the role.
           <div
-            role="menu"
-            aria-label="Copy options"
             className={cn(
               "absolute top-full left-0 z-50 mt-2 w-52 origin-top-left",
               "border-border bg-popover text-popover-foreground rounded-xl border p-1.5 shadow-lg shadow-black/10",
             )}
           >
             <button
-              role="menuitem"
               type="button"
               onClick={onCopyMarkdown}
               className="text-foreground hover:bg-muted flex w-full items-center gap-3 rounded-lg px-3 py-2 text-xs transition-colors"
@@ -152,7 +163,6 @@ export default function ShareButtons({
               </span>
             </button>
             <button
-              role="menuitem"
               type="button"
               onClick={onCopyTitle}
               className="text-foreground hover:bg-muted flex w-full items-center gap-3 rounded-lg px-3 py-2 text-xs transition-colors"
@@ -172,9 +182,8 @@ export default function ShareButtons({
         <button
           type="button"
           onClick={() => setOpenMenu((m) => (m === "share" ? null : "share"))}
-          aria-haspopup="menu"
           aria-expanded={openMenu === "share"}
-          aria-label="Share menu"
+          aria-label="Share options"
           className="border-border bg-background text-foreground hover:bg-muted flex size-7 cursor-pointer items-center justify-center rounded-sm border transition-colors"
         >
           <Share className="size-4" />
@@ -182,15 +191,12 @@ export default function ShareButtons({
 
         {openMenu === "share" && (
           <div
-            role="menu"
-            aria-label="Share options"
             className={cn(
               "absolute top-full right-0 z-50 mt-2 w-56 origin-top-right",
               "border-border bg-popover text-popover-foreground rounded-xl border p-1.5 shadow-lg shadow-black/10",
             )}
           >
             <button
-              role="menuitem"
               type="button"
               onClick={onCopyLink}
               className="text-foreground hover:bg-muted flex w-full items-center gap-3 rounded-lg px-3 py-2 text-xs transition-colors"
@@ -203,7 +209,6 @@ export default function ShareButtons({
               <span>{copiedLink ? "Link copied" : "Copy link"}</span>
             </button>
             <a
-              role="menuitem"
               href={xHref}
               target="_blank"
               rel="noopener noreferrer"
@@ -214,7 +219,6 @@ export default function ShareButtons({
               <span>Share on X</span>
             </a>
             <a
-              role="menuitem"
               href={liHref}
               target="_blank"
               rel="noopener noreferrer"
@@ -225,7 +229,6 @@ export default function ShareButtons({
               <span>Share on LinkedIn</span>
             </a>
             <button
-              role="menuitem"
               type="button"
               onClick={onNativeShare}
               className="text-foreground hover:bg-muted flex w-full items-center gap-3 rounded-lg px-3 py-2 text-xs transition-colors"

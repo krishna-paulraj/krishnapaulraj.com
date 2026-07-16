@@ -12,6 +12,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Separator } from "@/components/ui/separator";
+import { useHydrated } from "@/hooks/use-hydrated";
 import { cn } from "@/lib/utils";
 import type { ChevronsUpDownIconHandle } from "@/components/ui/chevrons-up-down-icon";
 import { ChevronsUpDownIcon } from "@/components/ui/chevrons-up-down-icon";
@@ -159,9 +160,14 @@ export function ExperiencePositionItem({
     }
   }, []);
 
+  const hydrated = useHydrated();
   const { start, end } = position.employmentPeriod;
   const isOngoing = !end;
-  const duration = formatDuration(start, end);
+  // An ongoing role's duration depends on "now": computing it during server
+  // render bakes the build machine's wall-clock time into static HTML and
+  // mismatches the client near month boundaries. Render the static parts on
+  // the server and fill the duration in after hydration.
+  const duration = isOngoing && !hydrated ? "" : formatDuration(start, end);
 
   return (
     <Collapsible
@@ -326,12 +332,16 @@ function formatDuration(start: string, end?: string): string {
 }
 
 function parsePeriodDate(str: string, fallbackMonth: "first" | "last"): Date {
+  // Fixed reference date: `parse` copies unset fields (day of month, time)
+  // from it, so a `new Date()` reference makes the result — and therefore the
+  // computed duration — drift with the current day near month boundaries.
+  const reference = new Date(2000, 0, 1);
   if (str.includes(".")) {
-    return parse(str, "MM.yyyy", new Date());
+    return parse(str, "MM.yyyy", reference);
   }
   return parse(
     `${fallbackMonth === "last" ? "12" : "01"}.${str}`,
     "MM.yyyy",
-    new Date(),
+    reference,
   );
 }

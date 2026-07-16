@@ -18,10 +18,18 @@ const explore = [
   },
 ];
 
-export function ExploreSection() {
+export function ExploreSection({
+  headingLevel: Heading = "h2",
+}: {
+  /**
+   * Heading element for the section title. Defaults to h2 — the section is
+   * embedded in the home page, which has its own h1.
+   */
+  headingLevel?: "h1" | "h2";
+} = {}) {
   return (
     <div className="mt-5 w-full border-t pt-5">
-      <h1 className="text-3xl font-bold tracking-tight">Explore</h1>
+      <Heading className="text-3xl font-bold tracking-tight">Explore</Heading>
       <HighlightedHeading className="my-4">
         A peek into my setup
       </HighlightedHeading>

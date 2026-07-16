@@ -46,12 +46,20 @@ const WORK_EXPERIENCE: ExperienceItemType[] = [
 
 const WorkExperienceComponent = ({
   standalone = false,
+  headingLevel: Heading = "h2",
 }: {
   standalone?: boolean;
+  /**
+   * Heading element for the section title. Defaults to h2 — every page that
+   * renders this section (home, /resume) already provides its own h1.
+   */
+  headingLevel?: "h1" | "h2";
 }) => {
   return (
     <div className={standalone ? "w-full" : "mt-5 w-full border-t pt-5"}>
-      <h1 className="text-3xl font-bold tracking-tight">Work Experience</h1>
+      <Heading className="text-3xl font-bold tracking-tight">
+        Work Experience
+      </Heading>
       <HighlightedHeading className="my-4">
         Where I&apos;ve been working
       </HighlightedHeading>

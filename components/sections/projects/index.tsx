@@ -67,15 +67,23 @@ function ProjectRow({ project, views }: { project: Project; views?: number }) {
 export default function ProjectsSection({
   standalone = false,
   viewCounts,
+  headingLevel,
 }: {
   standalone?: boolean;
   viewCounts?: Record<string, number>;
+  /**
+   * Heading element for the section title. Defaults to h1 when the section
+   * is the page heading (standalone on /projects), h2 when embedded.
+   */
+  headingLevel?: "h1" | "h2";
 }) {
   if (PROJECTS.length === 0) return null;
 
+  const Heading = headingLevel ?? (standalone ? "h1" : "h2");
+
   return (
     <div className={standalone ? "w-full" : "mt-5 w-full border-t pt-5"}>
-      <h1 className="text-3xl font-bold tracking-tight">Projects</h1>
+      <Heading className="text-3xl font-bold tracking-tight">Projects</Heading>
       <HighlightedHeading className="mt-4">
         I love building things
       </HighlightedHeading>

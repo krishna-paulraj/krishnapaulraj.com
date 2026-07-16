@@ -3,13 +3,21 @@ import Link from "next/link";
 import HighlightedHeading from "@/components/ui/highlighted-heading";
 import { getBlogPosts } from "@/lib/blog";
 
-export default function BlogSection() {
+export default function BlogSection({
+  headingLevel: Heading = "h2",
+}: {
+  /**
+   * Heading element for the section title. Defaults to h2 — the section is
+   * embedded in the home page, which has its own h1.
+   */
+  headingLevel?: "h1" | "h2";
+} = {}) {
   const posts = getBlogPosts();
   if (posts.length === 0) return null;
 
   return (
     <div className="mt-5 w-full border-t pt-5">
-      <h1 className="text-3xl font-bold tracking-tight">Writing</h1>
+      <Heading className="text-3xl font-bold tracking-tight">Writing</Heading>
       <HighlightedHeading className="my-4">
         Sharing knowledge as I learn
       </HighlightedHeading>
