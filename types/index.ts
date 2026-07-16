@@ -12,6 +12,7 @@ export type {
   TechKey,
 } from "@/lib/projects";
 export type { BlogPost, BlogPostDetail } from "@/lib/blog";
+export type { BoardCard, BoardColumnId, BoardState } from "@/lib/board";
 
 /**
  * Site analytics served by `app/api/insights/route.ts` and fetched

@@ -43,6 +43,14 @@ const PAGE_ITEMS: SearchItem[] = [
     kind: "page",
   },
   {
+    id: "page-board",
+    title: "Board",
+    description: "What I'm working on right now — a live kanban board.",
+    href: "/board",
+    kind: "page",
+    keywords: ["kanban", "board", "tasks", "now", "working on"],
+  },
+  {
     id: "page-terminal",
     title: "Terminal Setup",
     description: "My Zsh + Powerlevel10k + tmux configuration.",

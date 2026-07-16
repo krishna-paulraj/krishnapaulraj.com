@@ -19,7 +19,8 @@ Live: [krishnapaulraj.com](https://krishnapaulraj.com)
 
 ## Features
 
-- Pages: Home, About, Projects (list + detail), Resume, Blog (list + detail), Components, Terminal Setup, Gears, custom 404
+- Pages: Home, About, Projects (list + detail), Resume, Blog (list + detail), Board, Components, Terminal Setup, Gears, custom 404
+- `/board` — a public kanban board (ReUI + dnd-kit) of what I'm working on; drag/edit unlocks with an owner passphrase, state lives in Redis
 - Markdown blog (`/blog/*.mdx`) with syntax highlighting, heading anchors, reading time, scroll-progress pill, code-copy buttons, prev/next nav, related posts, and per-post view counters
 - Home-page insights: unique visitors/sessions chart, GitHub contribution graph, now-playing, contact chat
 - SEO: `sitemap.xml`, `robots.txt`, RSS at `/rss.xml`, dynamic Open Graph images (site + per-post + per-project), JSON-LD (`Person`, `WebSite`, `BlogPosting`)
@@ -79,6 +80,9 @@ RESEND_API_KEY=...
 # Last.fm — now-playing widget (hidden without these)
 LASTFM_API_KEY=...
 LASTFM_USERNAME=...
+
+# Board — owner passphrase for editing /board (view stays public without it)
+BOARD_SECRET=...
 ```
 
 ## Scripts
