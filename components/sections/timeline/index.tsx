@@ -12,10 +12,11 @@ import { MILESTONES } from "@/lib/timeline";
 import { cn } from "@/lib/utils";
 
 // Left-aligned date gutter on sm+ (adapted from the ReUI c-timeline-2 block);
-// below sm the date stacks above the title.
-const ITEM_CLASS = "sm:group-data-[orientation=vertical]/timeline:ms-32";
+// below sm the date stacks above the title. The gutter (ms-40) leaves the
+// date column (w-28 at -left-40) a clear 16px gap before the rail dots.
+const ITEM_CLASS = "sm:group-data-[orientation=vertical]/timeline:ms-40";
 const DATE_CLASS =
-  "font-mono sm:group-data-[orientation=vertical]/timeline:absolute sm:group-data-[orientation=vertical]/timeline:-left-32 sm:group-data-[orientation=vertical]/timeline:w-24 sm:group-data-[orientation=vertical]/timeline:text-right";
+  "font-mono sm:group-data-[orientation=vertical]/timeline:absolute sm:group-data-[orientation=vertical]/timeline:-left-40 sm:group-data-[orientation=vertical]/timeline:w-28 sm:group-data-[orientation=vertical]/timeline:text-right";
 
 /**
  * Server-rendered journey timeline: every past milestone renders as a

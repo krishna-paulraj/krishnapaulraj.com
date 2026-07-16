@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function TimelinePage() {
   return (
-    <div className="mx-auto w-full max-w-2xl flex-1 px-3 py-6 font-sans md:px-6">
+    <div className="mx-auto w-full max-w-3xl flex-1 px-3 py-6 font-sans md:px-6">
       <Reveal>
         <h1 className="text-3xl font-bold tracking-tight">Timeline</h1>
         <HighlightedHeading className="my-4">
