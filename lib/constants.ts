@@ -1,7 +1,3 @@
-import { ExperienceItemType } from "@/components/sections/work/work-experience";
-
-export const experiences: ExperienceItemType[] = [];
-
 export const SITE_URL = "https://krishnapaulraj.com";
 export const SITE_NAME = "Suresh Krishna Paulraj";
 export const SITE_DESCRIPTION =

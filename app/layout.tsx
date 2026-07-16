@@ -92,6 +92,16 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col">
+        {/* Reveal animations SSR content at opacity 0; without JS, unhide it. */}
+        <noscript>
+          <style>{`[data-reveal]{opacity:1!important;transform:none!important}`}</style>
+        </noscript>
+        <a
+          href="#main-content"
+          className="focus:bg-background focus:border-border sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-md focus:border focus:px-3 focus:py-2 focus:text-sm"
+        >
+          Skip to content
+        </a>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: jsonLdString(buildSiteGraph()) }}
@@ -101,7 +111,9 @@ export default function RootLayout({
             <TooltipProvider>
               <SearchProvider items={getSearchItems()}>
                 <Navbar />
-                <main className="flex flex-1 flex-col">{children}</main>
+                <main id="main-content" className="flex flex-1 flex-col">
+                  {children}
+                </main>
                 <Footer />
               </SearchProvider>
             </TooltipProvider>
