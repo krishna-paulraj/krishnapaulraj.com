@@ -5,6 +5,7 @@ import { ArrowRightIcon } from "lucide-react";
 import HighlightedHeading from "@/components/ui/highlighted-heading";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { getBlogPosts } from "@/lib/blog";
+import { formatPostDate } from "@/lib/dates";
 
 export const metadata: Metadata = {
   title: "Page not found",
@@ -82,11 +83,7 @@ export default function NotFound() {
                       dateTime={post.createdAt}
                       className="text-muted-foreground shrink-0 text-xs"
                     >
-                      {new Date(post.createdAt).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
+                      {formatPostDate(post.createdAt)}
                     </time>
                   )}
                 </Link>

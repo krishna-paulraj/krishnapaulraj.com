@@ -7,6 +7,7 @@ import {
   renderMarkdownWithToc,
   type TocItem,
 } from "@/lib/markdown";
+import { dateSortValue } from "@/lib/dates";
 
 export type BlogPost = {
   slug: string;
@@ -28,6 +29,18 @@ export type BlogPostDetail = BlogPost & {
 const BLOG_DIR = path.join(process.cwd(), "blog");
 const WORDS_PER_MINUTE = 220;
 
+/**
+ * Frontmatter dates written unquoted (`createdAt: 2026-05-20`) are parsed by
+ * YAML into `Date` objects; naive `String()` would yield a locale-dependent
+ * `Date.prototype.toString()` that breaks sorting and every machine-readable
+ * sink (JSON-LD, OpenGraph, <time datetime>, RSS). Normalize to `YYYY-MM-DD`.
+ */
+function normalizeDate(value: unknown): string {
+  if (!value) return "";
+  if (value instanceof Date) return value.toISOString().slice(0, 10);
+  return String(value);
+}
+
 function readPostFile(file: string) {
   const slug = file.replace(/\.mdx?$/, "");
   const raw = fs.readFileSync(path.join(BLOG_DIR, file), "utf-8");
@@ -41,8 +54,8 @@ function readPostFile(file: string) {
     slug,
     title: data.title ?? slug,
     description: data.description ?? "",
-    createdAt: data.createdAt ? String(data.createdAt) : "",
-    updatedAt: data.updatedAt ? String(data.updatedAt) : undefined,
+    createdAt: normalizeDate(data.createdAt),
+    updatedAt: data.updatedAt ? normalizeDate(data.updatedAt) : undefined,
     image: data.image,
     tags: Array.isArray(data.tags)
       ? data.tags
@@ -69,15 +82,28 @@ export function getAllTags(): { tag: string; count: number }[] {
 
 function listPostFiles(): string[] {
   if (!fs.existsSync(BLOG_DIR)) return [];
-  return fs
+  const files = fs
     .readdirSync(BLOG_DIR)
     .filter((f) => f.endsWith(".mdx") || f.endsWith(".md"));
+  // `a.md` and `a.mdx` would collide on the same slug; keep the .mdx variant.
+  const bySlug = new Map<string, string>();
+  for (const file of files) {
+    const slug = file.replace(/\.mdx?$/, "");
+    if (!bySlug.has(slug) || file.endsWith(".mdx")) bySlug.set(slug, file);
+  }
+  return Array.from(bySlug.values());
 }
 
+let postsCache: BlogPost[] | null = null;
+
 export function getBlogPosts(): BlogPost[] {
-  return listPostFiles()
+  // Posts are static files; cache per server process in production (dev keeps
+  // re-reading so edits show up without a restart).
+  if (process.env.NODE_ENV === "production" && postsCache) return postsCache;
+  postsCache = listPostFiles()
     .map((file) => readPostFile(file).post)
-    .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+    .sort((a, b) => dateSortValue(b.createdAt) - dateSortValue(a.createdAt));
+  return postsCache;
 }
 
 export async function getBlogPost(
@@ -111,7 +137,7 @@ export function getRelatedPosts(slug: string, limit = 3): BlogPost[] {
     .filter((x) => x.score > 0)
     .sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
-      return a.post.createdAt < b.post.createdAt ? 1 : -1;
+      return dateSortValue(b.post.createdAt) - dateSortValue(a.post.createdAt);
     })
     .slice(0, limit)
     .map((x) => x.post);

@@ -16,6 +16,7 @@ import {
   getRelatedPosts,
 } from "@/lib/blog";
 import { SITE_URL } from "@/lib/constants";
+import { formatPostDate } from "@/lib/dates";
 import { buildBlogPostingSchema, jsonLdString } from "@/lib/structured-data";
 
 export const dynamicParams = false;
@@ -53,7 +54,7 @@ export async function generateMetadata({
 }
 
 function formatDate(value: string) {
-  return new Date(value).toLocaleDateString("en-US", {
+  return formatPostDate(value, {
     month: "long",
     day: "numeric",
     year: "numeric",

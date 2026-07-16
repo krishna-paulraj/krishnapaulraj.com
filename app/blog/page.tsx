@@ -4,16 +4,9 @@ import Link from "next/link";
 import HighlightedHeading from "@/components/ui/highlighted-heading";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { getAllTags, getBlogPosts } from "@/lib/blog";
+import { formatPostDate } from "@/lib/dates";
 import { getViews } from "@/lib/redis";
 import { cn } from "@/lib/utils";
-
-function formatShortDate(value: string) {
-  return new Date(value).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-}
 
 export const metadata: Metadata = {
   title: "Writing",
@@ -30,10 +23,12 @@ export const metadata: Metadata = {
 export default async function BlogPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tag?: string }>;
+  searchParams: Promise<{ tag?: string | string[] }>;
 }) {
   const { tag: rawTag } = await searchParams;
-  const activeTag = rawTag?.toLowerCase().trim() || null;
+  // A repeated query param (`?tag=a&tag=b`) arrives as an array.
+  const tagParam = Array.isArray(rawTag) ? rawTag[0] : rawTag;
+  const activeTag = tagParam?.toLowerCase().trim() || null;
 
   const allPosts = getBlogPosts();
   const posts = activeTag
@@ -150,9 +145,7 @@ export default async function BlogPage({
                       {hasUpdate && (
                         <>
                           <span aria-hidden="true">·</span>
-                          <span>
-                            Updated {formatShortDate(post.updatedAt!)}
-                          </span>
+                          <span>Updated {formatPostDate(post.updatedAt!)}</span>
                         </>
                       )}
                     </div>
@@ -162,7 +155,7 @@ export default async function BlogPage({
                       dateTime={post.createdAt}
                       className="text-muted-foreground shrink-0 text-sm"
                     >
-                      {formatShortDate(post.createdAt)}
+                      {formatPostDate(post.createdAt)}
                     </time>
                   )}
                 </Link>
