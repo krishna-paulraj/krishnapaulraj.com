@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useSpring } from "motion/react";
-import { useEffect } from "react";
+import { useId, useLayoutEffect } from "react";
 import { type SpringConfig, useChartConfig } from "../chart-config-context";
 import { chartCssVars } from "../chart-context";
 
@@ -39,9 +39,9 @@ export interface TooltipIndicatorProps {
   fadeEdges?: boolean;
   /** Animate position with a spring. Default: true */
   animate?: boolean;
-  /** Unique ID for the gradient */
+  /** Unique ID for the gradient. Defaults to a per-instance `useId`. */
   gradientId?: string;
-  /** Per-chart override; falls back to `ChartConfigProvider.tooltipSpring`. */
+  /** Per-chart override; falls back to the chart config's `tooltipSpring`. */
   springConfig?: SpringConfig;
 }
 
@@ -74,7 +74,6 @@ export function TooltipIndicator(props: TooltipIndicatorProps) {
 
 function TooltipIndicatorInner({
   x,
-  visible,
   height,
   width = "line",
   span,
@@ -83,11 +82,16 @@ function TooltipIndicatorInner({
   colorMid = chartCssVars.crosshair,
   fadeEdges = true,
   animate = true,
-  gradientId = "tooltip-indicator-gradient",
+  gradientId: gradientIdProp,
   springConfig,
 }: TooltipIndicatorProps) {
   const { tooltipSpring } = useChartConfig();
   const effectiveSpring = springConfig ?? tooltipSpring;
+
+  // Per-instance default so several charts on one page don't collide on the
+  // same SVG gradient id.
+  const autoId = useId();
+  const gradientId = gradientIdProp ?? `tooltip-indicator-gradient-${autoId}`;
 
   const pixelWidth =
     span !== undefined && columnWidth !== undefined
@@ -95,16 +99,16 @@ function TooltipIndicatorInner({
       : resolveWidth(width);
 
   const rectX = x - pixelWidth / 2;
+  // `useSpring` initializes at the first rectX (the component mounts on
+  // hover), so the mount pass is a no-op; later passes spring toward the
+  // cursor.
   const animatedX = useSpring(rectX, effectiveSpring);
 
-  if (animate) {
-    animatedX.set(rectX);
-  }
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: we need to jump the animatedX when the visible prop changes
-  useEffect(() => {
-    animatedX.set(rectX);
-  }, [animatedX, visible]);
+  useLayoutEffect(() => {
+    if (animate) {
+      animatedX.set(rectX);
+    }
+  }, [animate, animatedX, rectX]);
 
   const edgeOpacity = fadeEdges ? 0 : 1;
 

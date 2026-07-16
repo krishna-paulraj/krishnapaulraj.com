@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useSpring } from "motion/react";
-import { memo, useMemo, useRef } from "react";
+import { memo, useLayoutEffect, useMemo } from "react";
 
 const TICKER_ITEM_HEIGHT = 24;
 /** Full scroll stacks are skipped above this count — single label + instant updates. */
@@ -74,23 +74,20 @@ const DateTickerInner = memo(function DateTickerInner({
     return 0;
   }, [currentIndex, parsedLabels.length, monthSegments]);
 
-  // Track previous month index
-  const prevMonthIndexRef = useRef(-1);
-
-  // Animated Y offsets
+  // Animated Y offsets. The springs start at 0 and ease toward the current
+  // stack offsets from a layout effect (before paint) — retargeting only when
+  // the respective index changes, which preserves the original "scroll on
+  // first render and on change" ticker behavior.
   const dayY = useSpring(0, { stiffness: 400, damping: 35 });
   const monthY = useSpring(0, { stiffness: 400, damping: 35 });
 
-  dayY.set(-currentIndex * TICKER_ITEM_HEIGHT);
+  useLayoutEffect(() => {
+    dayY.set(-currentIndex * TICKER_ITEM_HEIGHT);
+  }, [currentIndex, dayY]);
 
-  if (currentMonthIndex >= 0) {
-    const isFirstRender = prevMonthIndexRef.current === -1;
-    const monthChanged = prevMonthIndexRef.current !== currentMonthIndex;
-    if (isFirstRender || monthChanged) {
-      monthY.set(-currentMonthIndex * TICKER_ITEM_HEIGHT);
-      prevMonthIndexRef.current = currentMonthIndex;
-    }
-  }
+  useLayoutEffect(() => {
+    monthY.set(-currentMonthIndex * TICKER_ITEM_HEIGHT);
+  }, [currentMonthIndex, monthY]);
 
   return (
     <div className="bg-primary text-primary-foreground overflow-hidden rounded-full px-4 py-1 shadow-lg">

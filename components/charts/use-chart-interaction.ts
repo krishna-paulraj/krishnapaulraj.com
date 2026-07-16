@@ -66,10 +66,26 @@ export function useChartInteraction({
     scheduleTooltip,
     clearTooltip,
     resetTooltipDedupe,
-  } = useScheduledTooltip<TooltipData>();
+  } = useScheduledTooltip<TooltipData>(data);
 
   const isDraggingRef = useRef(false);
   const dragStartXRef = useRef<number>(0);
+
+  // Raw pointer/touch moves fire more often than the selection actually
+  // changes; keep the previous object when nothing moved so context consumers
+  // don't re-render for an identical selection.
+  const setSelectionDeduped = useCallback((next: ChartSelection) => {
+    setSelection((prev) =>
+      prev !== null &&
+      prev.startX === next.startX &&
+      prev.endX === next.endX &&
+      prev.startIndex === next.startIndex &&
+      prev.endIndex === next.endIndex &&
+      prev.active === next.active
+        ? prev
+        : next,
+    );
+  }, []);
 
   const resolveTooltipFromX = useCallback(
     (pixelX: number): TooltipData | null => {
@@ -171,7 +187,7 @@ export function useChartInteraction({
       if (isDraggingRef.current) {
         const startX = Math.min(dragStartXRef.current, chartX);
         const endX = Math.max(dragStartXRef.current, chartX);
-        setSelection({
+        setSelectionDeduped({
           startX,
           endX,
           startIndex: resolveIndexFromX(startX),
@@ -186,7 +202,13 @@ export function useChartInteraction({
         scheduleTooltip(tooltip);
       }
     },
-    [getChartX, resolveTooltipFromX, resolveIndexFromX, scheduleTooltip],
+    [
+      getChartX,
+      resolveTooltipFromX,
+      resolveIndexFromX,
+      scheduleTooltip,
+      setSelectionDeduped,
+    ],
   );
 
   const handleMouseLeave = useCallback(() => {
@@ -218,10 +240,12 @@ export function useChartInteraction({
     setSelection(null);
   }, []);
 
+  // Note: React attaches touch listeners passively, so calling
+  // `event.preventDefault()` in these handlers is a no-op — scroll suppression
+  // is handled declaratively via `touch-action` in `interactionStyle`.
   const handleTouchStart = useCallback(
     (event: React.TouchEvent<SVGGElement>) => {
       if (event.touches.length === 1) {
-        event.preventDefault();
         const chartX = getChartX(event, 0);
         if (chartX === null) {
           return;
@@ -231,7 +255,6 @@ export function useChartInteraction({
           scheduleTooltip(tooltip);
         }
       } else if (event.touches.length === 2) {
-        event.preventDefault();
         resetTooltipDedupe();
         clearTooltip();
         const x0 = getChartX(event, 0);
@@ -241,7 +264,7 @@ export function useChartInteraction({
         }
         const startX = Math.min(x0, x1);
         const endX = Math.max(x0, x1);
-        setSelection({
+        setSelectionDeduped({
           startX,
           endX,
           startIndex: resolveIndexFromX(startX),
@@ -257,13 +280,13 @@ export function useChartInteraction({
       scheduleTooltip,
       resetTooltipDedupe,
       clearTooltip,
+      setSelectionDeduped,
     ],
   );
 
   const handleTouchMove = useCallback(
     (event: React.TouchEvent<SVGGElement>) => {
       if (event.touches.length === 1) {
-        event.preventDefault();
         const chartX = getChartX(event, 0);
         if (chartX === null) {
           return;
@@ -273,7 +296,6 @@ export function useChartInteraction({
           scheduleTooltip(tooltip);
         }
       } else if (event.touches.length === 2) {
-        event.preventDefault();
         const x0 = getChartX(event, 0);
         const x1 = getChartX(event, 1);
         if (x0 === null || x1 === null) {
@@ -281,7 +303,7 @@ export function useChartInteraction({
         }
         const startX = Math.min(x0, x1);
         const endX = Math.max(x0, x1);
-        setSelection({
+        setSelectionDeduped({
           startX,
           endX,
           startIndex: resolveIndexFromX(startX),
@@ -290,7 +312,13 @@ export function useChartInteraction({
         });
       }
     },
-    [getChartX, resolveTooltipFromX, resolveIndexFromX, scheduleTooltip],
+    [
+      getChartX,
+      resolveTooltipFromX,
+      resolveIndexFromX,
+      scheduleTooltip,
+      setSelectionDeduped,
+    ],
   );
 
   const handleTouchEnd = useCallback(() => {
@@ -316,7 +344,9 @@ export function useChartInteraction({
 
   const interactionStyle: React.CSSProperties = {
     cursor: canInteract ? "crosshair" : "default",
-    touchAction: "none",
+    // "pan-y" lets vertical page scroll pass through on mobile while
+    // horizontal scrubbing still drives the tooltip.
+    touchAction: "pan-y",
   };
 
   return {

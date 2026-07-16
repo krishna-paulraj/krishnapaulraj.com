@@ -22,12 +22,24 @@ function defaultDedupeKey<T>(tooltip: T): string {
   return JSON.stringify(tooltip);
 }
 
-export function useScheduledTooltip<T>(): ScheduledTooltipControls<T> {
+/**
+ * @param resetKey when its identity changes (e.g. the chart's `data` array
+ *   after a refetch), the index-dedupe key is cleared so the next scheduled
+ *   tooltip for the same index re-commits with fresh data instead of being
+ *   pinned to the stale point.
+ */
+export function useScheduledTooltip<T>(
+  resetKey?: unknown,
+): ScheduledTooltipControls<T> {
   const [tooltipData, setTooltipData] = useState<T | null>(null);
   const lastKeyRef = useRef<string | null>(null);
   const pendingRef = useRef<T | null>(null);
   const rafRef = useRef<number | null>(null);
   const pendingKeyRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    lastKeyRef.current = null;
+  }, [resetKey]);
 
   useEffect(() => {
     return () => {

@@ -7,8 +7,9 @@ import {
   isValidElement,
   type ReactElement,
   type ReactNode,
+  useId,
   useMemo,
-  useRef,
+  useState,
 } from "react";
 import { cn } from "@/lib/utils";
 import type { LineConfig, Margin } from "./chart-context";
@@ -117,7 +118,7 @@ interface ChartInnerProps {
   enterTransition?: Transition;
   revealSignature?: string;
   children: ReactNode;
-  containerRef: React.RefObject<HTMLDivElement | null>;
+  container: HTMLDivElement | null;
 }
 
 function ChartInner({
@@ -131,16 +132,20 @@ function ChartInner({
   enterTransition,
   revealSignature,
   children,
-  containerRef,
+  container,
 }: ChartInnerProps) {
   const lines = useMemo(() => extractLineConfigs(children), [children]);
+  // Unique per chart instance so multiple charts on one page don't share
+  // (and clobber) the same SVG clipPath id.
+  const reactId = useId();
+  const clipPathId = `chart-grow-clip-${reactId}`;
 
   return (
     <TimeSeriesChartInner
       animationDuration={animationDuration}
       animationEasing={animationEasing}
-      clipPathId="chart-grow-clip"
-      containerRef={containerRef}
+      clipPathId={clipPathId}
+      container={container}
       data={data}
       enterTransition={enterTransition}
       height={height}
@@ -167,21 +172,40 @@ export function LineChart({
   className = "",
   children,
 }: LineChartProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const margin = { ...DEFAULT_MARGIN, ...marginProp };
+  // Container as state (set via callback ref) so portal consumers get a
+  // render-safe value instead of reading a ref during render.
+  const [container, setContainer] = useState<HTMLDivElement | null>(null);
+
+  // Memoize on the four numbers so a fresh `margin` object literal from the
+  // caller doesn't bust the chart's memo/stable-context split every render.
+  const {
+    top: marginTop,
+    right: marginRight,
+    bottom: marginBottom,
+    left: marginLeft,
+  } = { ...DEFAULT_MARGIN, ...marginProp };
+  const margin = useMemo<Margin>(
+    () => ({
+      top: marginTop,
+      right: marginRight,
+      bottom: marginBottom,
+      left: marginLeft,
+    }),
+    [marginTop, marginRight, marginBottom, marginLeft],
+  );
 
   return (
     <div
       className={cn("relative w-full", className)}
-      ref={containerRef}
-      style={{ aspectRatio, touchAction: "none" }}
+      ref={setContainer}
+      style={{ aspectRatio, touchAction: "pan-y" }}
     >
       <ParentSize debounceTime={10}>
         {({ width, height }) => (
           <ChartInner
             animationDuration={animationDuration}
             animationEasing={animationEasing}
-            containerRef={containerRef}
+            container={container}
             data={data}
             enterTransition={enterTransition}
             height={height}

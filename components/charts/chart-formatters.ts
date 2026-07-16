@@ -1,19 +1,16 @@
+// Chart data is UTC-day-bucketed (`T00:00:00.000Z`); format in UTC so labels
+// don't shift a day for viewers west of UTC.
 export const shortDateFmt = new Intl.DateTimeFormat("en-US", {
   month: "short",
   day: "numeric",
+  timeZone: "UTC",
 });
 
 export const weekdayDateFmt = new Intl.DateTimeFormat("en-US", {
   weekday: "short",
   month: "short",
   day: "numeric",
-});
-
-export const hmsTimeFmt = new Intl.DateTimeFormat("en-US", {
-  hour: "2-digit",
-  minute: "2-digit",
-  second: "2-digit",
-  hour12: false,
+  timeZone: "UTC",
 });
 
 // `Intl.NumberFormat.prototype.format` is a bound getter — safe to extract.

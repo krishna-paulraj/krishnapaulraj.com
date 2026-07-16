@@ -1,7 +1,7 @@
 "use client";
 
 import { useSpring } from "motion/react";
-import { useMemo, useRef } from "react";
+import { useLayoutEffect, useMemo, useRef } from "react";
 import { useChartConfig } from "./chart-config-context";
 import { useChartHover, useChartStable } from "./chart-context";
 import {
@@ -11,7 +11,7 @@ import {
 
 // Hover-highlight band for `line.tsx` and `area.tsx`. Computes the segment
 // bounds and springs its x/width; `<HighlightSegment>` renders the clipped
-// re-stroke. Spring tuning comes from `ChartConfigProvider.highlightSpring`.
+// re-stroke. Spring tuning comes from the chart config's `highlightSpring`.
 // Stable + hover slices are read separately so callers can see the exact
 // subscription surface (anything calling this hook will re-render on hover).
 
@@ -46,16 +46,20 @@ export function useHighlightSegment({
   const widthSpring = useSpring(0, highlightSpring);
 
   // Jump on inactive→active so the band appears at the hovered point instead
-  // of sliding in from x=0; ease on subsequent moves.
+  // of sliding in from x=0; ease on subsequent moves. Runs in a layout effect
+  // (before paint) rather than during render, which must stay side-effect
+  // free.
   const wasActive = useRef(false);
-  if (bounds.isActive && !wasActive.current) {
-    xSpring.jump(bounds.x);
-    widthSpring.jump(bounds.width);
-  } else {
-    xSpring.set(bounds.x);
-    widthSpring.set(bounds.width);
-  }
-  wasActive.current = bounds.isActive;
+  useLayoutEffect(() => {
+    if (bounds.isActive && !wasActive.current) {
+      xSpring.jump(bounds.x);
+      widthSpring.jump(bounds.width);
+    } else {
+      xSpring.set(bounds.x);
+      widthSpring.set(bounds.width);
+    }
+    wasActive.current = bounds.isActive;
+  }, [bounds, xSpring, widthSpring]);
 
   return { xSpring, widthSpring, isActive: bounds.isActive };
 }

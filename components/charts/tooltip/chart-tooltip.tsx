@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useSpring } from "motion/react";
-import { memo, useEffect, useMemo, useState } from "react";
+import { memo, useLayoutEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { type SpringConfig, useChartConfig } from "../chart-config-context";
 import {
@@ -25,8 +25,8 @@ export interface ChartTooltipProps {
   /** Whether to show dots on the lines. Default: true */
   showDots?: boolean;
   /**
-   * Color for the crosshair/indicator line. When a function, receives the hovered point
-   * (e.g. for candlestick: match candle color from close vs open). Default: --chart-crosshair.
+   * Color for the crosshair/indicator line. When a function, receives the hovered point.
+   * Default: --chart-crosshair.
    */
   indicatorColor?: string | ((point: Record<string, unknown>) => string);
   /** Custom content renderer for the tooltip box */
@@ -41,8 +41,7 @@ export interface ChartTooltipProps {
    * When a function, receives the hovered point and line config.
    */
   dotColor?:
-    | string
-    | ((point: Record<string, unknown>, line: LineConfig) => string);
+    string | ((point: Record<string, unknown>, line: LineConfig) => string);
   /** Additional content to show below rows (e.g., markers) */
   children?: React.ReactNode;
   /** Custom class name */
@@ -81,24 +80,13 @@ const ChartTooltipInner = memo(function ChartTooltipInner({
     lines,
     xAccessor,
     dateLabels,
-    containerRef,
-    orientation,
-    barXAccessor,
   } = useChart();
 
-  const isHorizontal = orientation === "horizontal";
   const discreteInteraction = dateLabels.length > 60;
 
   const visible = tooltipData !== null;
   const x = tooltipData?.x ?? 0;
   const xWithMargin = x + margin.left;
-
-  // For horizontal charts, get the y position from the first line's yPosition (center of bar)
-  const firstLineDataKey = lines[0]?.dataKey;
-  const firstLineY = firstLineDataKey
-    ? (tooltipData?.yPositions[firstLineDataKey] ?? 0)
-    : 0;
-  const yWithMargin = firstLineY + margin.top;
 
   const tooltipRows = useMemo(() => {
     if (!tooltipData) {
@@ -147,18 +135,13 @@ const ChartTooltipInner = memo(function ChartTooltipInner({
     return indicatorColorProp;
   }, [indicatorColorProp, tooltipData]);
 
-  // Title from date or category
+  // Title from the hovered point's date
   const title = useMemo(() => {
     if (!tooltipData) {
       return undefined;
     }
-    // For bar charts (horizontal or vertical), use the category name
-    if (barXAccessor) {
-      return barXAccessor(tooltipData.point);
-    }
-    // For line/area charts, use the date
     return weekdayDateFmt.format(xAccessor(tooltipData.point));
-  }, [tooltipData, barXAccessor, xAccessor]);
+  }, [tooltipData, xAccessor]);
 
   const tooltipContent = (
     <>
@@ -187,8 +170,8 @@ const ChartTooltipInner = memo(function ChartTooltipInner({
         </svg>
       )}
 
-      {/* Dots on bars/lines - show for vertical charts only */}
-      {showDots && visible && !isHorizontal && (
+      {/* Dots on the lines at the hovered point */}
+      {showDots && visible && (
         <svg
           aria-hidden="true"
           className="pointer-events-none absolute inset-0"
@@ -203,7 +186,7 @@ const ChartTooltipInner = memo(function ChartTooltipInner({
                 springConfig={springConfig}
                 strokeColor={chartCssVars.background}
                 visible={visible}
-                x={tooltipData?.xPositions?.[line.dataKey] ?? x}
+                x={x}
                 y={tooltipData?.yPositions[line.dataKey] ?? 0}
               />
             ))}
@@ -214,14 +197,14 @@ const ChartTooltipInner = memo(function ChartTooltipInner({
       {/* Tooltip Box */}
       <TooltipBox
         className={className}
+        container={container}
         containerHeight={height}
-        containerRef={containerRef}
         containerWidth={width}
         springConfig={boxSpringConfig}
-        top={isHorizontal ? undefined : margin.top}
+        top={margin.top}
         visible={visible}
         x={xWithMargin}
-        y={isHorizontal ? yWithMargin : margin.top}
+        y={margin.top}
       >
         {content && tooltipData
           ? content({
@@ -235,11 +218,11 @@ const ChartTooltipInner = memo(function ChartTooltipInner({
             )}
       </TooltipBox>
 
-      {/* Date/Category Ticker - only show for vertical charts */}
+      {/* Date Ticker */}
       <DatePillTracker
         currentIndex={tooltipData?.index ?? 0}
         discreteInteraction={discreteInteraction}
-        enabled={showDatePill && !isHorizontal}
+        enabled={showDatePill}
         labels={dateLabels}
         springConfig={springConfig}
         visible={visible}
@@ -252,16 +235,11 @@ const ChartTooltipInner = memo(function ChartTooltipInner({
 });
 
 export function ChartTooltip(props: ChartTooltipProps) {
-  const { containerRef } = useChartStable();
-  const [mounted, setMounted] = useState(false);
-
-  // Only render portals on client side after mount
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const container = containerRef.current;
-  if (!(mounted && container)) {
+  // `container` is state populated by a callback ref after mount, so it is
+  // null during SSR and the first client render — portals only render on the
+  // client once the container exists.
+  const { container } = useChartStable();
+  if (!container) {
     return null;
   }
 
@@ -301,14 +279,11 @@ function DatePillTrackerInner({
   const effectiveSpring = springConfig ?? tooltipSpring;
   const animatedX = useSpring(xWithMargin, effectiveSpring);
 
-  if (!discreteInteraction) {
-    animatedX.set(xWithMargin);
-  }
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: we need to jump the animatedX when the visible prop changes
-  useEffect(() => {
-    animatedX.set(xWithMargin);
-  }, [animatedX, visible]);
+  useLayoutEffect(() => {
+    if (!discreteInteraction) {
+      animatedX.set(xWithMargin);
+    }
+  }, [animatedX, discreteInteraction, xWithMargin]);
 
   return (
     <motion.div

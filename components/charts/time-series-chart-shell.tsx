@@ -24,10 +24,6 @@ import {
   decimateTimeSeries,
   maxRenderPointsForWidth,
 } from "./decimate-time-series";
-import {
-  computeSeriesBarRevealClipPadding,
-  computeSeriesBarWidth,
-} from "./series-bar-layout";
 import { useStaticChartPreview } from "./static-chart-preview-context";
 import { useChartInteraction } from "./use-chart-interaction";
 
@@ -118,20 +114,13 @@ export interface TimeSeriesChartInnerProps {
   /** Signature of motion URL state — triggers reveal replay when it changes. */
   revealSignature?: string;
   children: ReactNode;
-  containerRef: React.RefObject<HTMLDivElement | null>;
-  /** Series keys driving y-domain and tooltip (Line / Area / SeriesBar configs). */
+  /** Chart container element for portals — null until mounted. */
+  container: HTMLDivElement | null;
+  /** Series keys driving y-domain and tooltip (Line / Area configs). */
   lines: LineConfig[];
   /** SVG clipPath id for grow animation. */
   clipPathId: string;
-  /** Optional ComposedChart bar layout (forwarded into context). */
-  composedBarDataKeys?: string[];
-  composedBarSize?: number;
-  composedMaxBarSize?: number;
-  composedBarGap?: number;
-  composedStacked?: boolean;
-  composedStackOffsets?: Map<number, Map<string, number>>;
-  composedStackGap?: number;
-  /** When set, drives the y-axis max instead of scanning `lines` (e.g. stacked bar totals). */
+  /** When set, drives the y-axis max instead of scanning `lines`. */
   yScaleDomainMax?: number;
 }
 
@@ -154,21 +143,44 @@ const TimeSeriesChartCore = memo(function TimeSeriesChartCore({
   enterTransition,
   revealSignature = "",
   children,
-  containerRef,
+  container,
   lines,
   clipPathId,
-  composedBarDataKeys,
-  composedBarSize,
-  composedMaxBarSize,
-  composedBarGap,
-  composedStacked,
-  composedStackOffsets,
-  composedStackGap,
   yScaleDomainMax,
 }: TimeSeriesChartInnerProps) {
   const staticPreview = useStaticChartPreview();
-  const [isLoaded, setIsLoaded] = useState(staticPreview);
-  const [revealEpoch, setRevealEpoch] = useState(0);
+
+  // Reveal bookkeeping without setState-in-effect:
+  // - `revealEpoch` bumps when `revealSignature` changes (state adjusted
+  //   during render, per the React "storing information from previous
+  //   renders" pattern) so the clip reveal replays.
+  // - `doneSignature` records which signature's reveal has finished; a
+  //   signature change therefore resets `revealDone` by derivation.
+  const [revealState, setRevealState] = useState({
+    signature: revealSignature,
+    epoch: 0,
+  });
+  if (revealState.signature !== revealSignature) {
+    setRevealState((prev) => ({
+      signature: revealSignature,
+      epoch: prev.epoch + 1,
+    }));
+  }
+  const revealEpoch = revealState.epoch;
+
+  const [doneSignature, setDoneSignature] = useState<string | null>(null);
+  const revealDone = doneSignature === revealSignature;
+  const isLoaded = staticPreview || revealDone;
+
+  useEffect(() => {
+    if (staticPreview) {
+      return;
+    }
+    const timer = setTimeout(() => {
+      setDoneSignature(revealSignature);
+    }, animationDuration);
+    return () => clearTimeout(timer);
+  }, [animationDuration, revealSignature, staticPreview]);
 
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
@@ -229,21 +241,6 @@ const TimeSeriesChartCore = memo(function TimeSeriesChartCore({
     [data, xAccessor],
   );
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: revealSignature
-  useEffect(() => {
-    if (staticPreview) {
-      setIsLoaded(true);
-      return;
-    }
-
-    setRevealEpoch((n) => n + 1);
-    setIsLoaded(false);
-    const timer = setTimeout(() => {
-      setIsLoaded(true);
-    }, animationDuration);
-    return () => clearTimeout(timer);
-  }, [animationDuration, revealSignature, staticPreview]);
-
   const canInteract = isLoaded;
 
   const {
@@ -301,7 +298,7 @@ const TimeSeriesChartCore = memo(function TimeSeriesChartCore({
       columnWidth,
       tooltipData,
       setTooltipData,
-      containerRef,
+      container,
       lines,
       isLoaded,
       animationDuration,
@@ -312,13 +309,6 @@ const TimeSeriesChartCore = memo(function TimeSeriesChartCore({
       dateLabels,
       selection,
       clearSelection,
-      composedBarDataKeys,
-      composedBarSize,
-      composedMaxBarSize,
-      composedBarGap,
-      composedStacked,
-      composedStackOffsets,
-      composedStackGap,
     }),
     [
       data,
@@ -333,7 +323,7 @@ const TimeSeriesChartCore = memo(function TimeSeriesChartCore({
       columnWidth,
       tooltipData,
       setTooltipData,
-      containerRef,
+      container,
       lines,
       isLoaded,
       animationDuration,
@@ -344,13 +334,6 @@ const TimeSeriesChartCore = memo(function TimeSeriesChartCore({
       dateLabels,
       selection,
       clearSelection,
-      composedBarDataKeys,
-      composedBarSize,
-      composedMaxBarSize,
-      composedBarGap,
-      composedStacked,
-      composedStackOffsets,
-      composedStackGap,
     ],
   );
 
@@ -374,37 +357,6 @@ const TimeSeriesChartCore = memo(function TimeSeriesChartCore({
     duration: animationDuration / 1000,
   };
 
-  const revealClipPadding = useMemo(() => {
-    if (!composedBarDataKeys?.length) {
-      return 0;
-    }
-    const barWidth = computeSeriesBarWidth({
-      innerWidth,
-      dataLength: data.length,
-      columnWidth,
-      seriesCount: composedBarDataKeys.length,
-      composedBarSize,
-      composedMaxBarSize,
-      composedBarGap,
-      stacked: composedStacked,
-    });
-    return computeSeriesBarRevealClipPadding({
-      barWidth,
-      seriesCount: composedBarDataKeys.length,
-      gap: composedBarGap,
-      stacked: composedStacked,
-    });
-  }, [
-    columnWidth,
-    composedBarDataKeys,
-    composedBarGap,
-    composedBarSize,
-    composedMaxBarSize,
-    composedStacked,
-    data.length,
-    innerWidth,
-  ]);
-
   return (
     <ChartProvider value={contextValue}>
       <svg aria-hidden="true" height={height} width={width}>
@@ -415,7 +367,6 @@ const TimeSeriesChartCore = memo(function TimeSeriesChartCore({
               clipPathId={clipPathId}
               enterTransition={effectiveEnterTransition}
               height={innerHeight + 20}
-              padding={revealClipPadding}
               revealEpoch={revealEpoch}
               targetWidth={innerWidth}
             />

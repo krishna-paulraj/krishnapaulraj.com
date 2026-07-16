@@ -1,8 +1,8 @@
 import type { TooltipData } from "./chart-context";
 import type { ChartSelection } from "./use-chart-interaction";
 
-// Pure geometry for the hover-highlight band, split out from the hook so it can
-// be unit-tested without React/motion (see __tests__).
+// Pure geometry for the hover-highlight band, split out from the hook so it
+// stays testable without React/motion.
 //
 // The band is the pixel x-range one data point either side of the hovered point:
 //   [ xScale(t(idx-1)), xScale(t(idx+1)) ]
@@ -38,9 +38,7 @@ export function computeSegmentBounds(
   xAccessor: (d: Record<string, unknown>) => Date,
   tooltipData: Pick<TooltipData, "index"> | null | undefined,
   selection:
-    | Pick<ChartSelection, "active" | "startX" | "endX">
-    | null
-    | undefined,
+    Pick<ChartSelection, "active" | "startX" | "endX"> | null | undefined,
 ): SegmentBounds {
   if (data.length === 0) {
     return INACTIVE_SEGMENT;

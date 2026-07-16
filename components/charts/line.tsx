@@ -2,11 +2,6 @@
 
 import { curveNatural } from "@visx/curve";
 import { LinePath } from "@visx/shape";
-
-// CurveFactory type - simplified version compatible with visx
-// biome-ignore lint/suspicious/noExplicitAny: d3 curve factory type
-type CurveFactory = any;
-
 import { useCallback, useId, useRef } from "react";
 import { chartCssVars, useChartStable } from "./chart-context";
 import {
@@ -15,14 +10,19 @@ import {
   resolveFadeSides,
 } from "./fade-edges";
 import {
-  resolveDashTailBounds,
   usePathStrokeMetrics,
+  resolveDashTailBounds,
 } from "./path-stroke-utils";
 import { SeriesDashTailOverlay } from "./series-dash-tail-overlay";
 import { SeriesHighlightLayer } from "./series-highlight-layer";
 import { SeriesHoverDim } from "./series-hover-dim";
 import { SeriesMarkers } from "./series-markers";
 import type { SeriesPointMarkerStyle } from "./series-point-marker";
+
+type Datum = Record<string, unknown>;
+
+/** Curve factory accepted by visx `LinePath` (d3 curve factories). */
+type CurveFactory = NonNullable<Parameters<typeof LinePath<Datum>>[0]["curve"]>;
 
 export interface LineProps {
   /** Key in data to use for y values */
@@ -87,22 +87,30 @@ export function Line({
   } = useChartStable();
 
   const pathRef = useRef<SVGPathElement>(null);
-  const { pathLength, pathD } = usePathStrokeMetrics(pathRef, [
+  const { pathLength, pathD } = usePathStrokeMetrics(
+    pathRef,
     renderData,
-    innerWidth,
-    dashFromIndex,
-    animate,
-  ]);
+    xScale,
+    yScale,
+    curve,
+  );
 
   const reactId = useId();
   const gradientId = `line-gradient-${dataKey}-${reactId}`;
 
   const getY = useCallback(
-    (d: Record<string, unknown>) => {
+    (d: Datum) => {
       const value = d[dataKey];
       return typeof value === "number" ? (yScale(value) ?? 0) : 0;
     },
     [dataKey, yScale],
+  );
+
+  // Non-finite y-values (null, undefined, NaN, ±Infinity) render as a gap in
+  // the stroke instead of spiking to the y of 0.
+  const isDefined = useCallback(
+    (d: Datum) => Number.isFinite(d[dataKey]),
+    [dataKey],
   );
 
   const hasDashTail = resolveDashTailBounds(dashFromIndex, data.length);
@@ -130,6 +138,7 @@ export function Line({
         <LinePath
           curve={curve}
           data={renderData}
+          defined={isDefined}
           innerRef={pathRef}
           stroke={hasDashTail ? "transparent" : lineStroke}
           strokeLinecap="round"
@@ -166,7 +175,7 @@ export function Line({
       <SeriesHighlightLayer
         enabled={showHighlight}
         height={innerHeight}
-        pathRef={pathRef}
+        pathD={pathD}
         stroke={stroke}
         strokeWidth={strokeWidth}
       />

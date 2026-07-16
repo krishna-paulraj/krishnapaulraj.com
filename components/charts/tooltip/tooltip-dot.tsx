@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useSpring } from "motion/react";
+import { useLayoutEffect } from "react";
 import { type SpringConfig, useChartConfig } from "../chart-config-context";
 import { chartCssVars } from "../chart-context";
 
@@ -12,7 +13,7 @@ export interface TooltipDotProps {
   size?: number;
   strokeColor?: string;
   strokeWidth?: number;
-  /** Per-chart override; falls back to `ChartConfigProvider.tooltipSpring`. */
+  /** Per-chart override; falls back to the chart config's `tooltipSpring`. */
   springConfig?: SpringConfig;
 }
 
@@ -28,11 +29,15 @@ export function TooltipDot({
 }: TooltipDotProps) {
   const { tooltipSpring } = useChartConfig();
   const effectiveSpring = springConfig ?? tooltipSpring;
+  // `useSpring` initializes at the first (x, y); the layout effect springs it
+  // toward subsequent positions.
   const animatedX = useSpring(x, effectiveSpring);
   const animatedY = useSpring(y, effectiveSpring);
 
-  animatedX.set(x);
-  animatedY.set(y);
+  useLayoutEffect(() => {
+    animatedX.set(x);
+    animatedY.set(y);
+  }, [animatedX, animatedY, x, y]);
 
   if (!visible) {
     return null;

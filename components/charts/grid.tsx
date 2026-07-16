@@ -57,17 +57,8 @@ export function Grid({
   fadeHorizontal = true,
   fadeVertical = false,
 }: GridProps) {
-  const { xScale, yScale, innerWidth, innerHeight, orientation, barScale } =
-    useChartStable();
+  const { xScale, yScale, innerWidth, innerHeight } = useChartStable();
 
-  // For bar charts, determine which scale to use for grid lines
-  // Horizontal bar charts: vertical grid should use yScale (value scale)
-  // Vertical bar charts: horizontal grid uses yScale (value scale)
-  const isHorizontalBarChart = orientation === "horizontal" && barScale;
-
-  // For vertical grid lines in horizontal bar charts, use yScale (the value scale)
-  // For time-based charts, use xScale
-  const columnScale = isHorizontalBarChart ? yScale : xScale;
   const uniqueId = useId();
 
   // Horizontal fade mask (for grid rows - fades left/right)
@@ -166,12 +157,12 @@ export function Grid({
           })}
         </g>
       ) : null}
-      {vertical && columnScale && typeof columnScale === "function" && (
+      {vertical && (
         <g mask={fadeVertical ? `url(#${vMaskId})` : undefined}>
           <GridColumns
             height={innerHeight}
             numTicks={numTicksColumns}
-            scale={columnScale}
+            scale={xScale}
             stroke={stroke}
             strokeDasharray={strokeDasharray}
             strokeOpacity={strokeOpacity}

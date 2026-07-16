@@ -11,8 +11,6 @@ export interface ChartRevealClipProps {
   enterTransition?: Transition;
   /** Bumps when motion settings change to replay the reveal. */
   revealEpoch: number;
-  /** Extra inset around the clip rect so edge glyphs are not cut off. */
-  padding?: number;
 }
 
 /**
@@ -25,23 +23,21 @@ export function ChartRevealClip({
   targetWidth,
   enterTransition,
   revealEpoch,
-  padding = 0,
 }: ChartRevealClipProps) {
   const transition = clipRevealTransition(enterTransition);
-  const paddedWidth = Math.max(0, targetWidth + padding * 2);
-  const paddedHeight = height + padding * 2;
+  const width = Math.max(0, targetWidth);
 
   return (
     <clipPath id={clipPathId}>
       <motion.rect
-        animate={{ width: paddedWidth }}
-        height={paddedHeight}
+        animate={{ width }}
+        height={height}
         initial={{ width: 0 }}
         key={`reveal-${revealEpoch}`}
         transition={transition}
-        width={paddedWidth}
-        x={-padding}
-        y={-padding}
+        width={width}
+        x={0}
+        y={0}
       />
     </clipPath>
   );

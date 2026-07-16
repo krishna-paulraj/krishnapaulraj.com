@@ -1,7 +1,7 @@
 "use client";
 
 import { type MotionValue, motion } from "motion/react";
-import { type RefObject, useId } from "react";
+import { useId } from "react";
 
 // Hover-highlight overlay: re-strokes the base path `d`, clipped to a vertical
 // band whose x/width spring to track the hovered point, so only the segment
@@ -10,8 +10,8 @@ import { type RefObject, useId } from "react";
 // drawn (see `highlight-segment-bounds.ts` for the band-extent caveat).
 
 export interface HighlightSegmentProps {
-  /** Ref to the rendered base stroke `<path>` — its `d` is re-used verbatim. */
-  pathRef: RefObject<SVGPathElement | null>;
+  /** The rendered base stroke's path `d` — re-used verbatim. */
+  pathD: string | null;
   /** Whether to render (caller gates on showHighlight + active + loaded). */
   visible: boolean;
   stroke: string;
@@ -25,7 +25,7 @@ export interface HighlightSegmentProps {
 }
 
 export function HighlightSegment({
-  pathRef,
+  pathD,
   visible,
   stroke,
   strokeWidth,
@@ -34,7 +34,7 @@ export function HighlightSegment({
   width,
 }: HighlightSegmentProps) {
   const clipId = useId();
-  if (!(visible && pathRef.current)) {
+  if (!(visible && pathD)) {
     return null;
   }
   return (
@@ -47,8 +47,7 @@ export function HighlightSegment({
       <motion.path
         animate={{ opacity: 1 }}
         clipPath={`url(#${clipId})`}
-        d={pathRef.current.getAttribute("d") || ""}
-        exit={{ opacity: 0 }}
+        d={pathD}
         fill="none"
         initial={{ opacity: 0 }}
         stroke={stroke}

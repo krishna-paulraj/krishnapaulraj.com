@@ -1,7 +1,6 @@
 "use client";
 
 import { motion, useSpring } from "motion/react";
-import type { RefObject } from "react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
@@ -14,8 +13,8 @@ export interface TooltipBoxProps {
   y: number;
   /** Whether the tooltip is visible */
   visible: boolean;
-  /** Container ref for portal rendering */
-  containerRef: RefObject<HTMLDivElement | null>;
+  /** Portal target — the chart container element (null until mounted) */
+  container: HTMLElement | null;
   /** Container width for flip detection */
   containerWidth: number;
   /** Container height for bounds clamping */
@@ -32,24 +31,18 @@ export interface TooltipBoxProps {
   top?: number | ReturnType<typeof useSpring>;
   /** Force flip direction (for custom positioning) */
   flipped?: boolean;
-  /** Per-chart override; falls back to `ChartConfigProvider.tooltipBoxSpring`. */
+  /** Per-chart override; falls back to the chart config's `tooltipBoxSpring`. */
   springConfig?: SpringConfig;
 }
+
+/** Estimate used until the rendered box reports its real size. */
+const FALLBACK_SIZE = { width: 180, height: 80 };
 
 // Inner-only-on-visible so `useSpring` initializes at the cursor's actual x/y
 // instead of (0, 0) on first hover.
 export function TooltipBox(props: TooltipBoxProps) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const container = props.containerRef.current;
-  if (!(mounted && container)) {
-    return null;
-  }
-  if (!props.visible) {
+  const { container } = props;
+  if (!(container && props.visible)) {
     return null;
   }
   return <TooltipBoxInner {...props} container={container} />;
@@ -68,18 +61,40 @@ function TooltipBoxInner({
   flipped: flippedOverride,
   springConfig,
   container,
-}: Omit<TooltipBoxProps, "visible" | "containerRef"> & {
+}: Omit<TooltipBoxProps, "visible" | "container"> & {
   container: HTMLElement;
 }) {
   const { tooltipBoxSpring } = useChartConfig();
   const effectiveSpring = springConfig ?? tooltipBoxSpring;
 
-  const tooltipRef = useRef<HTMLDivElement>(null);
-  const tooltipWidthRef = useRef(180);
-  const tooltipHeightRef = useRef(80);
+  // Measured box size as state (via ResizeObserver on the rendered element)
+  // so render can position/flip without reading refs during render.
+  const [tooltipEl, setTooltipEl] = useState<HTMLDivElement | null>(null);
+  const [measuredSize, setMeasuredSize] = useState<{
+    width: number;
+    height: number;
+  } | null>(null);
 
-  const tw = tooltipWidthRef.current;
-  const th = tooltipHeightRef.current;
+  useLayoutEffect(() => {
+    if (!tooltipEl) {
+      return;
+    }
+    const observer = new ResizeObserver(() => {
+      const width = tooltipEl.offsetWidth;
+      const height = tooltipEl.offsetHeight;
+      if (width > 0 && height > 0) {
+        setMeasuredSize((prev) =>
+          prev && prev.width === width && prev.height === height
+            ? prev
+            : { width, height },
+        );
+      }
+    });
+    observer.observe(tooltipEl);
+    return () => observer.disconnect();
+  }, [tooltipEl]);
+
+  const { width: tw, height: th } = measuredSize ?? FALLBACK_SIZE;
   const shouldFlipX = x + tw + offset > containerWidth;
   const targetX = shouldFlipX ? x - offset - tw : x + offset;
   const targetY = Math.max(
@@ -90,51 +105,17 @@ function TooltipBoxInner({
   const animatedLeft = useSpring(targetX, effectiveSpring);
   const animatedTop = useSpring(targetY, effectiveSpring);
 
-  if (leftOverride === undefined) {
-    animatedLeft.set(targetX);
-  }
-  if (topOverride === undefined) {
-    animatedTop.set(targetY);
-  }
+  useLayoutEffect(() => {
+    if (leftOverride === undefined) {
+      animatedLeft.set(targetX);
+    }
+  }, [animatedLeft, leftOverride, targetX]);
 
   useLayoutEffect(() => {
-    if (!tooltipRef.current) {
-      return;
-    }
-    const el = tooltipRef.current;
-    const w = el.offsetWidth;
-    const h = el.offsetHeight;
-    if (w > 0) {
-      tooltipWidthRef.current = w;
-    }
-    if (h > 0) {
-      tooltipHeightRef.current = h;
-    }
-    const w2 = tooltipWidthRef.current;
-    const h2 = tooltipHeightRef.current;
-    const flip = x + w2 + offset > containerWidth;
-    const tx = flip ? x - offset - w2 : x + offset;
-    const ty = Math.max(
-      offset,
-      Math.min(y - h2 / 2, containerHeight - h2 - offset),
-    );
-    if (leftOverride === undefined) {
-      animatedLeft.set(tx);
-    }
     if (topOverride === undefined) {
-      animatedTop.set(ty);
+      animatedTop.set(targetY);
     }
-  }, [
-    x,
-    y,
-    containerWidth,
-    containerHeight,
-    offset,
-    leftOverride,
-    topOverride,
-    animatedLeft,
-    animatedTop,
-  ]);
+  }, [animatedTop, topOverride, targetY]);
 
   const prevFlipRef = useRef(shouldFlipX);
   const [flipKey, setFlipKey] = useState(0);
@@ -155,9 +136,8 @@ function TooltipBoxInner({
     <motion.div
       animate={{ opacity: 1 }}
       className={cn("pointer-events-none absolute z-50", className)}
-      exit={{ opacity: 0 }}
       initial={{ opacity: 0 }}
-      ref={tooltipRef}
+      ref={setTooltipEl}
       style={{ left: finalLeft, top: finalTop }}
       transition={{ duration: 0.1 }}
     >

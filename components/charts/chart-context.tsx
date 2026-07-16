@@ -1,23 +1,15 @@
 "use client";
 
-import type { scaleBand, scaleLinear, scaleTime } from "@visx/scale";
+import type { scaleLinear, scaleTime } from "@visx/scale";
 
-type ScaleLinear<Output, _Input = number> = ReturnType<
-  typeof scaleLinear<Output>
->;
-type ScaleTime<Output, _Input = Date | number> = ReturnType<
-  typeof scaleTime<Output>
->;
-type ScaleBand<Domain extends { toString(): string }> = ReturnType<
-  typeof scaleBand<Domain>
->;
+type ScaleLinear<Output> = ReturnType<typeof scaleLinear<Output>>;
+type ScaleTime<Output> = ReturnType<typeof scaleTime<Output>>;
 
 import type { Transition } from "motion/react";
 import {
   createContext,
   type Dispatch,
   type ReactNode,
-  type RefObject,
   type SetStateAction,
   useContext,
   useMemo,
@@ -70,8 +62,6 @@ export interface TooltipData {
   x: number;
   /** Y positions for each line, keyed by dataKey */
   yPositions: Record<string, number>;
-  /** X positions for each series (for grouped bars), keyed by dataKey */
-  xPositions?: Record<string, number>;
 }
 
 export interface LineConfig {
@@ -95,18 +85,6 @@ export interface ChartHoverContextValue {
   selection?: ChartSelection | null;
   /** Clear the current selection */
   clearSelection?: () => void;
-
-  // Bar chart hover (optional - only present in BarChart)
-  /** Index of currently hovered bar */
-  hoveredBarIndex?: number | null;
-  /** Setter for hovered bar index */
-  setHoveredBarIndex?: (index: number | null) => void;
-
-  // Candlestick hover (optional - only present in CandlestickChart)
-  /** Index of currently hovered candle */
-  hoveredCandleIndex?: number | null;
-  /** Setter for hovered candle index */
-  setHoveredCandleIndex?: (index: number | null) => void;
 }
 
 export interface ChartContextValue extends ChartHoverContextValue {
@@ -116,8 +94,8 @@ export interface ChartContextValue extends ChartHoverContextValue {
   renderData: Record<string, unknown>[];
 
   // Scales
-  xScale: ScaleTime<number, number>;
-  yScale: ScaleLinear<number, number>;
+  xScale: ScaleTime<number>;
+  yScale: ScaleLinear<number>;
 
   // Dimensions
   width: number;
@@ -129,8 +107,8 @@ export interface ChartContextValue extends ChartHoverContextValue {
   // Column width for spacing calculations
   columnWidth: number;
 
-  // Container ref for portals
-  containerRef: RefObject<HTMLDivElement | null>;
+  /** Chart container element for portals — null until mounted. */
+  container: HTMLDivElement | null;
 
   // Line configurations (extracted from children)
   lines: LineConfig[];
@@ -150,36 +128,6 @@ export interface ChartContextValue extends ChartHoverContextValue {
 
   // Pre-computed date labels for ticker animation
   dateLabels: string[];
-
-  // Bar chart specific (optional - only present in BarChart)
-  /** Band scale for categorical x-axis (bar charts) */
-  barScale?: ScaleBand<string>;
-  /** Width of each bar band */
-  bandWidth?: number;
-  /** X accessor for bar charts (returns string instead of Date) */
-  barXAccessor?: (d: Record<string, unknown>) => string;
-  /** Bar chart orientation */
-  orientation?: "vertical" | "horizontal";
-  /** Whether bars are stacked */
-  stacked?: boolean;
-  /** Stack offsets: Map of data index -> Map of dataKey -> cumulative offset */
-  stackOffsets?: Map<number, Map<string, number>>;
-
-  // ComposedChart + SeriesBar (optional)
-  /** `SeriesBar` dataKeys in tree order, for grouped columns at each x */
-  composedBarDataKeys?: string[];
-  /** Target bar width in px (Recharts `barSize` style). */
-  composedBarSize?: number;
-  /** Max bar width in px (Recharts `maxBarSize`). */
-  composedMaxBarSize?: number;
-  /** Gap between grouped `SeriesBar` columns in px. */
-  composedBarGap?: number;
-  /** When true, `SeriesBar` segments stack in child order at each x. */
-  composedStacked?: boolean;
-  /** Per-row cumulative offsets for stacked `SeriesBar` (data index → dataKey → offset). */
-  composedStackOffsets?: Map<number, Map<string, number>>;
-  /** Vertical gap in px between stacked `SeriesBar` segments. Default: 0 */
-  composedStackGap?: number;
 }
 
 /**
@@ -220,7 +168,7 @@ export function ChartProvider({
       innerHeight: value.innerHeight,
       margin: value.margin,
       columnWidth: value.columnWidth,
-      containerRef: value.containerRef,
+      container: value.container,
       lines: value.lines,
       isLoaded: value.isLoaded,
       animationDuration: value.animationDuration,
@@ -229,19 +177,6 @@ export function ChartProvider({
       revealEpoch: value.revealEpoch,
       xAccessor: value.xAccessor,
       dateLabels: value.dateLabels,
-      barScale: value.barScale,
-      bandWidth: value.bandWidth,
-      barXAccessor: value.barXAccessor,
-      orientation: value.orientation,
-      stacked: value.stacked,
-      stackOffsets: value.stackOffsets,
-      composedBarDataKeys: value.composedBarDataKeys,
-      composedBarSize: value.composedBarSize,
-      composedMaxBarSize: value.composedMaxBarSize,
-      composedBarGap: value.composedBarGap,
-      composedStacked: value.composedStacked,
-      composedStackOffsets: value.composedStackOffsets,
-      composedStackGap: value.composedStackGap,
     }),
     [
       value.data,
@@ -254,7 +189,7 @@ export function ChartProvider({
       value.innerHeight,
       value.margin,
       value.columnWidth,
-      value.containerRef,
+      value.container,
       value.lines,
       value.isLoaded,
       value.animationDuration,
@@ -263,19 +198,6 @@ export function ChartProvider({
       value.revealEpoch,
       value.xAccessor,
       value.dateLabels,
-      value.barScale,
-      value.bandWidth,
-      value.barXAccessor,
-      value.orientation,
-      value.stacked,
-      value.stackOffsets,
-      value.composedBarDataKeys,
-      value.composedBarSize,
-      value.composedMaxBarSize,
-      value.composedBarGap,
-      value.composedStacked,
-      value.composedStackOffsets,
-      value.composedStackGap,
     ],
   );
 
@@ -285,20 +207,12 @@ export function ChartProvider({
       setTooltipData: value.setTooltipData,
       selection: value.selection,
       clearSelection: value.clearSelection,
-      hoveredBarIndex: value.hoveredBarIndex,
-      setHoveredBarIndex: value.setHoveredBarIndex,
-      hoveredCandleIndex: value.hoveredCandleIndex,
-      setHoveredCandleIndex: value.setHoveredCandleIndex,
     }),
     [
       value.tooltipData,
       value.setTooltipData,
       value.selection,
       value.clearSelection,
-      value.hoveredBarIndex,
-      value.setHoveredBarIndex,
-      value.hoveredCandleIndex,
-      value.setHoveredCandleIndex,
     ],
   );
 
@@ -328,7 +242,7 @@ export function useChartStable(): ChartStableContextValue {
 }
 
 /**
- * Hover slice — tooltipData, selection, hovered bar / candle indices.
+ * Hover slice — tooltipData and selection.
  * Subscribers re-render on every mouse move. Use only when the component
  * actually reads hover state.
  */
