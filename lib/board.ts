@@ -29,7 +29,8 @@ export const BOARD_LIMITS = {
   cardsPerColumn: 50,
   id: 64,
   title: 120,
-  note: 280,
+  // Markdown description — roomy enough for a Trello-style write-up.
+  note: 1000,
   tag: 24,
   url: 300,
 } as const;

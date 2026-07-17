@@ -14,6 +14,8 @@ import {
 import { BOARD_LIMITS, isSafeUrl } from "@/lib/board";
 import type { BoardCard } from "@/types";
 
+import { MarkdownEditor } from "./markdown-editor";
+
 const FIELD_CLASS =
   "border-border bg-background placeholder:text-muted-foreground focus:border-foreground/30 w-full rounded-lg border px-3 py-2 text-sm outline-none";
 
@@ -44,7 +46,7 @@ export function CardDialog({
 }: CardDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-lg">
         {/* Keyed so field state resets whenever a different card (or "new") opens. */}
         <CardForm
           key={card?.id ?? "new"}
@@ -120,14 +122,12 @@ function CardForm({
           aria-label="Title"
           className={FIELD_CLASS}
         />
-        <textarea
+        <MarkdownEditor
           value={note}
-          onChange={(e) => setNote(e.target.value)}
+          onChange={setNote}
           maxLength={BOARD_LIMITS.note}
-          placeholder="Note (optional)"
-          aria-label="Note"
-          rows={3}
-          className={`${FIELD_CLASS} resize-none`}
+          placeholder="Description (optional) — markdown supported"
+          ariaLabel="Description"
         />
         <div className="flex gap-3">
           <input

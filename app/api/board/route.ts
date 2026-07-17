@@ -2,9 +2,9 @@ import { BOARD_REDIS_KEY, emptyBoard, parseBoardState } from "@/lib/board";
 import { boardKeyMatches } from "@/lib/board-auth";
 import { getRedis, rateLimit } from "@/lib/redis";
 
-// Generous ceiling: a full board at the validator's caps serializes well
-// under this.
-const MAX_BODY_BYTES = 64 * 1024;
+// Generous ceiling: a full board at the validator's caps (150 cards with
+// 1000-char notes) serializes well under this.
+const MAX_BODY_BYTES = 256 * 1024;
 
 export async function GET() {
   try {

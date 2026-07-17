@@ -10,13 +10,31 @@ import type { BoardCard } from "@/types";
 const SHELL_CLASS =
   "border-border bg-card rounded-lg border p-3 shadow-xs transition-shadow";
 
+/**
+ * Notes are markdown, but the card face is phrasing-content only (it can sit
+ * inside a link or button), so show a plain-text snippet — the formatted
+ * version lives in the editor's preview.
+ */
+function markdownSnippet(md: string): string {
+  return md
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/`([^`]*)`/g, "$1")
+    .replace(/!\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/^\s{0,3}#{1,6}\s+/gm, "")
+    .replace(/^\s*(?:[-*+]|\d+\.)\s+/gm, "")
+    .replace(/(\*\*|__|[*_~]+)/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function CardBody({ card }: { card: BoardCard }) {
   return (
     <>
       <p className="text-foreground text-sm font-medium">{card.title}</p>
       {card.note && (
         <p className="text-muted-foreground mt-1 line-clamp-2 text-xs">
-          {card.note}
+          {markdownSnippet(card.note)}
         </p>
       )}
       <div className="text-muted-foreground mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px]">
