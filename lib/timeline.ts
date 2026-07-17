@@ -17,18 +17,18 @@ export type TimelineMilestone = {
 };
 
 export const MILESTONES: TimelineMilestone[] = [
-  // TODO(krish): real year + story for how you started.
   {
     id: "started-coding",
-    date: "20XX",
+    date: "2019",
+    dateTime: "2019",
     title: "Wrote my first line of code",
     description:
       "Where it all started — tinkering, breaking things, and slowly falling for the web.",
   },
-  // TODO(krish): degree, institution, and years.
+  // TODO(krish): add degree/institution if you want more detail here.
   {
     id: "education",
-    date: "20XX – 20XX",
+    date: "2021 – 2025",
     title: "Studied engineering",
     description:
       "Formal foundations, plus all the late-night side projects that taught the practical half.",
