@@ -1,6 +1,10 @@
-ignoredBuiltDependencies:
-  - sharp
-  - unrs-resolver
+# pnpm 11 defaults strictDepBuilds to true, turning skipped dependency build
+# scripts into a hard ERR_PNPM_IGNORED_BUILDS on a clean install (i.e. CI).
+# msw, sharp, and unrs-resolver are all safe unbuilt — their native binaries
+# ship as prebuilt @img/sharp-* and @unrs/resolver-binding-* optional deps — so
+# we skip their build scripts and keep this a warning instead of a failure.
+# (Note: the old `ignoredBuiltDependencies` key is a no-op in pnpm 11.)
+strictDepBuilds: false
 
 # Security floors for transitive deps (GHSA-h67p-54hq-rp68).
 overrides:
