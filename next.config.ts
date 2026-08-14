@@ -15,6 +15,14 @@ const nextConfig: NextConfig = {
           { key: "X-Frame-Options", value: "DENY" },
         ],
       },
+      // The resume page embeds this PDF in an <object>, and browsers apply
+      // X-Frame-Options to object/embed loads too — DENY blocks even
+      // same-origin embedding, leaving only the fallback. Later rules win
+      // for the same header key, so this loosens just the PDF.
+      {
+        source: "/resume.pdf",
+        headers: [{ key: "X-Frame-Options", value: "SAMEORIGIN" }],
+      },
     ];
   },
 };
