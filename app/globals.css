@@ -386,3 +386,40 @@ figure[data-rehype-pretty-code-figure] pre::-webkit-scrollbar-thumb:hover {
     transform: translateX(100%);
   }
 }
+
+/* ── View transitions ──────────────────────────────────────────────────────
+   Shared-element morphs (blog card → post page). The mid-flight blur hides
+   the pixel interpolation of text scaling between the two type sizes. */
+::view-transition-group(.morph) {
+  animation-duration: 350ms;
+}
+::view-transition-image-pair(.morph) {
+  animation-name: via-blur;
+}
+@keyframes via-blur {
+  30% {
+    filter: blur(3px);
+  }
+}
+
+/* The nav is identical on both sides of a navigation — pin it so the root
+   crossfade can't flicker it. */
+::view-transition-group(site-header) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(site-header) {
+  display: none;
+}
+::view-transition-new(site-header) {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}

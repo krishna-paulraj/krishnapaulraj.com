@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: {
+    // Shared-element morphs between the blog grid and post pages.
+    viewTransition: true,
+  },
   images: {
     // Blog cover artwork (the blog-1 block's Unsplash pieces).
     remotePatterns: [{ protocol: "https", hostname: "images.unsplash.com" }],

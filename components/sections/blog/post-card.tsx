@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ViewTransition } from "react";
 import { ArrowUpRightIcon } from "lucide-react";
 
 import pfpDark from "@/assets/pfp_dark.png";
@@ -55,12 +56,16 @@ export function PostCard({ post, index }: PostCardProps) {
       <Link
         href={href}
         aria-label={`Read ${post.title}`}
-        className="bg-muted focus-visible:ring-ring focus-visible:ring-offset-background relative block aspect-[16/10] w-full overflow-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+        className="focus-visible:ring-ring focus-visible:ring-offset-background relative block aspect-[16/10] w-full overflow-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
       >
-        <PostCover
-          index={index}
-          className="absolute inset-0 aspect-auto h-full w-full"
-        />
+        {/* Same name as the post page's hero: the browser morphs this cover
+            into that one on navigation (and back). */}
+        <ViewTransition name={`post-cover-${post.slug}`} share="morph">
+          <PostCover
+            index={index}
+            className="absolute inset-0 aspect-auto h-full w-full"
+          />
+        </ViewTransition>
       </Link>
 
       <CardContent className="flex flex-1 flex-col gap-2 px-4 pt-2 pb-4">
@@ -77,14 +82,16 @@ export function PostCard({ post, index }: PostCardProps) {
         </div>
 
         <div className="flex flex-col gap-1">
-          <h2 className="text-foreground line-clamp-2 text-base leading-snug font-semibold">
-            <Link
-              href={href}
-              className="hover:text-primary focus-visible:text-primary underline-offset-2 transition-colors hover:underline focus-visible:underline focus-visible:outline-none"
-            >
-              {post.title}
-            </Link>
-          </h2>
+          <ViewTransition name={`post-title-${post.slug}`} share="morph">
+            <h2 className="text-foreground line-clamp-2 text-base leading-snug font-semibold">
+              <Link
+                href={href}
+                className="hover:text-primary focus-visible:text-primary underline-offset-2 transition-colors hover:underline focus-visible:underline focus-visible:outline-none"
+              >
+                {post.title}
+              </Link>
+            </h2>
+          </ViewTransition>
           {post.description && (
             <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">
               {post.description}

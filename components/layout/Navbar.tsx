@@ -17,7 +17,11 @@ export default function Navbar() {
   const pathname = usePathname();
 
   return (
-    <header className="border-border bg-background/80 sticky top-0 z-50 w-full border-b backdrop-blur-sm">
+    <header
+      // Pinned during view transitions — see globals.css.
+      style={{ viewTransitionName: "site-header" }}
+      className="border-border bg-background/80 sticky top-0 z-50 w-full border-b backdrop-blur-sm"
+    >
       <nav
         aria-label="Primary"
         className="mx-auto flex max-w-3xl items-center justify-between px-4 py-4 sm:px-16"

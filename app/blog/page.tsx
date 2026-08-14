@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
+import { Reveal } from "@/components/motion/reveal";
 import { BlogFilters } from "@/components/sections/blog/blog-filters";
 import { PostCard } from "@/components/sections/blog/post-card";
 import { getAllTags, getBlogPosts } from "@/lib/blog";
@@ -63,21 +63,20 @@ export default async function BlogPage({
           </p>
         </Reveal>
       ) : (
-        <RevealGroup
-          as="ul"
-          className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2"
-        >
+        // Plain list, not RevealGroup: cards are morph targets, and a morph
+        // into an element that's still fading in lands on nothing.
+        <ul className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
           {posts.map((post) => (
-            <RevealItem as="li" key={post.slug} className="h-full">
+            <li key={post.slug} className="h-full">
               {/* Cover palette keys off the post's place in the full list, so
                   a card keeps its artwork inside filtered tag views too. */}
               <PostCard
                 post={post}
                 index={allPosts.findIndex((p) => p.slug === post.slug)}
               />
-            </RevealItem>
+            </li>
           ))}
-        </RevealGroup>
+        </ul>
       )}
     </div>
   );

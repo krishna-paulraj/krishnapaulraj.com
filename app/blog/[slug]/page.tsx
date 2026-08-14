@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ViewTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -116,63 +117,71 @@ export default async function BlogPostPage({
         </div>
       </Reveal>
 
-      <Reveal as="header" delay={0.08} className="mt-6">
-        <h1 className="text-3xl font-bold tracking-tight text-pretty md:text-balance">
-          {post.title}
-        </h1>
-        {post.description && (
-          <p className="text-muted-foreground mt-3 leading-relaxed">
-            {post.description}
-          </p>
-        )}
-        <div className="text-muted-foreground mt-4 flex flex-wrap items-center gap-x-2 text-xs">
-          {post.createdAt && (
-            <time dateTime={post.createdAt}>{formatDate(post.createdAt)}</time>
+      <header className="mt-6">
+        {/* Morph target for the card's title — it must render immediately,
+            so it sits outside the Reveal entrance. */}
+        <ViewTransition name={`post-title-${post.slug}`} share="morph">
+          <h1 className="text-3xl font-bold tracking-tight text-pretty md:text-balance">
+            {post.title}
+          </h1>
+        </ViewTransition>
+        <Reveal delay={0.08}>
+          {post.description && (
+            <p className="text-muted-foreground mt-3 leading-relaxed">
+              {post.description}
+            </p>
           )}
-          {post.createdAt && <span aria-hidden="true">·</span>}
-          <span>{post.readingTimeMinutes} min read</span>
-          <Views endpoint={`/api/posts/${post.slug}/views`} />
-          {post.updatedAt && post.updatedAt !== post.createdAt && (
-            <>
-              <span aria-hidden="true">·</span>
-              <span>Updated {formatDate(post.updatedAt)}</span>
-            </>
+          <div className="text-muted-foreground mt-4 flex flex-wrap items-center gap-x-2 text-xs">
+            {post.createdAt && (
+              <time dateTime={post.createdAt}>
+                {formatDate(post.createdAt)}
+              </time>
+            )}
+            {post.createdAt && <span aria-hidden="true">·</span>}
+            <span>{post.readingTimeMinutes} min read</span>
+            <Views endpoint={`/api/posts/${post.slug}/views`} />
+            {post.updatedAt && post.updatedAt !== post.createdAt && (
+              <>
+                <span aria-hidden="true">·</span>
+                <span>Updated {formatDate(post.updatedAt)}</span>
+              </>
+            )}
+          </div>
+          {post.tags.length > 0 && (
+            <ul className="mt-3 flex flex-wrap gap-2">
+              {post.tags.map((tag) => (
+                <li key={tag}>
+                  <Link
+                    href={`/blog?tag=${encodeURIComponent(tag)}`}
+                    className="border-border text-muted-foreground hover:bg-muted hover:text-foreground inline-flex items-center rounded-full border px-2.5 py-0.5 font-mono text-xs transition-colors"
+                  >
+                    #{tag}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           )}
-        </div>
-        {post.tags.length > 0 && (
-          <ul className="mt-3 flex flex-wrap gap-2">
-            {post.tags.map((tag) => (
-              <li key={tag}>
-                <Link
-                  href={`/blog?tag=${encodeURIComponent(tag)}`}
-                  className="border-border text-muted-foreground hover:bg-muted hover:text-foreground inline-flex items-center rounded-full border px-2.5 py-0.5 font-mono text-xs transition-colors"
-                >
-                  #{tag}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Reveal>
+        </Reveal>
+      </header>
 
       {/* Hero: a real frontmatter image when the post has one, otherwise the
-          same gradient artwork its card wears on the index. */}
-      <Reveal
-        delay={0.16}
-        className="border-border bg-muted mt-8 overflow-hidden rounded-xl border"
-      >
-        {post.image ? (
-          <Image
-            src={post.image}
-            alt={post.title}
-            width={1280}
-            height={720}
-            className="h-auto w-full object-cover"
-          />
-        ) : (
-          <PostCover index={currentIdx} />
-        )}
-      </Reveal>
+          same gradient artwork its card wears on the index. Morph target for
+          the card's cover, so no Reveal entrance here. */}
+      <div className="border-border mt-8 overflow-hidden rounded-xl border">
+        <ViewTransition name={`post-cover-${post.slug}`} share="morph">
+          {post.image ? (
+            <Image
+              src={post.image}
+              alt={post.title}
+              width={1280}
+              height={720}
+              className="h-auto w-full object-cover"
+            />
+          ) : (
+            <PostCover index={currentIdx} />
+          )}
+        </ViewTransition>
+      </div>
 
       <Reveal
         delay={0.24}
