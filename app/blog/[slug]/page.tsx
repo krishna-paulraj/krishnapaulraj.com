@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 
 import { Reveal } from "@/components/motion/reveal";
 import BlogToc from "@/components/sections/blog/blog-toc";
+import { PostCover } from "@/components/sections/blog/post-cover";
 import ArticleCopyButtons from "@/components/sections/blog/article-copy-buttons";
 import ShareButtons from "@/components/sections/blog/share-buttons";
 import Views from "@/components/ui/views";
@@ -154,11 +155,13 @@ export default async function BlogPostPage({
         )}
       </Reveal>
 
-      {post.image && (
-        <Reveal
-          delay={0.16}
-          className="border-border bg-muted mt-8 overflow-hidden rounded-lg border"
-        >
+      {/* Hero: a real frontmatter image when the post has one, otherwise the
+          same gradient artwork its card wears on the index. */}
+      <Reveal
+        delay={0.16}
+        className="border-border bg-muted mt-8 overflow-hidden rounded-xl border"
+      >
+        {post.image ? (
           <Image
             src={post.image}
             alt={post.title}
@@ -166,8 +169,10 @@ export default async function BlogPostPage({
             height={720}
             className="h-auto w-full object-cover"
           />
-        </Reveal>
-      )}
+        ) : (
+          <PostCover index={currentIdx} />
+        )}
+      </Reveal>
 
       <Reveal
         delay={0.24}

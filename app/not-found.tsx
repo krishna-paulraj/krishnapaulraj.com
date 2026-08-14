@@ -4,6 +4,7 @@ import { ArrowRightIcon } from "lucide-react";
 
 import HighlightedHeading from "@/components/ui/highlighted-heading";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
+import { CloudBackdrop } from "@/components/sections/cloud-backdrop";
 import { getBlogPosts } from "@/lib/blog";
 import { formatPostDate } from "@/lib/dates";
 
@@ -26,6 +27,8 @@ export default function NotFound() {
 
   return (
     <div className="mx-auto w-full max-w-2xl flex-1 px-3 py-16 font-sans md:px-6">
+      {/* Off the map, into the clouds — a subtle sky behind the whole page. */}
+      <CloudBackdrop />
       <Reveal>
         <p className="text-muted-foreground font-mono text-xs tracking-widest uppercase">
           404

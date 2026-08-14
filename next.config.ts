@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  images: {
+    // Blog cover artwork (the blog-1 block's Unsplash pieces).
+    remotePatterns: [{ protocol: "https", hostname: "images.unsplash.com" }],
+  },
   async headers() {
     return [
       {
