@@ -109,6 +109,33 @@ describe("parseBoardState", () => {
     expect(parseBoardState(board([card({ url: "not a url" })]))).toBeNull();
   });
 
+  it("round-trips progress and treats it as optional", () => {
+    expect(
+      parseBoardState(board([card({ progress: 0 })]))?.backlog[0].progress,
+    ).toBe(0);
+    expect(
+      parseBoardState(board([card({ progress: BOARD_LIMITS.progress })]))
+        ?.backlog[0].progress,
+    ).toBe(BOARD_LIMITS.progress);
+    expect(parseBoardState(board([card()]))?.backlog[0]).not.toHaveProperty(
+      "progress",
+    );
+  });
+
+  it("rejects out-of-range, fractional, and non-numeric progress", () => {
+    expect(parseBoardState(board([card({ progress: -1 })]))).toBeNull();
+    expect(
+      parseBoardState(board([card({ progress: BOARD_LIMITS.progress + 1 })])),
+    ).toBeNull();
+    expect(parseBoardState(board([card({ progress: 12.5 })]))).toBeNull();
+    expect(
+      parseBoardState(board([card({ progress: "50" as unknown as number })])),
+    ).toBeNull();
+    expect(
+      parseBoardState(board([card({ progress: null as unknown as number })])),
+    ).toBeNull();
+  });
+
   it("rejects an invalid updatedAt", () => {
     expect(
       parseBoardState(board([card({ updatedAt: "yesterday-ish" })])),

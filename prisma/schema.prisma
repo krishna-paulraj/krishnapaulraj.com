@@ -1,0 +1,55 @@
+// Storage of record for the public board at /board. Redis is still used, but
+// only for what it is good at: rate limiting and the view/visit counters.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// A card on the board.
+///
+/// `column` is a plain string rather than an enum on purpose: `BOARD_COLUMNS`
+/// in lib/board.ts is already the single source of truth and every write goes
+/// through `parseBoardState`, which validates the column set exactly. A second
+/// declaration of the same contract in the schema could only drift from it.
+///
+/// `position` is the card's index within its column. The board is saved whole,
+/// so positions are rewritten on every save and never need to be unique.
+model BoardCard {
+  id        String   @id @default(uuid())
+  column    String   @db.VarChar(32)
+  position  Int
+  title     String   @db.VarChar(120)
+  note      String?  @db.VarChar(1000)
+  tag       String?  @db.VarChar(24)
+  url       String?  @db.VarChar(300)
+  progress  Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  comments BoardComment[]
+
+  @@index([column, position])
+}
+
+/// A visitor comment. Bodies are stored and rendered as plain text — an open,
+/// unauthenticated comment box that renders markdown is a link-spam vector.
+///
+/// `owner` is set server-side only, when the poster proved they hold the board
+/// key. Cascading the delete means a card can never leave orphaned comments.
+model BoardComment {
+  id        String   @id @default(uuid())
+  cardId    String
+  author    String   @db.VarChar(40)
+  body      String   @db.VarChar(500)
+  owner     Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  card BoardCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  @@index([cardId, createdAt])
+}

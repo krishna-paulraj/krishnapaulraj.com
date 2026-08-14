@@ -10,3 +10,16 @@ strictDepBuilds: false
 overrides:
   "js-yaml@<3.15.0": ">=3.15.0 <4"
   "js-yaml@>=4.0.0 <4.1.2": ">=4.1.2 <5"
+
+# pnpm scaffolds this list on install and leaves the values as placeholders.
+# esbuild, msw, sharp and unrs-resolver all ship prebuilt platform binaries as
+# optional deps, so their build scripts are dead weight here. Prisma is allowed:
+# @prisma/engines' postinstall is what places the schema engine the CLI needs
+# for `db push` / `migrate`.
+allowBuilds:
+  "@prisma/engines": true
+  prisma: true
+  esbuild: false
+  msw: false
+  sharp: false
+  unrs-resolver: false

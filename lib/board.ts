@@ -18,6 +18,8 @@ export type BoardCard = {
   note?: string;
   tag?: string;
   url?: string;
+  /** Completion, 0-100. Absent means "not tracked" — the card shows no bar. */
+  progress?: number;
   updatedAt: string;
 };
 
@@ -33,6 +35,8 @@ export const BOARD_LIMITS = {
   note: 1000,
   tag: 24,
   url: 300,
+  // Upper bound of the progress scale, not a length cap.
+  progress: 100,
 } as const;
 
 export function emptyBoard(): BoardState {
@@ -70,6 +74,19 @@ function parseCard(value: unknown, seenIds: Set<string>): BoardCard | null {
   const url = typeof raw.url === "string" ? raw.url.trim() : "";
   if (url && (url.length > BOARD_LIMITS.url || !isSafeUrl(url))) return null;
 
+  // Absent is valid (untracked); anything present must be a whole percentage.
+  const hasProgress = raw.progress !== undefined;
+  const progress = raw.progress;
+  if (
+    hasProgress &&
+    (typeof progress !== "number" ||
+      !Number.isInteger(progress) ||
+      progress < 0 ||
+      progress > BOARD_LIMITS.progress)
+  ) {
+    return null;
+  }
+
   seenIds.add(id);
   return {
     id,
@@ -78,6 +95,7 @@ function parseCard(value: unknown, seenIds: Set<string>): BoardCard | null {
     ...(note ? { note } : {}),
     ...(tag ? { tag } : {}),
     ...(url ? { url } : {}),
+    ...(hasProgress ? { progress: progress as number } : {}),
   };
 }
 

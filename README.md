@@ -14,13 +14,14 @@ Live: [krishnapaulraj.com](https://krishnapaulraj.com)
 - **next-themes** for light/dark/system
 - **unified** + **remark-gfm** + **rehype-pretty-code** (Shiki) for blog rendering
 - **gray-matter** for frontmatter
-- **Upstash Redis** for visitor/session analytics, per-post and per-project view counts, and contact-form rate limiting
+- **Neon Postgres** (via **Prisma 7**) — storage of record for the `/board` kanban and its comments
+- **Upstash Redis** for visitor/session analytics, per-post and per-project view counts, and rate limiting
 - **Resend** for contact-form delivery, **Last.fm** for the now-playing widget
 
 ## Features
 
 - Pages: Home, About, Projects (list + detail), Resume, Blog (list + detail), Board, Timeline, Components, Terminal Setup, Gears, custom 404
-- `/board` — a public kanban board (ReUI + dnd-kit) of what I'm working on; drag/edit unlocks with an owner passphrase, state lives in Redis
+- `/board` — a public kanban board (ReUI + dnd-kit) of what I'm working on; drag/edit unlocks with an owner passphrase, visitors can comment on cards. State lives in Neon Postgres (Redis handles only rate limiting and view counters)
 - Markdown blog (`/blog/*.mdx`) with syntax highlighting, heading anchors, reading time, scroll-progress pill, code-copy buttons, prev/next nav, related posts, and per-post view counters
 - Home-page insights: unique visitors/sessions chart, GitHub contribution graph, now-playing, contact chat
 - SEO: `sitemap.xml`, `robots.txt`, RSS at `/rss.xml`, dynamic Open Graph images (site + per-post + per-project), JSON-LD (`Person`, `WebSite`, `BlogPosting`)
@@ -59,6 +60,8 @@ Requires Node 20+ and pnpm.
 
 ```bash
 pnpm install
+cp .env.example .env   # then fill in the values you have
+pnpm db:push           # create the board tables in Postgres (needs DATABASE_URL)
 pnpm dev
 ```
 
@@ -66,9 +69,16 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ### Environment variables
 
-Create `.env.local`:
+`.env.example` documents every variable and what degrades when it's unset —
+copy it to `.env` and fill in what you have. The short version:
 
 ```bash
+# Neon Postgres — storage for /board and its comments. Use the POOLED
+# endpoint (host contains `-pooler`); Prisma's CLI derives the direct
+# endpoint for migrations automatically (or set DIRECT_DATABASE_URL).
+# Without it, /board shows its error state.
+DATABASE_URL=...
+
 # Upstash Redis — visitor counter, view counts, insights, rate limiting.
 # Without these the counters degrade gracefully (pages still render).
 UPSTASH_REDIS_REST_URL=...
@@ -95,6 +105,10 @@ pnpm typecheck    # tsc --noEmit
 pnpm lint         # ESLint
 pnpm test         # Vitest unit tests
 pnpm format       # Prettier --write .
+
+pnpm db:push              # sync prisma/schema.prisma into the database
+pnpm db:studio            # browse the database in Prisma Studio
+pnpm db:migrate-from-redis  # one-time backfill of the old Redis board (dry run; --write applies)
 ```
 
 CI (GitHub Actions) runs build, typecheck, lint, and tests on every push/PR.
@@ -137,5 +151,8 @@ normalized to `YYYY-MM-DD` internally.
 ## Deployment
 
 Built for Vercel: push to a connected repository and add the env vars above in
-the project settings. Any platform that supports Node + the Next.js runtime
-works — `pnpm build` outputs a mostly static site plus the `/api/*` routes.
+the project settings. Run `pnpm db:push` once against the production
+`DATABASE_URL` to create the board tables — the build generates the Prisma
+client but never touches the schema. Any platform that supports Node + the
+Next.js runtime works — `pnpm build` outputs a mostly static site plus the
+`/api/*` routes.
