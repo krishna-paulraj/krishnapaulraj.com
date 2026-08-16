@@ -33,11 +33,17 @@ const SPACE = 32;
 const DELETE = 127;
 
 /**
- * Drop C0/DEL control characters, which have no place in a comment and would
- * otherwise let a poster smuggle invisible payloads past the length caps.
- * Tabs survive; newlines survive only in bodies, never in display names.
+ * Drop C0/DEL control characters, which have no place in visitor-supplied text
+ * and would otherwise let a poster smuggle invisible payloads past the length
+ * caps. Tabs survive; newlines survive only in bodies, never in display names.
+ *
+ * Exported because lib/chat.ts needs the identical treatment — a second copy of
+ * this would be free to drift from the one the tests cover.
  */
-function stripControlChars(value: string, keepNewlines: boolean): string {
+export function stripControlChars(
+  value: string,
+  keepNewlines: boolean,
+): string {
   let out = "";
   for (const char of value) {
     const code = char.codePointAt(0) ?? 0;
