@@ -83,7 +83,7 @@ const messages: Message[] = [
 
 // The one splash of color on an otherwise monochrome site: the visitor's
 // sent bubbles and the Send button use the classic iMessage blue.
-const IMESSAGE_BLUE = "bg-[#007AFF]";
+const IMESSAGE_BLUE = "bg-(--chat-accent)";
 
 function rowClass(mine: boolean) {
   return cn("flex", mine ? "justify-end" : "justify-start");

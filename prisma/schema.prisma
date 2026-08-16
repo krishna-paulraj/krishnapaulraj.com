@@ -53,3 +53,67 @@ model BoardComment {
 
   @@index([cardId, createdAt])
 }
+
+/// A visitor's conversation with the site owner, opened from the floating chat
+/// widget. One thread per browser: `tokenHash` is the SHA-256 of an opaque
+/// 256-bit token the visitor carries in an HttpOnly cookie.
+///
+/// Storing the hash rather than the token means a database dump can't be used
+/// to impersonate anyone. It is also why the visitor API never accepts a thread
+/// id from the client — the cookie resolves the thread server-side, so there is
+/// no parameter to tamper with and no authorization check a new handler can
+/// forget.
+///
+/// `visitorName` is nullable because the thread is created by the first message,
+/// before the widget asks who sent it.
+model ChatThread {
+  id            String   @id @default(uuid())
+  tokenHash     String   @unique @db.VarChar(64)
+  visitorName   String?  @db.VarChar(40)
+  visitorEmail  String?  @db.VarChar(200)
+  /// "open" or "archived". A plain string for the same reason as
+  /// BoardCard.column: lib/chat.ts already owns the contract.
+  status        String   @default("open") @db.VarChar(16)
+  /// Denormalised so the inbox list sorts without touching messages.
+  lastMessageAt DateTime @default(now())
+  ownerUnread   Int      @default(0)
+  visitorUnread Int      @default(0)
+  messageCount  Int      @default(0)
+  /// SHA-256 of the client IP, never the IP itself — the same treatment
+  /// rateLimit() applies. Backstops the per-IP thread cap when Redis is down.
+  ipHash        String   @db.VarChar(64)
+  createdAt     DateTime @default(now())
+
+  messages ChatMessage[]
+
+  @@index([status, lastMessageAt])
+  @@index([ipHash, createdAt])
+}
+
+/// One message in a thread. Bodies are stored and rendered as plain text, for
+/// the same reason as BoardComment: an unauthenticated box that renders
+/// markdown is a link-spam vector.
+///
+/// `seq` — not `createdAt` — is the sort key and the poll cursor. Two messages
+/// in the same millisecond would sort nondeterministically, and a timestamp
+/// cursor invites clock skew; with `seq` the client only ever echoes back a
+/// number the server gave it.
+///
+/// `clientId` is the id the sender optimistically rendered with. The unique
+/// constraint makes a retried POST raise P2002 instead of duplicating the
+/// message. Postgres NULLs don't conflict, so owner messages are unaffected.
+model ChatMessage {
+  id        String   @id @default(uuid())
+  threadId  String
+  seq       Int      @default(autoincrement())
+  /// "visitor" or "owner". Set server-side only.
+  role      String   @db.VarChar(8)
+  body      String   @db.VarChar(2000)
+  clientId  String?  @db.VarChar(64)
+  createdAt DateTime @default(now())
+
+  thread ChatThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+
+  @@unique([threadId, clientId])
+  @@index([threadId, seq])
+}
