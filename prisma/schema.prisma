@@ -53,3 +53,113 @@ model BoardComment {
 
   @@index([cardId, createdAt])
 }
+
+/// A visitor's conversation with the site owner, opened from the floating chat
+/// widget. One thread per browser: `tokenHash` is the SHA-256 of an opaque
+/// 256-bit token the visitor carries in an HttpOnly cookie.
+///
+/// Storing the hash rather than the token means a database dump can't be used
+/// to impersonate anyone. It is also why the visitor API never accepts a thread
+/// id from the client — the cookie resolves the thread server-side, so there is
+/// no parameter to tamper with and no authorization check a new handler can
+/// forget.
+///
+/// `visitorName` is nullable because the thread is created by the first message,
+/// before the widget asks who sent it.
+model ChatThread {
+  id            String   @id @default(uuid())
+  tokenHash     String   @unique @db.VarChar(64)
+  visitorName   String?  @db.VarChar(40)
+  visitorEmail  String?  @db.VarChar(200)
+  /// "open" or "archived". A plain string for the same reason as
+  /// BoardCard.column: lib/chat.ts already owns the contract.
+  status        String   @default("open") @db.VarChar(16)
+  /// Denormalised so the inbox list sorts without touching messages.
+  lastMessageAt DateTime @default(now())
+  ownerUnread   Int      @default(0)
+  visitorUnread Int      @default(0)
+  messageCount  Int      @default(0)
+  /// SHA-256 of the client IP, never the IP itself — the same treatment
+  /// rateLimit() applies. Backstops the per-IP thread cap when Redis is down.
+  ipHash        String   @db.VarChar(64)
+  createdAt     DateTime @default(now())
+
+  /// Set once the visitor signs in. Nullable because the overwhelming majority
+  /// of threads are started anonymously and never claimed, and because the
+  /// thread always exists before any identity does — you send first, and only
+  /// then are you asked who you are.
+  ///
+  /// Deliberately not unique: a signed-in visitor resolves to their most
+  /// recently active thread, so an archived one left behind is a normal state
+  /// rather than a constraint violation.
+  identityId    String?
+  identity      ChatIdentity? @relation(fields: [identityId], references: [id], onDelete: SetNull)
+
+  messages ChatMessage[]
+
+  @@index([status, lastMessageAt])
+  @@index([ipHash, createdAt])
+  @@index([identityId, lastMessageAt])
+}
+
+/// One message in a thread. Bodies are stored and rendered as plain text, for
+/// the same reason as BoardComment: an unauthenticated box that renders
+/// markdown is a link-spam vector.
+///
+/// `seq` — not `createdAt` — is the sort key and the poll cursor. Two messages
+/// in the same millisecond would sort nondeterministically, and a timestamp
+/// cursor invites clock skew; with `seq` the client only ever echoes back a
+/// number the server gave it.
+///
+/// `clientId` is the id the sender optimistically rendered with. The unique
+/// constraint makes a retried POST raise P2002 instead of duplicating the
+/// message. Postgres NULLs don't conflict, so owner messages are unaffected.
+model ChatMessage {
+  id        String   @id @default(uuid())
+  threadId  String
+  seq       Int      @default(autoincrement())
+  /// "visitor" or "owner". Set server-side only.
+  role      String   @db.VarChar(8)
+  body      String   @db.VarChar(2000)
+  clientId  String?  @db.VarChar(64)
+  createdAt DateTime @default(now())
+
+  thread ChatThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+
+  @@unique([threadId, clientId])
+  @@index([threadId, seq])
+}
+
+/// A visitor who signed in with GitHub or Google.
+///
+/// Sign-in is an *upgrade*, never a gate: the anonymous cookie flow in
+/// lib/chat-identity.ts is still the default path and is untouched by any of
+/// this. What an identity buys is portability — the same conversation on a
+/// second device, after clearing cookies, or in six months — which the cookie
+/// alone cannot give.
+///
+/// `providerAccountId` is the provider's immutable numeric/opaque id, never the
+/// login or email: GitHub logins can be changed and re-registered by someone
+/// else, so keying on one would let an account be taken over by renaming.
+///
+/// No token columns. This is sign-in only — the provider's access token is used
+/// once to read the profile during the callback and then discarded, so there is
+/// nothing to refresh, nothing to encrypt at rest, and nothing to leak.
+model ChatIdentity {
+  id                String   @id @default(uuid())
+  /// "github" or "google". A plain string for the same reason as
+  /// BoardCard.column: lib/oauth.ts already owns the contract.
+  provider          String   @db.VarChar(16)
+  providerAccountId String   @db.VarChar(64)
+  email             String?  @db.VarChar(200)
+  /// Only ever true when the provider itself vouched for the address.
+  emailVerified     Boolean  @default(false)
+  name              String?  @db.VarChar(40)
+  avatarUrl         String?  @db.VarChar(400)
+  createdAt         DateTime @default(now())
+  lastSeenAt        DateTime @default(now())
+
+  threads ChatThread[]
+
+  @@unique([provider, providerAccountId])
+}

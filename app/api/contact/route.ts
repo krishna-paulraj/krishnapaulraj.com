@@ -1,13 +1,10 @@
-import { SITE_AUTHOR, SITE_AUTHOR_EMAIL } from "@/lib/constants";
+import { isEmail } from "@/lib/chat";
+import { sendEmail } from "@/lib/email";
 import { rateLimit } from "@/lib/redis";
 
 const MAX_NAME = 100;
 const MAX_EMAIL = 200;
 const MAX_MESSAGE = 5000;
-
-function isEmail(value: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-}
 
 export async function POST(request: Request) {
   let body: unknown;
@@ -54,8 +51,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
+  if (!process.env.RESEND_API_KEY) {
     console.error("Contact form: RESEND_API_KEY is not set.");
     return Response.json(
       { error: "Messaging isn't set up yet — please email me directly." },
@@ -76,24 +72,14 @@ export async function POST(request: Request) {
   // can't contain whitespace.)
   const cleanName = name.replace(/[\r\n\t]+/g, " ").trim();
 
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from: `${SITE_AUTHOR} <onboarding@resend.dev>`,
-      to: [SITE_AUTHOR_EMAIL],
-      reply_to: email,
-      subject: `Portfolio message from ${cleanName}`,
-      text: `Name: ${cleanName}\nEmail: ${email}\n\n${message}`,
-    }),
+  const sent = await sendEmail({
+    scope: "Contact form",
+    subject: `Portfolio message from ${cleanName}`,
+    text: `Name: ${cleanName}\nEmail: ${email}\n\n${message}`,
+    replyTo: email,
   });
 
-  if (!res.ok) {
-    const detail = await res.text().catch(() => "");
-    console.error("Contact form: Resend error", res.status, detail);
+  if (!sent.ok) {
     return Response.json(
       { error: "Something went wrong sending your message." },
       { status: 502 },

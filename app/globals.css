@@ -133,6 +133,10 @@
   --warning-foreground: var(--color-yellow-900);
   --invert: var(--color-zinc-900);
   --invert-foreground: var(--color-zinc-50);
+  /* The one chromatic accent the site allows itself, shared by the scripted
+     contact chat and the live message widget. Identical in both themes — the
+     rest of the palette is achromatic, so this reads as deliberate in either. */
+  --chat-accent: #007aff;
 }
 
 .dark {
@@ -412,6 +416,20 @@ figure[data-rehype-pretty-code-figure] pre::-webkit-scrollbar-thumb:hover {
   display: none;
 }
 ::view-transition-new(site-header) {
+  animation: none;
+}
+
+/* Same reasoning for the chat widget: it is fixed and identical across every
+   navigation and every theme toggle, so letting the root crossfade sweep it
+   makes it flicker or slide on each one. */
+::view-transition-group(chat-widget) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(chat-widget) {
+  display: none;
+}
+::view-transition-new(chat-widget) {
   animation: none;
 }
 

@@ -5,8 +5,10 @@ import { Navbar, Footer } from "@/components/layout";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { MotionProvider } from "@/components/motion/motion-provider";
 import { SearchProvider } from "@/components/search/search";
+import { ChatWidget } from "@/components/sections/chat";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
+import { enabledProviders } from "@/lib/oauth";
 import { getSearchItems } from "@/lib/search";
 import { buildSiteGraph, jsonLdString } from "@/lib/structured-data";
 
@@ -115,6 +117,7 @@ export default function RootLayout({
                   {children}
                 </main>
                 <Footer />
+                <ChatWidget providers={enabledProviders()} />
               </SearchProvider>
             </TooltipProvider>
           </MotionProvider>
