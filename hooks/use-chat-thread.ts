@@ -3,7 +3,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { TranscriptMessage } from "@/components/sections/chat/transcript";
-import { pollDelayMs, type ChatPayload, type ChatThread } from "@/lib/chat";
+import {
+  pollDelayMs,
+  type ChatIdentity,
+  type ChatPayload,
+  type ChatThread,
+} from "@/lib/chat";
 
 /**
  * Set once a visitor has actually started a conversation. Without it, every
@@ -23,9 +28,12 @@ export type ChatState = {
   thread: ChatThread | null;
   messages: TranscriptMessage[];
   unread: number;
+  /** The signed-in account, or null for the anonymous majority. */
+  identity: ChatIdentity | null;
   send: (body: string) => Promise<void>;
   retry: (id: string) => void;
   saveIdentity: (name: string, email: string) => Promise<string | null>;
+  signOut: () => Promise<void>;
   reload: () => void;
 };
 
@@ -40,10 +48,18 @@ function merge(
   return [...byId.values()].sort((a, b) => a.seq - b.seq);
 }
 
-export function useChatThread(open: boolean): ChatState {
+/**
+ * `resumed` is set when the visitor has just come back from a provider's
+ * consent screen. It matters because the STARTED_KEY gate below is what keeps
+ * the ~95% who never chat from making any request at all — and someone
+ * returning from sign-in has demonstrably not skipped the widget, but may have
+ * signed in on a device where that flag was never written.
+ */
+export function useChatThread(open: boolean, resumed = false): ChatState {
   const [status, setStatus] = useState<Load>("idle");
   const [thread, setThread] = useState<ChatThread | null>(null);
   const [messages, setMessages] = useState<TranscriptMessage[]>([]);
+  const [identity, setIdentity] = useState<ChatIdentity | null>(null);
 
   const cursorRef = useRef(0);
   // 0 means "nothing has happened yet", which the poll schedule reads as
@@ -53,8 +69,12 @@ export function useChatThread(open: boolean): ChatState {
   const startedRef = useRef(false);
 
   const apply = useCallback((data: ChatPayload) => {
-    if (data.thread) {
-      setThread(data.thread);
+    if (data.identity !== undefined) setIdentity(data.identity);
+    if (data.thread || data.identity) {
+      if (data.thread) setThread(data.thread);
+      // A signed-in visitor is worth polling for even before they have written
+      // anything: the owner cannot reply yet, but the flag has to be set on
+      // this device or the next visit makes no request at all.
       startedRef.current = true;
       window.localStorage.setItem(STARTED_KEY, "1");
     }
@@ -86,6 +106,7 @@ export function useChatThread(open: boolean): ChatState {
 
       if (options.peek) {
         setThread(data.thread);
+        if (data.identity !== undefined) setIdentity(data.identity);
         return;
       }
       apply(data);
@@ -98,7 +119,8 @@ export function useChatThread(open: boolean): ChatState {
 
   // First contact. Visitors with no prior conversation make no request at all.
   useEffect(() => {
-    startedRef.current = window.localStorage.getItem(STARTED_KEY) === "1";
+    startedRef.current =
+      resumed || window.localStorage.getItem(STARTED_KEY) === "1";
     if (!startedRef.current) {
       setStatus("ready");
       return;
@@ -113,7 +135,7 @@ export function useChatThread(open: boolean): ChatState {
     return () => {
       cancelled = true;
     };
-  }, [fetchThread]);
+  }, [fetchThread, resumed]);
 
   // Load the full transcript the first time the panel opens.
   useEffect(() => {
@@ -245,10 +267,35 @@ export function useChatThread(open: boolean): ChatState {
         (ChatPayload & { error?: string }) | null;
       if (!res.ok) return data?.error ?? "Couldn't save that — try again.";
       if (data?.thread) setThread(data.thread);
+      if (data?.identity !== undefined) setIdentity(data.identity ?? null);
       return null;
     } catch {
       return "Network error — try again.";
     }
+  }, []);
+
+  /**
+   * Sign out, then drop every trace of the conversation from this tab.
+   *
+   * The server clears the anonymous cookie as well as the session, so leaving
+   * the transcript on screen would show messages this browser can no longer
+   * fetch — and on a shared machine, show them to whoever is next. The state
+   * has to go with the cookies.
+   */
+  const signOut = useCallback(async () => {
+    try {
+      await fetch("/api/auth/session", { method: "DELETE" });
+    } catch {
+      // Even if the request failed, clearing locally is the safer end state.
+    }
+    window.localStorage.removeItem(STARTED_KEY);
+    startedRef.current = false;
+    cursorRef.current = 0;
+    lastActivityRef.current = 0;
+    setIdentity(null);
+    setThread(null);
+    setMessages([]);
+    setStatus("ready");
   }, []);
 
   const reload = useCallback(() => {
@@ -263,9 +310,11 @@ export function useChatThread(open: boolean): ChatState {
     thread,
     messages,
     unread: thread?.unread ?? 0,
+    identity,
     send,
     retry,
     saveIdentity,
+    signOut,
     reload,
   };
 }

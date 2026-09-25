@@ -4,6 +4,7 @@ import { XIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef } from "react";
 
+import { AccountBar } from "@/components/sections/chat/account-bar";
 import { Composer } from "@/components/sections/chat/composer";
 import {
   ChatEmpty,
@@ -15,6 +16,7 @@ import { Transcript } from "@/components/sections/chat/transcript";
 import { Button } from "@/components/ui/button";
 import { CHAT_HOST } from "@/components/sections/chat/constants";
 import type { ChatState } from "@/hooks/use-chat-thread";
+import type { OAuthProvider } from "@/lib/chat";
 
 // Matches components/motion/reveal.tsx, so the panel enters like the rest of
 // the site. MotionProvider sets reducedMotion="user", so this is skipped
@@ -26,9 +28,19 @@ type ChatPanelProps = {
   onClose: () => void;
   chat: ChatState;
   isMobile: boolean;
+  providers: OAuthProvider[];
+  /** Set when the visitor has just come back from a provider and it didn't work. */
+  signInFailed?: boolean;
 };
 
-export function ChatPanel({ open, onClose, chat, isMobile }: ChatPanelProps) {
+export function ChatPanel({
+  open,
+  onClose,
+  chat,
+  isMobile,
+  providers,
+  signInFailed = false,
+}: ChatPanelProps) {
   const panelRef = useRef<HTMLDivElement>(null);
 
   // A Dialog would give us Escape and focus handling, but it would also make
@@ -60,7 +72,11 @@ export function ChatPanel({ open, onClose, chat, isMobile }: ChatPanelProps) {
     };
   }, [open, isMobile]);
 
-  const needsIdentity = Boolean(chat.thread && !chat.thread.name);
+  // A signed-in visitor already answered this with their provider profile, so
+  // the form would be asking a question it has the answer to.
+  const needsIdentity = Boolean(
+    chat.thread && !chat.thread.name && !chat.identity,
+  );
   const started = chat.messages.length > 0;
 
   return (
@@ -116,11 +132,33 @@ export function ChatPanel({ open, onClose, chat, isMobile }: ChatPanelProps) {
             </Transcript>
           )}
 
+          {signInFailed && (
+            <p
+              role="status"
+              className="text-destructive border-border border-t px-4 py-2 text-xs"
+            >
+              That sign-in didn&apos;t go through. Your conversation is still
+              here — try again, or just carry on.
+            </p>
+          )}
+
           {needsIdentity && (
             <div className="border-border border-t px-3 py-3">
-              <IdentityForm onSubmit={chat.saveIdentity} />
+              <IdentityForm
+                onSubmit={chat.saveIdentity}
+                providers={providers}
+              />
             </div>
           )}
+
+          <AccountBar
+            identity={chat.identity}
+            providers={providers}
+            onSignOut={chat.signOut}
+            // Not pitched while the identity form is already on screen — it
+            // offers the same thing two rows above.
+            started={started && !needsIdentity}
+          />
 
           <Composer
             onSend={chat.send}

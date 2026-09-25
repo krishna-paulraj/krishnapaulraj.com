@@ -38,13 +38,17 @@ export function OwnerAvatar() {
  * rather than "?" — the first message arrives before we have asked their name,
  * and a question mark there reads as something having gone wrong.
  */
-export function VisitorAvatar({ name }: { name: string | null }) {
-  const initials = (name ?? "")
+export function initialsOf(name: string | null): string {
+  return (name ?? "")
     .split(/\s+/)
     .filter(Boolean)
     .slice(0, 2)
     .map((part) => part[0]?.toUpperCase())
     .join("");
+}
+
+export function VisitorAvatar({ name }: { name: string | null }) {
+  const initials = initialsOf(name);
 
   return (
     <Avatar className="size-8">

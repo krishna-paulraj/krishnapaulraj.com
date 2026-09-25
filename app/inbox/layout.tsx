@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { InboxShell } from "@/components/sections/inbox";
+import { ownerProviders } from "@/lib/admin-auth";
 
 /**
  * Private, and not just by convention — every /api/chat/threads handler checks
@@ -19,7 +20,7 @@ export default function InboxLayout({
 }) {
   return (
     <div className="mx-auto flex min-h-0 w-full max-w-6xl flex-1 flex-col">
-      <InboxShell>{children}</InboxShell>
+      <InboxShell ownerProviders={ownerProviders()}>{children}</InboxShell>
     </div>
   );
 }

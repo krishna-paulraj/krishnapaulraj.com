@@ -1,9 +1,10 @@
 /**
  * The visitor half of the chat.
  *
- * Every handler resolves its thread from the HttpOnly cookie — a thread id is
- * never accepted from the client — so one visitor structurally cannot read
- * another's conversation.
+ * Every handler resolves its thread through resolveVisitor() — from the signed
+ * -in session if there is one, otherwise from the HttpOnly cookie. A thread id
+ * is never accepted from the client either way, so one visitor structurally
+ * cannot read another's conversation.
  *
  * Check ordering follows app/api/board/comments/route.ts: size cap, parse,
  * validate, rate limit, write. Cheap rejections happen before expensive ones.
@@ -23,21 +24,24 @@ import {
   clientIpHash,
   hashToken,
   mintVisitorToken,
-  readVisitorTokenHash,
 } from "@/lib/chat-identity";
 import {
   acknowledge,
+  adoptThread,
   appendMessage,
   createThread,
   deleteThread,
   findThreadById,
-  findThreadByTokenHash,
   payload,
   readMessages,
   recentThreadCount,
   setIdentity,
+  toIdentity,
   toThread,
+  type IdentityRow,
+  type ThreadRow,
 } from "@/lib/chat-store";
+import { resolveVisitor } from "@/lib/chat-viewer";
 import { sendEmail } from "@/lib/email";
 import { rateLimit } from "@/lib/redis";
 import { SITE_URL } from "@/lib/constants";
@@ -60,12 +64,12 @@ export async function GET(request: Request) {
   const ack = url.searchParams.get("ack") === "1";
 
   try {
-    const tokenHash = await readVisitorTokenHash();
-    // No cookie is the normal state for most visitors, not an error.
-    if (!tokenHash) return json(payload(null, [], "visitor"));
-
-    const thread = await findThreadByTokenHash(tokenHash);
-    if (!thread) return json(payload(null, [], "visitor"));
+    const { identity, thread } = await resolveVisitor();
+    const me = identity ? toIdentity(identity) : null;
+    // No thread is the normal state for most visitors, not an error — and
+    // someone who has signed in but not yet written still needs `identity`
+    // back, so the widget can greet them by name.
+    if (!thread) return json(payload(null, [], "visitor", me));
 
     // The closed-widget badge poll: counters only, no message bodies.
     if (peek) {
@@ -73,6 +77,7 @@ export async function GET(request: Request) {
         thread: toThread(thread, "visitor"),
         messages: [],
         cursor: since,
+        identity: me,
       });
     }
 
@@ -91,7 +96,7 @@ export async function GET(request: Request) {
       thread.visitorUnread = 0;
     }
 
-    return json(payload(thread, messages, "visitor"));
+    return json(payload(thread, messages, "visitor", me));
   } catch (error) {
     console.error("chat GET failed", error);
     return unavailable();
@@ -128,32 +133,42 @@ export async function POST(request: Request) {
       : null;
 
   try {
-    const tokenHash = await readVisitorTokenHash();
-    const existing = tokenHash ? await findThreadByTokenHash(tokenHash) : null;
-
-    if (!existing) return startThread(draft.body, id);
-    return continueThread(existing, draft.body, id);
+    const { identity, thread } = await resolveVisitor();
+    if (!thread) return startThread(draft.body, id, identity);
+    return continueThread(thread, draft.body, id, identity);
   } catch (error) {
     console.error("chat POST failed", error);
     return unavailable();
   }
 }
 
-async function startThread(body: string, clientId: string | null) {
-  const { ok: underLimit } = await rateLimit(
-    "chat-thread-new",
-    3,
-    60 * 60 * 24,
-  );
-  if (!underLimit) {
-    return json({ error: "You've started a few chats already today." }, 429);
-  }
-
+async function startThread(
+  body: string,
+  clientId: string | null,
+  identity: IdentityRow | null,
+) {
   const ipHash = await clientIpHash();
-  // rateLimit fails open when Redis is down, so this is the cap that still
-  // holds during an outage.
-  if ((await recentThreadCount(ipHash)) >= 3) {
-    return json({ error: "You've started a few chats already today." }, 429);
+
+  // Both new-thread caps are per-IP heuristics standing in for "is this a
+  // person". A signed-in visitor has already answered that question with a
+  // provider account, and would be caught unfairly by the shared-office-IP
+  // case; they also converge on a single thread by construction, since
+  // resolveVisitor() always returns the one their account owns.
+  if (!identity) {
+    const { ok: underLimit } = await rateLimit(
+      "chat-thread-new",
+      3,
+      60 * 60 * 24,
+    );
+    if (!underLimit) {
+      return json({ error: "You've started a few chats already today." }, 429);
+    }
+
+    // rateLimit fails open when Redis is down, so this is the cap that still
+    // holds during an outage.
+    if ((await recentThreadCount(ipHash)) >= 3) {
+      return json({ error: "You've started a few chats already today." }, 429);
+    }
   }
 
   const token = mintVisitorToken();
@@ -162,18 +177,44 @@ async function startThread(body: string, clientId: string | null) {
     ipHash,
     body,
     clientId,
+    identityId: identity?.id ?? null,
+    // Pre-filled from the provider, which is why a signed-in visitor is never
+    // shown the "who should I reply to?" form at all.
+    visitorName: identity?.name ?? null,
+    visitorEmail:
+      identity?.emailVerified && identity.email ? identity.email : null,
   });
+  // Minted even when signed in: it is the fallback that keeps the conversation
+  // reachable in this browser if the session later lapses.
   await attachVisitorCookie(token);
 
-  notifyOwner(thread.id, null, body);
-  return json(payload(thread, [message], "visitor"));
+  notifyOwner(thread.id, thread.visitorName, body, identity);
+  return json(
+    payload(
+      thread,
+      [message],
+      "visitor",
+      identity ? toIdentity(identity) : null,
+    ),
+  );
 }
 
 async function continueThread(
-  thread: NonNullable<Awaited<ReturnType<typeof findThreadByTokenHash>>>,
+  thread: ThreadRow,
   body: string,
   clientId: string | null,
+  identity: IdentityRow | null,
 ) {
+  const me = identity ? toIdentity(identity) : null;
+
+  // Self-healing: normally the OAuth callback binds the thread, but if that
+  // half-completed — the redirect was interrupted, the write failed — the next
+  // message quietly finishes the job. resolveVisitor() has already guaranteed
+  // this thread is either unclaimed or this account's own.
+  if (identity && !thread.identity) {
+    await adoptThread({ threadId: thread.id, identity });
+  }
+
   // A full thread stops accepting writes rather than silently dropping the
   // oldest messages the way board comments do. Losing the start of a
   // conversation is worse than being told it is full.
@@ -207,7 +248,7 @@ async function continueThread(
     // That is a duplicate, not a failure — hand back the thread as it stands.
     if (isUniqueViolation(error)) {
       const messages = await readMessages(thread.id, 0);
-      return json(payload(thread, messages, "visitor"));
+      return json(payload(thread, messages, "visitor", me));
     }
     throw error;
   }
@@ -215,7 +256,7 @@ async function continueThread(
   // Notify once per unread run, not once per message: a visitor typing five
   // lines in a row should produce one email, not five.
   if (thread.ownerUnread === 0) {
-    notifyOwner(thread.id, thread.visitorName, body);
+    notifyOwner(thread.id, thread.visitorName, body, identity);
   }
 
   // Re-read rather than patching the pre-write row by hand: the append also
@@ -225,7 +266,7 @@ async function continueThread(
     findThreadById(thread.id),
     readMessages(thread.id, 0),
   ]);
-  return json(payload(fresh ?? thread, messages, "visitor"));
+  return json(payload(fresh ?? thread, messages, "visitor", me));
 }
 
 function isUniqueViolation(error: unknown): boolean {
@@ -245,12 +286,20 @@ function isUniqueViolation(error: unknown): boolean {
  * No reply_to: replying by email would not reach the thread, and an action that
  * silently does nothing is worse than one that isn't offered.
  */
-function notifyOwner(threadId: string, name: string | null, body: string) {
+function notifyOwner(
+  threadId: string,
+  name: string | null,
+  body: string,
+  identity: IdentityRow | null,
+) {
   after(async () => {
     try {
+      // Worth putting in the subject line: it is the difference between a name
+      // someone typed into a box and one GitHub or Google vouched for.
+      const via = identity ? ` (via ${identity.provider})` : "";
       await sendEmail({
         scope: "Chat",
-        subject: `New chat from ${displayName({ id: threadId, name })}`,
+        subject: `New chat from ${displayName({ id: threadId, name })}${via}`,
         text: `${body}\n\n---\nReply: ${SITE_URL}/inbox/${threadId}`,
       });
     } catch (error) {
@@ -276,13 +325,19 @@ export async function PATCH(request: Request) {
   if (!identity.ok) return json({ error: identity.error }, 400);
 
   try {
-    const tokenHash = await readVisitorTokenHash();
-    const thread = tokenHash ? await findThreadByTokenHash(tokenHash) : null;
+    const { identity: account, thread } = await resolveVisitor();
     if (!thread) return json({ error: "No conversation yet." }, 404);
 
     const updated = await setIdentity(thread.id, identity.name, identity.email);
     const messages = await readMessages(thread.id, 0);
-    return json(payload(updated, messages, "visitor"));
+    return json(
+      payload(
+        updated,
+        messages,
+        "visitor",
+        account ? toIdentity(account) : null,
+      ),
+    );
   } catch (error) {
     console.error("chat PATCH failed", error);
     return unavailable();
@@ -292,9 +347,10 @@ export async function PATCH(request: Request) {
 /** Self-service erasure. The cookie already identifies the thread, so this is the whole feature. */
 export async function DELETE() {
   try {
-    const tokenHash = await readVisitorTokenHash();
-    const thread = tokenHash ? await findThreadByTokenHash(tokenHash) : null;
+    const { thread } = await resolveVisitor();
     if (thread) await deleteThread(thread.id);
+    // The session survives on purpose: erasing a conversation is not the same
+    // act as signing out, and the account itself is still perfectly valid.
     await clearVisitorCookie();
     return new Response(null, { status: 204, headers: NO_STORE });
   } catch (error) {

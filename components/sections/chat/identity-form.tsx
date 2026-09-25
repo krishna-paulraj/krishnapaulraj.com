@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 
+import { SignInButtons } from "@/components/sections/chat/sign-in-buttons";
 import { Bubble, BubbleContent } from "@/components/ui/bubble";
 import { Button } from "@/components/ui/button";
 import { Message, MessageContent } from "@/components/ui/message";
-import { CHAT_LIMITS } from "@/lib/chat";
+import { CHAT_LIMITS, type OAuthProvider } from "@/lib/chat";
 
 /** The field styling the board's unlock dialog and the contact form both use. */
 const FIELD_CLASS =
@@ -13,6 +14,7 @@ const FIELD_CLASS =
 
 type IdentityFormProps = {
   onSubmit: (name: string, email: string) => Promise<string | null>;
+  providers: OAuthProvider[];
 };
 
 /**
@@ -20,8 +22,12 @@ type IdentityFormProps = {
  * front of it. Asking before anyone has typed anything is the surest way to get
  * no message at all; asking straight after costs nothing, because by then they
  * already want an answer.
+ *
+ * Sign-in is offered here as the faster way to answer the same question — it
+ * fills the name in and makes the conversation portable — but never as the only
+ * way. Someone who just wants to leave a message can still type a name and go.
  */
-export function IdentityForm({ onSubmit }: IdentityFormProps) {
+export function IdentityForm({ onSubmit, providers }: IdentityFormProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -45,6 +51,23 @@ export function IdentityForm({ onSubmit }: IdentityFormProps) {
         <Bubble variant="muted" align="start" className="max-w-full">
           <BubbleContent className="w-full">
             <p className="mb-2">Got it. Who should I reply to?</p>
+            {providers.length > 0 && (
+              <>
+                <SignInButtons providers={providers} className="mb-3" />
+                {/* Sign-in sits above the fields as the easier option, but the
+                    fields stay — typing a name is one step and an OAuth round
+                    trip is several, and a portfolio that demands an account
+                    before it will take a message gets fewer messages. */}
+                <div
+                  className="text-muted-foreground mb-3 flex items-center gap-2 text-xs"
+                  aria-hidden
+                >
+                  <span className="bg-border h-px flex-1" />
+                  or
+                  <span className="bg-border h-px flex-1" />
+                </div>
+              </>
+            )}
             <form onSubmit={handleSubmit} className="flex flex-col gap-2">
               <input
                 autoFocus

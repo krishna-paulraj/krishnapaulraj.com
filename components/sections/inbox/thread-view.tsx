@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
+  OAUTH_LABELS,
   displayName,
   type ChatMessage,
   type ChatPayload,
@@ -159,7 +160,17 @@ export function ThreadView({ threadId }: { threadId: string }) {
           </Link>
         </Button>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-medium">{name}</p>
+          <div className="flex items-center gap-1.5">
+            <p className="truncate text-sm font-medium">{name}</p>
+            {thread?.identity && (
+              // The whole point of sign-in, from this side of the conversation:
+              // this name was vouched for by a provider rather than typed into
+              // a box by whoever turned up.
+              <span className="border-border text-muted-foreground shrink-0 rounded-full border px-1.5 py-px text-[10px] leading-4">
+                {OAUTH_LABELS[thread.identity.provider]}
+              </span>
+            )}
+          </div>
           {thread?.email && (
             <a
               href={`mailto:${thread.email}`}

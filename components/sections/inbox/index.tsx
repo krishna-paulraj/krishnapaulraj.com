@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import { UnlockDialog } from "@/components/sections/chat/unlock-dialog";
 import { ThreadList } from "@/components/sections/inbox/thread-list";
 import { Button } from "@/components/ui/button";
-import type { ChatStatus } from "@/lib/chat";
+import type { ChatStatus, OAuthProvider } from "@/lib/chat";
 import type { ThreadSummary } from "@/lib/chat-store";
 import { cn } from "@/lib/utils";
 
@@ -14,6 +14,8 @@ const LIST_POLL_MS = 10_000;
 
 type InboxShellProps = {
   children: React.ReactNode;
+  /** Resolved server-side in app/inbox/layout.tsx; see lib/admin-auth.ts. */
+  ownerProviders?: OAuthProvider[];
 };
 
 /**
@@ -22,7 +24,7 @@ type InboxShellProps = {
  * single enforcement point and means no HTML response ever carries a visitor's
  * email or messages.
  */
-export function InboxShell({ children }: InboxShellProps) {
+export function InboxShell({ children, ownerProviders = [] }: InboxShellProps) {
   // The rail lives in the layout, so the open thread's id comes from the
   // segment below it rather than from a prop.
   const activeId = useSelectedLayoutSegment();
@@ -83,6 +85,7 @@ export function InboxShell({ children }: InboxShellProps) {
     return (
       <UnlockDialog
         open
+        ownerProviders={ownerProviders}
         onUnlocked={() => {
           setUnlocked(true);
           void load();

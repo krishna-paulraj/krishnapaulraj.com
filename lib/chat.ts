@@ -40,6 +40,13 @@ export type ChatThread = {
   lastMessageAt: string;
   unread: number;
   messageCount: number;
+  /**
+   * The account this conversation belongs to, once its visitor has signed in.
+   * Null for the anonymous majority. Distinct from ChatPayload.identity, which
+   * answers "is the person holding this cookie signed in right now" — a
+   * question that still has an answer before any thread exists.
+   */
+  identity: ChatIdentity | null;
 };
 
 /** What the visitor endpoints return. `thread` is null before the first send. */
@@ -48,9 +55,45 @@ export type ChatPayload = {
   messages: ChatMessage[];
   /** Highest seq in `messages`, or 0. The client echoes this back as `?since=`. */
   cursor: number;
+  /** Non-null only while a visitor is signed in. Absent on owner responses. */
+  identity?: ChatIdentity | null;
 };
 
 export const ANONYMOUS_VISITOR = "Anonymous";
+
+/**
+ * The sign-in providers. These live here rather than in lib/oauth.ts because
+ * the widget renders the buttons and reads `identity.provider` off the payload,
+ * and lib/oauth.ts imports node:crypto — pulling it into a client component
+ * would drag a Node built-in into the browser bundle.
+ */
+export const OAUTH_PROVIDERS = ["github", "google"] as const;
+export type OAuthProvider = (typeof OAUTH_PROVIDERS)[number];
+
+export const OAUTH_LABELS: Record<OAuthProvider, string> = {
+  github: "GitHub",
+  google: "Google",
+};
+
+export function isOAuthProvider(value: unknown): value is OAuthProvider {
+  return (
+    typeof value === "string" &&
+    (OAUTH_PROVIDERS as readonly string[]).includes(value)
+  );
+}
+
+/**
+ * What the widget is told about a signed-in visitor. Deliberately narrow: the
+ * provider's account id and our own identity row id are both omitted, because
+ * the browser has no use for either and the session cookie is what proves who
+ * you are.
+ */
+export type ChatIdentity = {
+  provider: OAuthProvider;
+  name: string | null;
+  email: string | null;
+  avatarUrl: string | null;
+};
 
 /** Matches app/api/contact/route.ts, which imports this rather than keeping its own. */
 export function isEmail(value: string): boolean {
@@ -118,6 +161,56 @@ export function normalizeIdentity(
   }
 
   return { ok: true, name, email };
+}
+
+/**
+ * Fold a provider's profile into the shapes the thread columns accept.
+ *
+ * Unlike normalizeIdentity this never rejects. That input is typed by a
+ * visitor and a validation error is useful feedback; this input comes from
+ * GitHub or Google after a successful sign-in, and failing the whole flow
+ * because someone's display name is 60 characters long would be absurd. So it
+ * truncates instead, and treats a missing name as genuinely absent.
+ */
+export function normalizeProviderProfile(input: {
+  name?: string | null;
+  email?: string | null;
+  emailVerified?: boolean;
+  avatarUrl?: string | null;
+}): {
+  name: string | null;
+  email: string | null;
+  emailVerified: boolean;
+  avatarUrl: string | null;
+} {
+  const name =
+    stripControlChars(input.name ?? "", false)
+      .trim()
+      .slice(0, CHAT_LIMITS.name) || null;
+
+  const rawEmail = stripControlChars(input.email ?? "", false)
+    .trim()
+    .toLowerCase();
+  const email =
+    rawEmail && rawEmail.length <= CHAT_LIMITS.email && isEmail(rawEmail)
+      ? rawEmail
+      : null;
+
+  // Only https, and only within the column width. An avatar URL is rendered
+  // into a src attribute, so a javascript: or data: value has no business here
+  // even though it would come from a provider we trust.
+  const rawAvatar = (input.avatarUrl ?? "").trim();
+  const avatarUrl =
+    rawAvatar.startsWith("https://") && rawAvatar.length <= 400
+      ? rawAvatar
+      : null;
+
+  return {
+    name,
+    email,
+    emailVerified: Boolean(input.emailVerified) && email !== null,
+    avatarUrl,
+  };
 }
 
 /** How a thread is labelled before the visitor has told us who they are. */

@@ -7,16 +7,34 @@ import { ChatLauncher } from "@/components/sections/chat/chat-launcher";
 import { ChatPanel } from "@/components/sections/chat/chat-panel";
 import { useChatThread } from "@/hooks/use-chat-thread";
 import { useIsMobile } from "@/hooks/use-media-query";
+import { useSignInReturn } from "@/hooks/use-sign-in-return";
+import type { OAuthProvider } from "@/lib/chat";
 
-export function ChatWidget() {
+export function ChatWidget({
+  providers = [],
+}: {
+  /**
+   * Resolved on the server in app/layout.tsx. Passing it down rather than
+   * fetching it means a visitor who never opens the widget still makes zero
+   * requests, and no client id has to be exposed as NEXT_PUBLIC_.
+   */
+  providers?: OAuthProvider[];
+}) {
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
   const isMobile = useIsMobile();
-  const chat = useChatThread(open);
+  const signIn = useSignInReturn();
+
+  // null means "the visitor hasn't chosen yet", which is what lets a return
+  // from a provider open the panel without an effect writing state — the panel
+  // is derived from the URL until the moment they touch it.
+  const [toggled, setToggled] = useState<boolean | null>(null);
+  const open = toggled ?? signIn.resumed;
+
+  const chat = useChatThread(open, signIn.resumed);
   const launcherRef = useRef<HTMLButtonElement>(null);
 
   const close = useCallback(() => {
-    setOpen(false);
+    setToggled(false);
     // Closing a dialog should hand focus back to what opened it, or the
     // keyboard user is dropped at the top of the document.
     launcherRef.current?.focus();
@@ -43,7 +61,7 @@ export function ChatWidget() {
           ref={launcherRef}
           open={open}
           unread={chat.unread}
-          onClick={() => (open ? close() : setOpen(true))}
+          onClick={() => (open ? close() : setToggled(true))}
           // The panel carries its own close button, so a second one floating
           // beside it is just clutter. Kept mounted rather than unmounted so
           // focus has somewhere to return to on close.
@@ -51,7 +69,14 @@ export function ChatWidget() {
         />
       </div>
 
-      <ChatPanel open={open} onClose={close} chat={chat} isMobile={isMobile} />
+      <ChatPanel
+        open={open}
+        onClose={close}
+        chat={chat}
+        isMobile={isMobile}
+        providers={providers}
+        signInFailed={signIn.failed}
+      />
 
       {/*
         Announced separately rather than by mutating the launcher's own label —
