@@ -18,9 +18,9 @@ export default function Navbar() {
 
   return (
     <header
-      // Pinned during view transitions — see globals.css.
-      style={{ viewTransitionName: "site-header" }}
-      className="border-border bg-background/80 sticky top-0 z-50 w-full border-b backdrop-blur-sm"
+      // Pinned during navigation view transitions, but joins the theme-toggle
+      // reveal via the `theme-change` transition type — see globals.css.
+      className="site-header border-border bg-background/80 sticky top-0 z-50 w-full border-b backdrop-blur-sm"
     >
       <nav
         aria-label="Primary"

@@ -59,22 +59,57 @@ const useThemeToggle = ({
 
     // Toggle from the RESOLVED theme: when theme is "system", toggling from
     // `theme` would set the value the OS already resolves to (a no-op).
-    const switchTheme = () => {
-      setTheme(resolvedTheme === "dark" ? "light" : "dark");
-    };
+    const nextTheme = resolvedTheme === "dark" ? "light" : "dark";
 
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
     if (!document.startViewTransition || prefersReducedMotion) {
-      switchTheme();
+      setTheme(nextTheme);
       return;
     }
 
     const animation = createAnimation(variant, start, blur, gifUrl);
     updateStyles(animation.css);
-    document.startViewTransition(switchTheme);
+
+    let observer: MutationObserver | undefined;
+    const update = () => {
+      setTheme(nextTheme);
+      // next-themes writes the theme class in a passive effect, which can land
+      // after the browser captures the "new" snapshot — so the reveal would
+      // animate between two identical frames. Hold the transition open until
+      // the class is actually on <html> so the new snapshot shows the new theme.
+      return new Promise<void>((resolve) => {
+        if (document.documentElement.classList.contains(nextTheme)) {
+          resolve();
+          return;
+        }
+        observer = new MutationObserver(() => {
+          if (document.documentElement.classList.contains(nextTheme)) {
+            observer?.disconnect();
+            resolve();
+          }
+        });
+        observer.observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ["class"],
+        });
+      });
+    };
+
+    // Tag the transition so the header joins the root reveal (see globals.css).
+    // Older browsers accept startViewTransition(callback) but not types.
+    const transition = CSS.supports?.(
+      "selector(:active-view-transition-type(theme-change))",
+    )
+      ? document.startViewTransition({ update, types: ["theme-change"] })
+      : document.startViewTransition(update);
+
+    // A rapid re-click skips this transition; drop the watcher either way so it
+    // can't outlive the toggle it was created for.
+    const cleanup = () => observer?.disconnect();
+    transition.finished.then(cleanup, cleanup);
   }, [resolvedTheme, setTheme, variant, start, blur, gifUrl, updateStyles]);
 
   return {
