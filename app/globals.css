@@ -77,6 +77,9 @@
 }
 
 :root {
+  /* Easing curves used by the theme-toggle view-transition CSS (theme.tsx). */
+  --expo-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --expo-in: cubic-bezier(0.7, 0, 0.84, 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -404,6 +407,14 @@ figure[data-rehype-pretty-code-figure] pre::-webkit-scrollbar-thumb:hover {
 
 /* The nav is identical on both sides of a navigation — pin it so the root
    crossfade can't flicker it. */
+.site-header {
+  view-transition-name: site-header;
+}
+/* During a theme toggle, drop the header's named snapshot so it joins the root
+   circle reveal instead of snapping to the new theme ahead of the page. */
+:root:active-view-transition-type(theme-change) .site-header {
+  view-transition-name: none;
+}
 ::view-transition-group(site-header) {
   animation: none;
   z-index: 100;
